@@ -6,4 +6,5 @@
     android:layout_height="wrap_content"
     android:dividerHeight="@dimen/cnp_school_layout_margin"
     style="@style/cnp_school_layout"
-    android:background="#ffffff"/>
+    android:layout_marginBottom="@dimen/cnp_school_layout_margin"
+    android:background="@drawable/cnp_bg"/>

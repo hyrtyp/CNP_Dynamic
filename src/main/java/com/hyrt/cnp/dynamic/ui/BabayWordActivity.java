@@ -6,11 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-import com.hyrt.cnp.account.model.UserDetail;
 import com.hyrt.cnp.dynamic.R;
 import com.jingdong.common.frame.BaseActivity;
 
@@ -20,22 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by GYH on 14-1-20.
+ * Created by GYH on 14-1-21.
  */
-public class BabayIndexActivity extends BaseActivity{
-
-    @Inject
-    @Named("classroomAlbumActivity")
-    private Class schoolPhotoActivity;
-    @Inject
-    @Named("userInfoActivity")
-    private Class userInfoActivity;
+public class BabayWordActivity extends BaseActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_babayindex);
-        actionBar.hide();
+        setContentView(R.layout.activity_babayword);
         initView();
     }
 
@@ -76,51 +64,10 @@ public class BabayIndexActivity extends BaseActivity{
                 R.id.dynamic_commit3 });
 
         listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                startActivity(new Intent().setClass(BabayIndexActivity.this,DynamicCommentActivity.class));
-            }
-        });
-
-        TextView all_daynamic=(TextView)findViewById(R.id.all_daynamic);
-        TextView child_word=(TextView)findViewById(R.id.child_word);
-        TextView daynamic_photos=(TextView)findViewById(R.id.daynamic_photos);
-        TextView babay_information=(TextView)findViewById(R.id.babay_information);
-        child_word.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent().setClass(BabayIndexActivity.this,BabayWordActivity.class));
-            }
-        });
-
-        daynamic_photos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setClass(BabayIndexActivity.this,schoolPhotoActivity);
-                intent.putExtra("Category","BabayIndexActivity");
-                startActivity(intent);
-            }
-        });
-
-        babay_information.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UserDetail.UserDetailModel userDetailModel=new UserDetail.UserDetailModel();
-                UserDetail userDetail =new UserDetail();
-                userDetail.setRenname("gyh");
-                userDetail.setBirthday("2013-1-1");
-                userDetail.setNurseryName("abc版");
-                userDetail.setSex("man");
-                userDetail.setNationality("chian");
-                userDetail.setBloodType("A");
-                Intent intent = new Intent();
-                userDetailModel.setData(userDetail);
-                intent.setClass(BabayIndexActivity.this,userInfoActivity);
-                intent.putExtra("vo", userDetailModel);
-                startActivity(intent);
+                startActivity(new Intent().setClass(BabayWordActivity.this,DynamicCommentActivity.class));
             }
         });
     }

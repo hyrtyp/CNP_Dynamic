@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/cnp_school_text_size_min"
+        android:text="编写内容...."
+        style="@style/cnp_school_layout"
+        android:textColor="@color/cnp_text_color"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/cnp_school_layout"
+        android:textSize="@dimen/cnp_school_text_size_min"
+        android:text="编写内容...."
+        android:background="@drawable/cnp_bg"
+        android:gravity="center_vertical"
+        android:padding="@dimen/cnp_school_layout_margin"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minLines="5"
+        android:background="@drawable/shape_sendword_line"
+        style="@style/cnp_school_layout"
+        android:gravity="top"
+        android:padding="@dimen/cnp_school_layout_margin"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        </LinearLayout>
+</LinearLayout>

@@ -7,6 +7,7 @@
     android:background="#ffffff"
     >
     <TextView
+        android:id="@+id/all_daynamic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="全部动态"
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:background="@color/cnp_line_color"/>
     <TextView
+        android:id="@+id/child_word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="童言稚语"
@@ -35,6 +37,7 @@
         android:layout_height="wrap_content"
         android:background="@color/cnp_line_color"/>
     <TextView
+        android:id="@+id/daynamic_photos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="动感相册"
@@ -48,6 +51,7 @@
         android:layout_height="wrap_content"
         android:background="@color/cnp_line_color"/>
     <TextView
+        android:id="@+id/babay_information"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="宝宝资料"
