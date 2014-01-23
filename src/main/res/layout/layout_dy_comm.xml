@@ -12,6 +12,7 @@
         style="@style/cnp_school_layout"
         android:textColor="@color/cnp_text_color"/>
     <TextView
+        android:id="@+id/text_context"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/cnp_school_layout"
@@ -22,6 +23,7 @@
         android:padding="@dimen/cnp_school_layout_margin"
         />
     <EditText
+        android:id="@+id/edit_context"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minLines="5"

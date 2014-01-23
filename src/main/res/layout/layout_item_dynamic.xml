@@ -102,6 +102,7 @@
             android:layout_weight="1">
 
             <LinearLayout
+                android:id="@+id/dynamic_zf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -138,6 +139,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"/>
             <LinearLayout
+                android:id="@+id/dynamic_pl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -173,6 +175,7 @@
             android:orientation="horizontal"
             android:layout_weight="1">
                 <TextView
+                    android:id="@+id/dynamic_time2"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

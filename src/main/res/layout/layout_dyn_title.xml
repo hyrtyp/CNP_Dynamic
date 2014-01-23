@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18dp"
+            style="@style/medium_tv"
             android:layout_gravity="center"
             android:textColor="@android:color/white"
             android:text="点击设置个人封面" />
@@ -32,8 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/actionbar_title_back"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginTop="@dimen/view_margin_small"
+        android:layout_marginLeft="@dimen/view_margin_small"
         android:id="@+id/imageviewback"/>
 
     <LinearLayout
@@ -43,9 +43,9 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            style="@style/FaceIv"
+            style="@style/small_FaceIv"
             android:id="@+id/face_iv"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/view_margin_small"
             android:layout_marginLeft="28dp"
             />
 
