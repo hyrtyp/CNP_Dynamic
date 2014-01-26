@@ -7,20 +7,19 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/cnp_school_text_size_min"
         android:text="编写内容...."
-        style="@style/cnp_school_layout"
+        style="@style/medium_tv"
         android:textColor="@color/cnp_text_color"/>
     <TextView
         android:id="@+id/text_context"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/cnp_school_layout"
-        android:textSize="@dimen/cnp_school_text_size_min"
+        style="@style/medium_tv"
         android:text="编写内容...."
         android:background="@drawable/cnp_bg"
         android:gravity="center_vertical"
-        android:padding="@dimen/cnp_school_layout_margin"
+        android:padding="@dimen/view_margin_small"
+        android:textColor="@android:color/secondary_text_dark"
         />
     <EditText
         android:id="@+id/edit_context"
@@ -28,9 +27,10 @@
         android:layout_height="wrap_content"
         android:minLines="5"
         android:background="@drawable/shape_sendword_line"
-        style="@style/cnp_school_layout"
+        style="@style/medium_tv"
         android:gravity="top"
-        android:padding="@dimen/cnp_school_layout_margin"/>
+        android:padding="@dimen/view_margin_small"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

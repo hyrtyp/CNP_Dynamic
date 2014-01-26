@@ -58,7 +58,8 @@
             android:text="yepeng"
             android:id="@+id/name_tv"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/face_iv"/>
+            android:layout_toRightOf="@+id/face_iv"
+            android:layout_marginLeft="@dimen/view_margin"/>
 
     </LinearLayout>
 

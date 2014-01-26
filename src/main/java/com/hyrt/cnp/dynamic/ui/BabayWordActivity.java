@@ -2,8 +2,6 @@ package com.hyrt.cnp.dynamic.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.hyrt.cnp.account.model.ClassRoomBabay;
@@ -17,6 +15,7 @@ import com.octo.android.robospice.persistence.DurationInMillis;
 
 /**
  * Created by GYH on 14-1-21.
+ * 童言稚语
  */
 public class BabayWordActivity extends BaseActivity{
 
@@ -35,13 +34,6 @@ public class BabayWordActivity extends BaseActivity{
 
     private void initView(){
         listView = (ListView)findViewById(R.id.dynamic_listview);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                startActivity(new Intent().setClass(BabayWordActivity.this,DynamicCommentActivity.class));
-            }
-        });
     }
 
     private void initData(){
