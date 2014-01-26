@@ -4,6 +4,6 @@
     android:id="@+id/dynamic_listview"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:dividerHeight="@dimen/cnp_school_layout_margin"
-    style="@style/cnp_school_layout"
-    android:background="#ffffff"/>
+    android:dividerHeight="@dimen/view_margin_small"
+   android:layout_margin="@dimen/view_margin_small"
+    android:background="@drawable/cnp_bg"/>

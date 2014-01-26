@@ -29,4 +29,6 @@
     <dimen name="cnp_classroom_ablum_img_height">90dp</dimen>
     <dimen name="cnp_classroom_photo_img_height">80dp</dimen>
     <dimen name="cnp_dynamic_item_image_height">55dp</dimen>
+    <dimen name="cnp_dynamic_babay_title_height">300dp</dimen>
+    <dimen name="cnp_dynamic_babay_title_image_height">220dp</dimen>>
 </resources>

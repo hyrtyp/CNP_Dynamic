@@ -4,32 +4,34 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/shape_sendword_line"
-    >
+    android:background="@drawable/shape_sendword_line">
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_margin="@dimen/cnp_school_layout_margin">
+
         <ImageView
             android:id="@+id/dynamic_Avatar"
             android:layout_width="@dimen/cnp_dynamic_item_image_height"
             android:layout_height="@dimen/cnp_dynamic_item_image_height"
-            android:background="@color/actionbar_bg"
-            />
+            android:background="@color/actionbar_bg" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            style="@style/cnp_school_layout"
-            >
+            style="@style/cnp_school_layout">
+
             <TextView
                 android:id="@+id/dynamic_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="许安妮"
                 android:textColor="@color/cnp_text_color"
-                android:textSize="@dimen/cnp_school_text_size_min"/>
+                android:textSize="@dimen/cnp_school_text_size_min" />
+
             <TextView
                 android:id="@+id/dynamic_time"
                 android:layout_width="wrap_content"
@@ -38,9 +40,10 @@
                 android:text="25分钟钱， 来自我的动态"
                 android:textColor="@color/cnp_text_color"
                 android:textSize="@dimen/cnp_school_text_size"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical" />
         </LinearLayout>
     </LinearLayout>
+
     <TextView
         android:id="@+id/dynamic_context"
         android:layout_width="wrap_content"
@@ -55,25 +58,25 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         style="@style/cnp_school_layout"
-        >
+        android:layout_marginLeft="@dimen/cnp_dynamic_item_image_height">
+
         <ImageView
-        android:id="@+id/dynamic_image1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-            android:maxHeight="@dimen/cnp_classroom_photo_img_height"
-        />
+            android:id="@+id/dynamic_image1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/cnp_classroom_photo_img_height" />
+
         <ImageView
             android:id="@+id/dynamic_image2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxHeight="@dimen/cnp_classroom_photo_img_height"
-            />
+            android:maxHeight="@dimen/cnp_classroom_photo_img_height" />
+
         <ImageView
             android:id="@+id/dynamic_image3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxHeight="@dimen/cnp_classroom_photo_img_height"
-            />
+            android:maxHeight="@dimen/cnp_classroom_photo_img_height" />
     </LinearLayout>
 
     <TextView
@@ -82,51 +85,108 @@
         android:background="@color/cnp_line_color"
         style="@style/cnp_school_layout"
         android:textColor="@color/cnp_text_color"
-        android:textSize="@dimen/cnp_school_text_size_min"/>
+        android:textSize="@dimen/cnp_school_text_size_min" />
+
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#ffffff">
-        <TextView
+        android:layout_marginLeft="@dimen/cnp_school_layout_margin"
+        android:layout_marginRight="@dimen/cnp_school_layout_margin"
+        android:weightSum="3">
 
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="转发"
-            android:minLines="2"
-            android:textSize="@dimen/cnp_school_text_size"
-            android:textColor="@color/cnp_text_color_black"
-            android:gravity="center"
-            android:layout_weight="1"
-            />
-        <TextView
-            android:layout_width="1dp"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/dynamic_zf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerInParent="true">
+                <ImageView
+                    android:id="@+id/image_forward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/day_forward"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                     />
+                <TextView
+                    android:layout_toRightOf="@id/image_forward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="转发"
+                    android:minLines="2"
+                    android:textSize="@dimen/cnp_school_text_size"
+                    android:textColor="@color/cnp_text_color_black"
+                    android:gravity="center" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/cnp_line_color"/>
-        <TextView
-            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:background="@color/cnp_line_color"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"/>
+            <LinearLayout
+                android:id="@+id/dynamic_pl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerInParent="true">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/day_commit"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="评论"
+                    android:minLines="2"
+                    android:textSize="@dimen/cnp_school_text_size"
+                    android:textColor="@color/cnp_text_color_black"
+                    android:gravity="center" />
+
+            </LinearLayout>
+            <TextView
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:background="@color/cnp_line_color"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="评论"
-            android:textSize="@dimen/cnp_school_text_size"
-            android:textColor="@color/cnp_text_color_black"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:minLines="2"
-            />
-        <TextView
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:background="@color/cnp_line_color"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2013-12-03"
-            android:textSize="@dimen/cnp_school_text_size"
-            android:textColor="@color/cnp_text_color_black"
-            android:gravity="center"
-            android:minLines="2"
-            android:layout_weight="1"/>
+            android:orientation="horizontal"
+            android:layout_weight="1">
+                <TextView
+                    android:id="@+id/dynamic_time2"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2013-12-04"
+                    android:minLines="2"
+                    android:textSize="@dimen/cnp_school_text_size"
+                    android:textColor="@color/cnp_text_color_black"
+                    android:gravity="center" />
+        </RelativeLayout>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -134,21 +194,26 @@
         android:padding="@dimen/cnp_school_text_margin_max"
         style="@style/cnp_school_layout"
         android:gravity="center"
-        android:background="@drawable/cnp_bg">
+        android:background="@drawable/cnp_bg"
+        android:layout_margin="@dimen/cnp_school_layout_margin"
+        android:visibility="gone">
+
         <TextView
             android:id="@+id/dynamic_commit1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""/>
+            android:text="" />
+
         <TextView
             android:id="@+id/dynamic_commit2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""/>
+            android:text="" />
+
         <TextView
             android:id="@+id/dynamic_commit3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""/>
+            android:text="" />
     </LinearLayout>
 </LinearLayout>
