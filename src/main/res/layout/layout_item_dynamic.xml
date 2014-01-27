@@ -10,19 +10,20 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="@dimen/cnp_school_layout_margin">
+        android:layout_margin="@dimen/view_margin_small">
 
         <ImageView
             android:id="@+id/dynamic_Avatar"
             android:layout_width="@dimen/cnp_dynamic_item_image_height"
             android:layout_height="@dimen/cnp_dynamic_item_image_height"
-            android:background="@color/actionbar_bg" />
+            android:background="@drawable/spinner_inner" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            style="@style/cnp_school_layout">
+            style="@style/container_view"
+            android:padding="0dp">
 
             <TextView
                 android:id="@+id/dynamic_name"

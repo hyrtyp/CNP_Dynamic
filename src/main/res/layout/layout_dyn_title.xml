@@ -47,6 +47,7 @@
             android:id="@+id/face_iv"
             android:layout_marginBottom="@dimen/view_margin_small"
             android:layout_marginLeft="28dp"
+            android:src="@drawable/cnp_spinner_inner"
             />
 
 
@@ -55,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="yepeng"
+            android:text=""
             android:id="@+id/name_tv"
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/face_iv"
@@ -68,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="简介：你好"
+        android:text=""
         android:textColor="#75726D"
         android:id="@+id/intro"
         android:layout_marginLeft="28dp"

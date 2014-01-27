@@ -111,9 +111,9 @@ public class BabayIndexActivity extends BaseActivity{
 
     public void updateUI(Dynamic.Model model){
         String[] resKeys=new String[]{"getUserphoto","getUserName",
-                "getPosttime","getContent",
+                "getPosttime3","getContent",
                 "getsPicAry0","getsPicAry1",
-                "getsPicAry2","getPosttime"};
+                "getsPicAry2","getPosttime2"};
         int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
                 R.id.dynamic_time,R.id.dynamic_context,
                 R.id.dynamic_image1,R.id.dynamic_image2,
