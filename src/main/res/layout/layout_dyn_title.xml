@@ -43,11 +43,10 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            style="@style/small_FaceIv"
+            style="@style/FaceIv"
             android:id="@+id/face_iv"
             android:layout_marginBottom="@dimen/view_margin_small"
             android:layout_marginLeft="28dp"
-            android:src="@drawable/cnp_spinner_inner"
             />
 
 

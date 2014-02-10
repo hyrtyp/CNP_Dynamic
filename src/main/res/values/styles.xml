@@ -48,13 +48,4 @@
         <item name="android:textColor">@color/cnp_text_color</item>
     </style>
 
-    <style name="FaceIv">
-        <item name="android:layout_width">76.5dp</item>
-        <item name="android:layout_height">76.5dp</item>
-        <item name="android:paddingRight">2.7dp</item>
-        <item name="android:paddingBottom">2.75dp</item>
-        <item name="android:paddingTop">0.25dp</item>
-        <item name="android:background">@drawable/iv_bg</item>
-        <item name="android:layout_marginRight">25dp</item>
-    </style>
 </resources>
