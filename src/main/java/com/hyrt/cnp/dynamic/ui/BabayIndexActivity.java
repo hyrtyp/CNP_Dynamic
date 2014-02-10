@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -20,8 +20,11 @@ import com.hyrt.cnp.dynamic.request.BabayDynamicRequest;
 import com.hyrt.cnp.dynamic.request.BabayInfoRequest;
 import com.hyrt.cnp.dynamic.requestListener.BabayDynamicRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.BabayInfoRequestListener;
+import com.hyrt.cnp.view.XListView;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
+
+import java.util.ArrayList;
 
 /**
  * Created by GYH on 14-1-20.
@@ -34,17 +37,23 @@ public class BabayIndexActivity extends BaseActivity{
     @Inject
     @Named("userInfoActivity")
     private Class userInfoActivity;
-
+    private String STATE;
+    final private String REFRESH="refresh";
+    final private String ONLOADMORE="onLoadMore";
+    final private String HASDATA="hasdata";
+    private String more="1";
     private ImageView faceview;
     private ImageView imageviewback;
     private TextView nameview;
     private TextView introview;
     private ClassRoomBabay classRoomBabay;
-    private  ListView listView;
+    private XListView listView;
 
     private BabyInfo babyInfo;
 
     private DynamicAdapter dynamicAdapter;
+
+    private ArrayList<Dynamic> dynamics=new ArrayList<Dynamic>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +61,7 @@ public class BabayIndexActivity extends BaseActivity{
         setContentView(R.layout.activity_babayindex);
         actionBar.hide();
         initView();
+        STATE=HASDATA;
         loadData();
     }
 
@@ -60,7 +70,7 @@ public class BabayIndexActivity extends BaseActivity{
         faceview=(ImageView)findViewById(R.id.face_iv);
         nameview =(TextView)findViewById(R.id.name_tv);
         introview=(TextView)findViewById(R.id.intro);
-        listView = (ListView)findViewById(R.id.dynamic_listview);
+        listView = (XListView)findViewById(R.id.dynamic_listview);
         TextView all_daynamic=(TextView)findViewById(R.id.all_daynamic);
         TextView child_word=(TextView)findViewById(R.id.child_word);
         TextView daynamic_photos=(TextView)findViewById(R.id.daynamic_photos);
@@ -107,19 +117,56 @@ public class BabayIndexActivity extends BaseActivity{
         classRoomBabay = (ClassRoomBabay)intent.getSerializableExtra("vo");
         showDetailImage(FaceUtils.getAvatar(classRoomBabay.getUser_id(),FaceUtils.FACE_BIG),faceview,false);
         nameview.setText(classRoomBabay.getRenname().toString());
+        listView.setPullLoadEnable(true);
+        listView.setPullRefreshEnable(true);
+        listView.setXListViewListener(new XListView.IXListViewListener() {
+            @Override
+            public void onRefresh() {
+                if(STATE.equals(HASDATA)||STATE.equals(ONLOADMORE)){
+                    Toast.makeText(BabayIndexActivity.this,"正在进行其他操作,请稍后!",Toast.LENGTH_SHORT).show();
+                }else {
+                    STATE=REFRESH;
+//                    Toast.makeText(BabayIndexActivity.this,"正在刷新,请稍后!",Toast.LENGTH_SHORT).show();
+                    loadData();
+                }
+                listView.stopRefresh();
+            }
+
+            @Override
+            public void onLoadMore() {
+                if(STATE.equals(HASDATA)||STATE.equals(REFRESH)){
+                    Toast.makeText(BabayIndexActivity.this,"正在进行其他操作,请稍后!",Toast.LENGTH_SHORT).show();
+                }else {
+                    loadMoreData();
+//                    Toast.makeText(BabayIndexActivity.this,"onLoadMore",Toast.LENGTH_SHORT).show();
+                }
+                listView.stopLoadMore();
+            }
+        });
     }
 
     public void updateUI(Dynamic.Model model){
-        String[] resKeys=new String[]{"getUserphoto","getUserName",
-                "getPosttime3","getContent",
-                "getsPicAry0","getsPicAry1",
-                "getsPicAry2","getPosttime2"};
-        int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
-                R.id.dynamic_time,R.id.dynamic_context,
-                R.id.dynamic_image1,R.id.dynamic_image2,
-                R.id.dynamic_image3,R.id.dynamic_time2};
-        dynamicAdapter = new DynamicAdapter(this,model.getData(),R.layout.layout_item_dynamic,resKeys,reses);
-        listView.setAdapter(dynamicAdapter);
+        more=model.getMore();
+        if(STATE.equals(REFRESH)){//如果正在刷新就清空
+            dynamics.clear();
+        }
+        dynamics.addAll(model.getData());
+        STATE="";//清空状态
+        if(dynamicAdapter==null){
+            String[] resKeys=new String[]{"getUserphoto","getUserName",
+                    "getPosttime3","getContent",
+                    "getsPicAry0","getsPicAry1",
+                    "getsPicAry2","getPosttime2"};
+            int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
+                    R.id.dynamic_time,R.id.dynamic_context,
+                    R.id.dynamic_image1,R.id.dynamic_image2,
+                    R.id.dynamic_image3,R.id.dynamic_time2};
+            dynamicAdapter = new DynamicAdapter(this,dynamics,R.layout.layout_item_dynamic,resKeys,reses);
+            listView.setAdapter(dynamicAdapter);
+        }else{
+            dynamicAdapter.notifyDataSetChanged();
+        }
+
     }
 
 
@@ -139,7 +186,15 @@ public class BabayIndexActivity extends BaseActivity{
 
     public void loadData(){
         BabayDynamicRequestListener sendwordRequestListener = new BabayDynamicRequestListener(this);
-        BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(Dynamic.Model.class,this,classRoomBabay.getUser_id()+"");
+        BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(
+                Dynamic.Model.class,this,classRoomBabay.getUser_id()+"",more);
+        spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                sendwordRequestListener.start());
+    }
+    public void loadMoreData(){
+        BabayDynamicRequestListener sendwordRequestListener = new BabayDynamicRequestListener(this);
+        BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(
+                Dynamic.Model.class,this,classRoomBabay.getUser_id()+"",more);
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }

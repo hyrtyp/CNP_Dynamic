@@ -43,17 +43,17 @@ public class DynamicAdapter extends MySimpleAdapter {
         }else{
             textView.setVisibility(View.VISIBLE);
         }
-        if(list.get(position).getsPicAry0().equals("")){
+        if(list.get(position).getsPicAry0()==null){
             imageView1.setVisibility(View.GONE);
         }else{
             imageView1.setVisibility(View.VISIBLE);
         }
-        if(list.get(position).getsPicAry1().equals("")){
+        if(list.get(position).getsPicAry1()==null){
             imageView2.setVisibility(View.GONE);
         }else{
             imageView2.setVisibility(View.VISIBLE);
         }
-        if(list.get(position).getsPicAry2().equals("")){
+        if(list.get(position).getsPicAry2()==null){
             imageView3.setVisibility(View.GONE);
         }else{
             imageView3.setVisibility(View.VISIBLE);

@@ -29,7 +29,7 @@
                 android:id="@+id/dynamic_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="许安妮"
+                android:text=""
                 android:textColor="@color/cnp_text_color"
                 android:textSize="@dimen/cnp_school_text_size_min" />
 
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="25分钟钱， 来自我的动态"
+                android:text=""
                 android:textColor="@color/cnp_text_color"
                 android:textSize="@dimen/cnp_school_text_size"
                 android:gravity="center_vertical" />
@@ -63,20 +63,22 @@
 
         <ImageView
             android:id="@+id/dynamic_image1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/cnp_classroom_photo_img_height"
+            android:layout_height="@dimen/cnp_classroom_photo_img_height"
             android:maxHeight="@dimen/cnp_classroom_photo_img_height" />
 
         <ImageView
             android:id="@+id/dynamic_image2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxHeight="@dimen/cnp_classroom_photo_img_height" />
+            android:layout_width="@dimen/cnp_classroom_photo_img_height"
+            android:layout_height="@dimen/cnp_classroom_photo_img_height"
+            android:maxHeight="@dimen/cnp_classroom_photo_img_height"
+            android:layout_marginLeft="@dimen/view_margin_small"
+            android:layout_marginRight="@dimen/view_margin_small"/>
 
         <ImageView
             android:id="@+id/dynamic_image3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/cnp_classroom_photo_img_height"
+            android:layout_height="@dimen/cnp_classroom_photo_img_height"
             android:maxHeight="@dimen/cnp_classroom_photo_img_height" />
     </LinearLayout>
 
@@ -180,7 +182,7 @@
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2013-12-04"
+                    android:text=""
                     android:minLines="2"
                     android:textSize="@dimen/cnp_school_text_size"
                     android:textColor="@color/cnp_text_color_black"
