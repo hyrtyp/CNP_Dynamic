@@ -2,7 +2,10 @@ package com.hyrt.cnp.dynamic.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ListView;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hyrt.cnp.account.model.ClassRoomBabay;
 import com.hyrt.cnp.account.model.Dynamic;
@@ -10,8 +13,11 @@ import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.DynamicAdapter;
 import com.hyrt.cnp.dynamic.request.BabaywordRequest;
 import com.hyrt.cnp.dynamic.requestListener.BabaywordRequestListener;
+import com.hyrt.cnp.view.XListView;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
+
+import java.util.ArrayList;
 
 /**
  * Created by GYH on 14-1-21.
@@ -20,8 +26,14 @@ import com.octo.android.robospice.persistence.DurationInMillis;
 public class BabayWordActivity extends BaseActivity{
 
     private DynamicAdapter dynamicAdapter;
-    private ListView listView;
+    private XListView listView;
     private ClassRoomBabay classRoomBabay;
+    private String STATE;
+    final private String REFRESH="refresh";
+    final private String ONLOADMORE="onLoadMore";
+    final private String HASDATA="hasdata";
+    private String more="1";
+    private ArrayList<Dynamic> dynamics=new ArrayList<Dynamic>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +41,39 @@ public class BabayWordActivity extends BaseActivity{
         setContentView(R.layout.activity_babayword);
         initView();
         initData();
+        STATE=HASDATA;
         loadData();
     }
 
     private void initView(){
-        listView = (ListView)findViewById(R.id.dynamic_listview);
+        listView = (XListView)findViewById(R.id.dynamic_listview);
+        listView.setPullLoadEnable(true);
+        listView.setPullRefreshEnable(true);
+        listView.setXListViewListener(new XListView.IXListViewListener() {
+            @Override
+            public void onRefresh() {
+                if(STATE.equals(HASDATA)||STATE.equals(ONLOADMORE)){
+                    Toast.makeText(BabayWordActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
+                }else {
+                    STATE=REFRESH;
+                    more="1";
+//                    Toast.makeText(BabayIndexActivity.this,"正在刷新,请稍后!",Toast.LENGTH_SHORT).show();
+                    loadData();
+                }
+                listView.stopRefresh();
+            }
+
+            @Override
+            public void onLoadMore() {
+                if(STATE.equals(HASDATA)||STATE.equals(REFRESH)){
+                    Toast.makeText(BabayWordActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
+                }else {
+                    loadData();
+//                    Toast.makeText(BabayIndexActivity.this,"onLoadMore",Toast.LENGTH_SHORT).show();
+                }
+                listView.stopLoadMore();
+            }
+        });
     }
 
     private void initData(){
@@ -41,23 +81,48 @@ public class BabayWordActivity extends BaseActivity{
         classRoomBabay = (ClassRoomBabay)intent.getSerializableExtra("vo");
     }
 
+    /**
+     *
+     * 更新ui界面
+     * */
+
     public void updateUI(Dynamic.Model model){
-        String[] resKeys=new String[]{"getUserphoto","getUserName",
-                "getPosttime","getContent",
-                "getsPicAry0","getsPicAry1",
-                "getsPicAry2","getPosttime"};
-        int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
-                R.id.dynamic_time,R.id.dynamic_context,
-                R.id.dynamic_image1,R.id.dynamic_image2,
-                R.id.dynamic_image3,R.id.dynamic_time2};
-        dynamicAdapter = new DynamicAdapter(this,model.getData(),R.layout.layout_item_dynamic,resKeys,reses);
-        listView.setAdapter(dynamicAdapter);
+        if(model==null&&dynamics.size()==0){
+            LinearLayout linearLayout =(LinearLayout)findViewById(R.id.layout_bottom);
+            linearLayout.setVisibility(View.VISIBLE);
+            TextView bottom_num = (TextView)findViewById(R.id.bottom_num);
+            bottom_num.setText("暂无信息");
+        }else if(model==null){
+            Toast.makeText(BabayWordActivity.this, "已经全部加载", Toast.LENGTH_SHORT).show();
+        }else{
+            more=model.getMore();
+            if(STATE.equals(REFRESH)){//如果正在刷新就清空
+                dynamics.clear();
+            }
+            dynamics.addAll(model.getData());
+            if(dynamicAdapter==null){
+                String[] resKeys=new String[]{"getUserphoto","getUserName",
+                        "getPosttime","getContent",
+                        "getsPicAry0","getsPicAry1",
+                        "getsPicAry2","getPosttime"};
+                int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
+                        R.id.dynamic_time,R.id.dynamic_context,
+                        R.id.dynamic_image1,R.id.dynamic_image2,
+                        R.id.dynamic_image3,R.id.dynamic_time2};
+                dynamicAdapter = new DynamicAdapter(this,dynamics,R.layout.layout_item_dynamic,resKeys,reses);
+                listView.setAdapter(dynamicAdapter);
+            }else{
+                dynamicAdapter.notifyDataSetChanged();
+            }
+
+        }
+        STATE="";//清空状态
     }
 
 
     private void loadData(){
         BabaywordRequestListener sendwordRequestListener = new BabaywordRequestListener(this);
-        BabaywordRequest schoolRecipeRequest=new BabaywordRequest(Dynamic.Model.class,this,classRoomBabay.getUser_id()+"");
+        BabaywordRequest schoolRecipeRequest=new BabaywordRequest(Dynamic.Model.class,this,classRoomBabay.getUser_id()+"",more);
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }

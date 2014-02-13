@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import com.hyrt.cnp.account.model.Dynamic;
 import com.hyrt.cnp.account.requestListener.BaseRequestListener;
-import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.ui.BabayWordActivity;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
@@ -21,8 +20,10 @@ public class BabaywordRequestListener extends BaseRequestListener {
 
     @Override
     public void onRequestFailure(SpiceException e) {
-        showMessage(R.string.nodata_title,R.string.nodata_content);
+//        showMessage(R.string.nodata_title,R.string.nodata_content);
         super.onRequestFailure(e);
+        BabayWordActivity activity = (BabayWordActivity)context.get();
+        activity.updateUI(null);
     }
 
     @Override
@@ -33,7 +34,9 @@ public class BabaywordRequestListener extends BaseRequestListener {
             Dynamic.Model result= (Dynamic.Model)data;
             activity.updateUI(result);
         }else{
-            showMessage(R.string.nodata_title,R.string.nodata_content);
+            BabayWordActivity activity = (BabayWordActivity)context.get();
+            activity.updateUI(null);
+//            showMessage(R.string.nodata_title,R.string.nodata_content);
         }
 
     }

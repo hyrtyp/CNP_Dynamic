@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -123,9 +124,10 @@ public class BabayIndexActivity extends BaseActivity{
             @Override
             public void onRefresh() {
                 if(STATE.equals(HASDATA)||STATE.equals(ONLOADMORE)){
-                    Toast.makeText(BabayIndexActivity.this,"正在进行其他操作,请稍后!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BabayIndexActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
                 }else {
                     STATE=REFRESH;
+                    more="1";
 //                    Toast.makeText(BabayIndexActivity.this,"正在刷新,请稍后!",Toast.LENGTH_SHORT).show();
                     loadData();
                 }
@@ -135,7 +137,7 @@ public class BabayIndexActivity extends BaseActivity{
             @Override
             public void onLoadMore() {
                 if(STATE.equals(HASDATA)||STATE.equals(REFRESH)){
-                    Toast.makeText(BabayIndexActivity.this,"正在进行其他操作,请稍后!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BabayIndexActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
                 }else {
                     loadMoreData();
 //                    Toast.makeText(BabayIndexActivity.this,"onLoadMore",Toast.LENGTH_SHORT).show();
@@ -145,28 +147,42 @@ public class BabayIndexActivity extends BaseActivity{
         });
     }
 
-    public void updateUI(Dynamic.Model model){
-        more=model.getMore();
-        if(STATE.equals(REFRESH)){//如果正在刷新就清空
-            dynamics.clear();
-        }
-        dynamics.addAll(model.getData());
-        STATE="";//清空状态
-        if(dynamicAdapter==null){
-            String[] resKeys=new String[]{"getUserphoto","getUserName",
-                    "getPosttime3","getContent",
-                    "getsPicAry0","getsPicAry1",
-                    "getsPicAry2","getPosttime2"};
-            int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
-                    R.id.dynamic_time,R.id.dynamic_context,
-                    R.id.dynamic_image1,R.id.dynamic_image2,
-                    R.id.dynamic_image3,R.id.dynamic_time2};
-            dynamicAdapter = new DynamicAdapter(this,dynamics,R.layout.layout_item_dynamic,resKeys,reses);
-            listView.setAdapter(dynamicAdapter);
-        }else{
-            dynamicAdapter.notifyDataSetChanged();
-        }
+    /**
+     *
+     * 更新ui界面
+     * */
 
+    public void updateUI(Dynamic.Model model){
+
+        if(model==null&&dynamics.size()==0){
+            LinearLayout linearLayout =(LinearLayout)findViewById(R.id.layout_bottom);
+            linearLayout.setVisibility(View.VISIBLE);
+            TextView bottom_num = (TextView)findViewById(R.id.bottom_num);
+            bottom_num.setText("暂无信息");
+        }else if(model==null){
+            Toast.makeText(BabayIndexActivity.this,"已经全部加载",Toast.LENGTH_SHORT).show();
+        }else{
+            more=model.getMore();
+            if(STATE.equals(REFRESH)){//如果正在刷新就清空
+                dynamics.clear();
+            }
+            dynamics.addAll(model.getData());
+            if(dynamicAdapter==null){
+                String[] resKeys=new String[]{"getUserphoto","getUserName",
+                        "getPosttime3","getContent",
+                        "getsPicAry0","getsPicAry1",
+                        "getsPicAry2","getPosttime2"};
+                int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
+                        R.id.dynamic_time,R.id.dynamic_context,
+                        R.id.dynamic_image1,R.id.dynamic_image2,
+                        R.id.dynamic_image3,R.id.dynamic_time2};
+                dynamicAdapter = new DynamicAdapter(this,dynamics,R.layout.layout_item_dynamic,resKeys,reses);
+                listView.setAdapter(dynamicAdapter);
+            }else{
+                dynamicAdapter.notifyDataSetChanged();
+            }
+        }
+        STATE="";//清空状态
     }
 
 
@@ -212,6 +228,7 @@ public class BabayIndexActivity extends BaseActivity{
         Intent intent = new Intent();
         intent.setClass(BabayIndexActivity.this,userInfoActivity);
         intent.putExtra("vo", userDetailModel);
+        intent.putExtra("mybabayinfo",false);
         startActivity(intent);
     }
 }

@@ -37,6 +37,6 @@ public class BabayDynamicRequest extends BaseRequest {
     }
 
     public String getcachekey(){
-        return "Babydynamic"+uid;
+        return "Babydynamic"+uid+more;
     }
 }
