@@ -222,13 +222,24 @@ public class BabayIndexActivity extends BaseActivity{
         userDetail.setBirthday(babyInfo.getBirthday());
         userDetail.setNurseryName(babyInfo.getNurseryName());
         userDetail.setSex(babyInfo.getSex());
-        userDetail.setNationality("chian");
-        userDetail.setBloodType("A");
+        userDetail.setNationality(babyInfo.getNationality());
+        userDetail.setBloodType(babyInfo.getBloodType());
+        userDetail.setEthnic(babyInfo.getEthnic());
         userDetailModel.setData(userDetail);
         Intent intent = new Intent();
         intent.setClass(BabayIndexActivity.this,userInfoActivity);
         intent.putExtra("vo", userDetailModel);
         intent.putExtra("mybabayinfo",false);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==0&&resultCode==1){
+            STATE=REFRESH;
+            more="1";
+            loadData();
+        }
     }
 }

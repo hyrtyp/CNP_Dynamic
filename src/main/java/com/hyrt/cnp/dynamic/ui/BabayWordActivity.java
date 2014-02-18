@@ -126,4 +126,14 @@ public class BabayWordActivity extends BaseActivity{
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==0&&resultCode==1){
+                STATE=REFRESH;
+                more="1";
+                loadData();
+        }
+    }
 }

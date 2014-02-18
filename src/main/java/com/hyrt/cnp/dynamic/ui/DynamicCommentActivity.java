@@ -42,6 +42,7 @@ public class DynamicCommentActivity extends BaseActivity{
                 .setChecked(false)
                 .setTitle("发送")
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -123,6 +124,9 @@ public class DynamicCommentActivity extends BaseActivity{
     public void showSuccess(){
         Toast.makeText(DynamicCommentActivity.this,"评论成功！",Toast.LENGTH_SHORT).show();
         editcon.setText("");
+        setResult(1);
+        finish();
     }
+
 
 }

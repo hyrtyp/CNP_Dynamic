@@ -67,7 +67,7 @@ public class DynamicAdapter extends MySimpleAdapter {
                 intent.setClass(activity, DynamicCommentActivity.class);
                 intent.putExtra("vo", list.get(posi));
                 intent.putExtra("Category","zf");
-                activity.startActivity(intent);
+                activity.startActivityForResult(intent,0);
             }
         });
         LinearLayout dynamic_pl=(LinearLayout)view.findViewById(R.id.dynamic_pl);
@@ -78,7 +78,7 @@ public class DynamicAdapter extends MySimpleAdapter {
                 intent.setClass(activity, DynamicCommentActivity.class);
                 intent.putExtra("vo", list.get(posi));
                 intent.putExtra("Category","pl");
-                activity.startActivity(intent);
+                activity.startActivityForResult(intent,0);
             }
         });
         return view;

@@ -16,7 +16,7 @@
             android:id="@+id/dynamic_Avatar"
             android:layout_width="@dimen/cnp_dynamic_item_image_height"
             android:layout_height="@dimen/cnp_dynamic_item_image_height"
-            android:background="@drawable/spinner_inner" />
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
