@@ -169,13 +169,13 @@ public class BabayIndexActivity extends BaseActivity{
             dynamics.addAll(model.getData());
             if(dynamicAdapter==null){
                 String[] resKeys=new String[]{"getUserphoto","getUserName",
-                        "getPosttime3","getContent",
+                        "getPosttime3","getContent2",
                         "getsPicAry0","getsPicAry1",
-                        "getsPicAry2","getPosttime2"};
+                        "getsPicAry2","getPosttime2","getTransmit2","getReview2"};
                 int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
                         R.id.dynamic_time,R.id.dynamic_context,
                         R.id.dynamic_image1,R.id.dynamic_image2,
-                        R.id.dynamic_image3,R.id.dynamic_time2};
+                        R.id.dynamic_image3,R.id.dynamic_time2,R.id.dynamic_zf_num,R.id.dynamic_pl_num};
                 dynamicAdapter = new DynamicAdapter(this,dynamics,R.layout.layout_item_dynamic,resKeys,reses);
                 listView.setAdapter(dynamicAdapter);
             }else{
