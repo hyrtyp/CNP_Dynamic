@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hyrt.cnp.account.model.ClassRoomBabay;
+import com.hyrt.cnp.account.model.BabyInfo;
 import com.hyrt.cnp.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.DynamicAdapter;
@@ -27,7 +27,7 @@ public class BabayWordActivity extends BaseActivity{
 
     private DynamicAdapter dynamicAdapter;
     private XListView listView;
-    private ClassRoomBabay classRoomBabay;
+    private BabyInfo classRoomBabay;
     private String STATE;
     final private String REFRESH="refresh";
     final private String ONLOADMORE="onLoadMore";
@@ -78,7 +78,7 @@ public class BabayWordActivity extends BaseActivity{
 
     private void initData(){
         Intent intent=getIntent();
-        classRoomBabay = (ClassRoomBabay)intent.getSerializableExtra("vo");
+        classRoomBabay = (BabyInfo)intent.getSerializableExtra("vo");
     }
 
     /**
@@ -104,11 +104,11 @@ public class BabayWordActivity extends BaseActivity{
                 String[] resKeys=new String[]{"getUserphoto","getUserName",
                         "getPosttime3","getContent2",
                         "getsPicAry0","getsPicAry1",
-                        "getsPicAry2","getPosttime2","getTransmit2","getReview2"};
+                        "getsPicAry2","getPosttime2","getTransmit2","getReview2","gettContent"};
                 int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
                         R.id.dynamic_time,R.id.dynamic_context,
                         R.id.dynamic_image1,R.id.dynamic_image2,
-                        R.id.dynamic_image3,R.id.dynamic_time2,R.id.dynamic_zf_num,R.id.dynamic_pl_num};
+                        R.id.dynamic_image3,R.id.dynamic_time2,R.id.dynamic_zf_num,R.id.dynamic_pl_num,R.id.dynamic_dcontext};
                 dynamicAdapter = new DynamicAdapter(this,dynamics,R.layout.layout_item_dynamic,resKeys,reses);
                 listView.setAdapter(dynamicAdapter);
             }else{

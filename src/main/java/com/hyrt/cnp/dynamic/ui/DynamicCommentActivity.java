@@ -100,8 +100,10 @@ public class DynamicCommentActivity extends BaseActivity{
     private void initData(){
         Intent intent = getIntent();
         dynamic=(Dynamic)intent.getSerializableExtra("vo");
-        textcon.setText(dynamic.getContent().toString());
+        textcon.setText(dynamic.getContent2().toString());
+//        editcon.setText(dynamic.getContent().toString());
         Category=intent.getStringExtra("Category");
+
         if(Category.equals("pl")){
             titletext.setText("评论动态");
         }else{
@@ -128,12 +130,12 @@ public class DynamicCommentActivity extends BaseActivity{
         }else{
             comment.setInfoTitle(dynamic.getTitle());
         }
-        comment.setInfoUserId(dynamic.gettUserId());
-        comment.setInfoNurseryId(dynamic.getNueseryId());
-        comment.setInfoClassroomId(dynamic.getClassRoomId());
+        comment.setInfoUserId(dynamic.gettUserId()+"");
+        comment.setInfoNurseryId(dynamic.getNueseryId()+"");
+        comment.setInfoClassroomId(dynamic.getClassRoomId()+"");
         comment.setSiteid("50");
         comment.setUrl("null");
-        comment.setLstatus("N");
+        comment.setLstatus("Y");
         comment.setContent(editcon.getText().toString());
         comment.setReply("0");
         comment.setRecontent("");

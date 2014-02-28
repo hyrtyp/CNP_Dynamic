@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.hyrt.cnp.account.model.BabyInfo;
-import com.hyrt.cnp.account.model.ClassRoomBabay;
 import com.hyrt.cnp.account.model.Dynamic;
 import com.hyrt.cnp.account.model.UserDetail;
 import com.hyrt.cnp.account.utils.FaceUtils;
@@ -47,7 +46,7 @@ public class BabayIndexActivity extends BaseActivity{
     private ImageView imageviewback;
     private TextView nameview;
     private TextView introview;
-    private ClassRoomBabay classRoomBabay;
+//    private BabyInfo classRoomBabay;
     private XListView listView;
 
     private BabyInfo babyInfo;
@@ -86,7 +85,7 @@ public class BabayIndexActivity extends BaseActivity{
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.putExtra("vo",classRoomBabay);
+                intent.putExtra("vo",babyInfo);
                 intent.setClass(BabayIndexActivity.this,BabayWordActivity.class);
                 startActivity(intent);
             }
@@ -98,7 +97,7 @@ public class BabayIndexActivity extends BaseActivity{
                 Intent intent = new Intent();
                 intent.setClass(BabayIndexActivity.this,schoolPhotoActivity);
                 intent.putExtra("Category","BabayIndexActivity");
-                intent.putExtra("vo",classRoomBabay);
+                intent.putExtra("vo",babyInfo);
                 startActivity(intent);
             }
         });
@@ -106,18 +105,25 @@ public class BabayIndexActivity extends BaseActivity{
         babay_information.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(babyInfo!=null){
-                    showBabayInfo();
-                }else{
-                    loadBabayinfoData();
-                }
+//                if(babyInfo!=null){
+//                    showBabayInfo();
+//                }else{
+//                    loadBabayinfoData();
+//                }
+                showBabayInfo();
 
             }
         });
         Intent intent=getIntent();
-        classRoomBabay = (ClassRoomBabay)intent.getSerializableExtra("vo");
-        showDetailImage(FaceUtils.getAvatar(classRoomBabay.getUser_id(),FaceUtils.FACE_BIG),faceview,false);
-        nameview.setText(classRoomBabay.getRenname().toString());
+        babyInfo = (BabyInfo)intent.getSerializableExtra("vo");
+        showDetailImage(FaceUtils.getAvatar(babyInfo.getUser_id(),FaceUtils.FACE_BIG),faceview,false);
+        nameview.setText(babyInfo.getRenname().toString());
+        if(babyInfo.getIntro().equals("")){
+            introview.setText("暂无签名");
+        }else{
+            introview.setText(babyInfo.getIntro());
+        }
+
         listView.setPullLoadEnable(true);
         listView.setPullRefreshEnable(true);
         listView.setXListViewListener(new XListView.IXListViewListener() {
@@ -171,11 +177,11 @@ public class BabayIndexActivity extends BaseActivity{
                 String[] resKeys=new String[]{"getUserphoto","getUserName",
                         "getPosttime3","getContent2",
                         "getsPicAry0","getsPicAry1",
-                        "getsPicAry2","getPosttime2","getTransmit2","getReview2"};
+                        "getsPicAry2","getPosttime2","getTransmit2","getReview2","gettContent"};
                 int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
                         R.id.dynamic_time,R.id.dynamic_context,
                         R.id.dynamic_image1,R.id.dynamic_image2,
-                        R.id.dynamic_image3,R.id.dynamic_time2,R.id.dynamic_zf_num,R.id.dynamic_pl_num};
+                        R.id.dynamic_image3,R.id.dynamic_time2,R.id.dynamic_zf_num,R.id.dynamic_pl_num,R.id.dynamic_dcontext};
                 dynamicAdapter = new DynamicAdapter(this,dynamics,R.layout.layout_item_dynamic,resKeys,reses);
                 listView.setAdapter(dynamicAdapter);
             }else{
@@ -188,7 +194,7 @@ public class BabayIndexActivity extends BaseActivity{
 
     private void loadBabayinfoData(){
         BabayInfoRequestListener sendwordRequestListener = new BabayInfoRequestListener(this);
-        BabayInfoRequest schoolRecipeRequest=new BabayInfoRequest(BabyInfo.Model.class,this,classRoomBabay.getUser_id()+"");
+        BabayInfoRequest schoolRecipeRequest=new BabayInfoRequest(BabyInfo.Model.class,this,babyInfo.getUser_id()+"");
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }
@@ -203,14 +209,14 @@ public class BabayIndexActivity extends BaseActivity{
     public void loadData(){
         BabayDynamicRequestListener sendwordRequestListener = new BabayDynamicRequestListener(this);
         BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(
-                Dynamic.Model.class,this,classRoomBabay.getUser_id()+"",more);
+                Dynamic.Model.class,this,babyInfo.getUser_id()+"",more);
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }
     public void loadMoreData(){
         BabayDynamicRequestListener sendwordRequestListener = new BabayDynamicRequestListener(this);
         BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(
-                Dynamic.Model.class,this,classRoomBabay.getUser_id()+"",more);
+                Dynamic.Model.class,this,babyInfo.getUser_id()+"",more);
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }

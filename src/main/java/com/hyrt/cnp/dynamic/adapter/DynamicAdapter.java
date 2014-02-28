@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.hyrt.cnp.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.ui.CommentListActivity;
 import com.hyrt.cnp.dynamic.ui.DynamicCommentActivity;
 import com.jingdong.app.pad.adapter.MySimpleAdapter;
 import com.jingdong.common.frame.BaseActivity;
@@ -37,6 +38,7 @@ public class DynamicAdapter extends MySimpleAdapter {
         ImageView imageView1=(ImageView)view.findViewById(R.id.dynamic_image1);
         ImageView imageView2=(ImageView)view.findViewById(R.id.dynamic_image2);
         ImageView imageView3=(ImageView)view.findViewById(R.id.dynamic_image3);
+        TextView tcontext=(TextView)view.findViewById(R.id.dynamic_dcontext);
         final int posi=position;
         if(list.get(position).getContent().equals("")){
             textView.setVisibility(View.GONE);
@@ -59,6 +61,12 @@ public class DynamicAdapter extends MySimpleAdapter {
             imageView3.setVisibility(View.VISIBLE);
         }
 
+        if(list.get(position).gettContent()==null){
+            tcontext.setVisibility(View.GONE);
+        }else{
+            tcontext.setVisibility(View.VISIBLE);
+        }
+
         LinearLayout dynamic_zf=(LinearLayout)view.findViewById(R.id.dynamic_zf);
         dynamic_zf.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +83,7 @@ public class DynamicAdapter extends MySimpleAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setClass(activity, DynamicCommentActivity.class);
+                intent.setClass(activity, CommentListActivity.class);
                 intent.putExtra("vo", list.get(posi));
                 intent.putExtra("Category","pl");
                 activity.startActivityForResult(intent,0);

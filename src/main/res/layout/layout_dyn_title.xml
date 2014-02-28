@@ -47,20 +47,21 @@
             android:id="@+id/face_iv"
             android:layout_marginBottom="@dimen/view_margin_small"
             android:layout_marginLeft="28dp"
+            android:layout_marginRight="0dp"
             />
-
-
-
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text=""
-            android:id="@+id/name_tv"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/face_iv"
-            android:layout_marginLeft="@dimen/view_margin"/>
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:id="@+id/name_tv"
+                android:layout_marginLeft="@dimen/view_margin"
+                style="@style/medium_tv"/>
 
+        </LinearLayout>
     </LinearLayout>
 
 

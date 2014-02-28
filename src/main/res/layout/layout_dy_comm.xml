@@ -30,6 +30,8 @@
         style="@style/medium_tv"
         android:gravity="top"
         android:padding="@dimen/view_margin_small"
+        android:textCursorDrawable="@null"
+        android:hint="请输入..."
         />
     <LinearLayout
         android:layout_width="match_parent"
