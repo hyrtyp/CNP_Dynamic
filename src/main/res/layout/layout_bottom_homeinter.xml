@@ -38,7 +38,6 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/cnp_alldynamic"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="@dimen/view_margin_smallest"
                         android:layout_marginTop="@dimen/view_margin_smallest"
                         />
 
@@ -80,7 +79,7 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/cnp_aboutme"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="@dimen/view_margin_smallest" />
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -119,7 +118,7 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/cnp_aboutme"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="@dimen/view_margin_smallest" />
+                         />
 
                     <TextView
                         android:layout_width="50dp"
@@ -149,7 +148,7 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/cnp_myindex"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="@dimen/view_margin_smallest" />
+                         />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -189,7 +188,7 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/cnp_myablum"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="@dimen/view_margin_smallest" />
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -205,7 +204,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:text="2"
+                    android:text="12"
                     android:background="@drawable/bat_bg"
                     android:layout_alignRight="@id/layout_bottom_ablums" />
             </RelativeLayout>

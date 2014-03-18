@@ -53,12 +53,16 @@ public class AlldynamicFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         STATE=HASDATA;
         rootview = inflater.inflate(R.layout.fragment_alldynamic, container, false);
-        if(isFirst){
+//        if(isFirst){
             isFirst=false;
             initView(rootview);
             initData();
             loadData();
-        }
+//        }
+//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT,
+//                LinearLayout.LayoutParams.WRAP_CONTENT);
+//        rootview.setLayoutParams(layoutParams);
         return rootview;
     }
 

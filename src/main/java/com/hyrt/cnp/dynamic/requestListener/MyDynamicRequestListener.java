@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import com.hyrt.cnp.account.model.Dynamic;
 import com.hyrt.cnp.account.requestListener.BaseRequestListener;
-import com.hyrt.cnp.dynamic.ui.BabayIndexActivity;
 import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
@@ -23,8 +22,8 @@ public class MyDynamicRequestListener extends BaseRequestListener {
     public void onRequestFailure(SpiceException e) {
 //        showMessage(R.string.nodata_title,R.string.nodata_content);
         super.onRequestFailure(e);
-        BabayIndexActivity activity = (BabayIndexActivity)context.get();
-        activity.updateUI(null);
+        HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
+        activity.upDataUI(null,0);
     }
 
     @Override
@@ -33,10 +32,10 @@ public class MyDynamicRequestListener extends BaseRequestListener {
         if(data!=null){
             HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
             Dynamic.Model result= (Dynamic.Model)data;
-            activity.alldaynamicfragment.upUiData(result);
+            activity.upDataUI(result,0);
         }else{
             HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
-            activity.alldaynamicfragment.upUiData(null);
+            activity.upDataUI(null,0);
 //            showMessage(R.string.nodata_title,R.string.nodata_content);
         }
 
