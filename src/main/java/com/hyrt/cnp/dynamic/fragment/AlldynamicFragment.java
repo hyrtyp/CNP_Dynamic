@@ -54,6 +54,7 @@ public class AlldynamicFragment extends Fragment{
         STATE=HASDATA;
         rootview = inflater.inflate(R.layout.fragment_alldynamic, container, false);
 //        if(isFirst){
+        dynamicAdapter=null;
             isFirst=false;
             initView(rootview);
             initData();
