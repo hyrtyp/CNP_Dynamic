@@ -25,7 +25,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
-            <com.hyrt.cnp.view.XListView
+            <com.hyrt.cnp.base.view.XListView
                 android:id="@+id/dynamic_listview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

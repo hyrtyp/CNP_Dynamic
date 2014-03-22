@@ -12,8 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hyrt.cnp.account.model.Comment;
-import com.hyrt.cnp.account.model.Dynamic;
+import com.hyrt.cnp.base.account.model.Comment;
+import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.request.DynamicCommentRequest;
 import com.hyrt.cnp.dynamic.request.DynamicaddcommentRequest;

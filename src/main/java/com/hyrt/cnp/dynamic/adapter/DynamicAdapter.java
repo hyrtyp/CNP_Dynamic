@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hyrt.cnp.account.model.Dynamic;
+import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.ui.CommentListActivity;
 import com.hyrt.cnp.dynamic.ui.DynamicCommentActivity;

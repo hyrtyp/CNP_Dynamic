@@ -9,8 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.hyrt.cnp.account.model.Comment;
-import com.hyrt.cnp.account.model.Dynamic;
+import com.hyrt.cnp.base.account.model.Comment;
+import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
 import com.hyrt.cnp.dynamic.request.CommetListRequest;

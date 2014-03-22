@@ -3,10 +3,10 @@ package com.hyrt.cnp.dynamic.request;
 import android.content.Context;
 
 import com.google.inject.Inject;
-import com.hyrt.cnp.account.model.Base;
-import com.hyrt.cnp.account.model.Comment;
-import com.hyrt.cnp.account.request.BaseRequest;
-import com.hyrt.cnp.account.service.CommentService;
+import com.hyrt.cnp.base.account.model.Base;
+import com.hyrt.cnp.base.account.model.Comment;
+import com.hyrt.cnp.base.account.request.BaseRequest;
+import com.hyrt.cnp.base.account.service.CommentService;
 
 /**
  * Created by GYH on 14-1-22.

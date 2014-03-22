@@ -9,13 +9,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hyrt.cnp.account.model.Dynamic;
+import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.DynamicAdapter;
 import com.hyrt.cnp.dynamic.request.BabayDynamicRequest;
 import com.hyrt.cnp.dynamic.requestListener.MyDynamicRequestListener;
 import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;
-import com.hyrt.cnp.view.XListView;
+import com.hyrt.cnp.base.view.XListView;
 import com.octo.android.robospice.persistence.DurationInMillis;
 
 import java.util.ArrayList;
