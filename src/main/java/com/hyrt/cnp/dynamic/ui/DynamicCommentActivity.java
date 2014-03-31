@@ -2,14 +2,18 @@ package com.hyrt.cnp.dynamic.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.internal.view.SupportMenuInflater;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hyrt.cnp.account.model.Comment;
-import com.hyrt.cnp.account.model.Dynamic;
+import com.hyrt.cnp.base.account.model.Comment;
+import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.request.DynamicCommentRequest;
 import com.hyrt.cnp.dynamic.request.DynamicaddcommentRequest;
@@ -27,7 +31,7 @@ public class DynamicCommentActivity extends BaseActivity{
     private EditText editcon;
     private Dynamic dynamic;
     private String Category;
-
+    private MenuItem sendbtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,16 +42,34 @@ public class DynamicCommentActivity extends BaseActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add("setting")
-                .setChecked(false)
-                .setTitle("发送")
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        return super.onCreateOptionsMenu(menu);
+        SupportMenuInflater mMenuInflater = new SupportMenuInflater(this);
+        mMenuInflater.inflate(R.menu.senddy, menu);
+        menu.findItem(R.id.senddy).
+                setCheckable(false).
+                setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        sendbtn = menu.findItem(R.id.senddy);
+        return true;
     }
 
     private void initView(){
         textcon=(TextView)findViewById(R.id.text_context);
         editcon=(EditText)findViewById(R.id.edit_context);
+        editcon.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updateEnablement();
+            }
+        });
     }
 
     @Override
@@ -55,7 +77,6 @@ public class DynamicCommentActivity extends BaseActivity{
 
         if(item.getTitle().equals("发送")){
             if(!editcon.getText().toString().equals("")){
-
                 if(Category.equals("pl")){
                     addcomment();
                 }else{
@@ -70,11 +91,19 @@ public class DynamicCommentActivity extends BaseActivity{
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateEnablement();
+    }
+
     private void initData(){
         Intent intent = getIntent();
         dynamic=(Dynamic)intent.getSerializableExtra("vo");
-        textcon.setText(dynamic.getContent().toString());
+        textcon.setText(dynamic.getContent2().toString());
+//        editcon.setText(dynamic.getContent().toString());
         Category=intent.getStringExtra("Category");
+
         if(Category.equals("pl")){
             titletext.setText("评论动态");
         }else{
@@ -101,12 +130,12 @@ public class DynamicCommentActivity extends BaseActivity{
         }else{
             comment.setInfoTitle(dynamic.getTitle());
         }
-        comment.setInfoUserId(dynamic.gettUserId());
-        comment.setInfoNurseryId(dynamic.getNueseryId());
-        comment.setInfoClassroomId(dynamic.getClassRoomId());
+        comment.setInfoUserId(dynamic.gettUserId()+"");
+        comment.setInfoNurseryId(dynamic.getNueseryId()+"");
+        comment.setInfoClassroomId(dynamic.getClassRoomId()+"");
         comment.setSiteid("50");
         comment.setUrl("null");
-        comment.setLstatus("N");
+        comment.setLstatus("Y");
         comment.setContent(editcon.getText().toString());
         comment.setReply("0");
         comment.setRecontent("");
@@ -123,6 +152,16 @@ public class DynamicCommentActivity extends BaseActivity{
     public void showSuccess(){
         Toast.makeText(DynamicCommentActivity.this,"评论成功！",Toast.LENGTH_SHORT).show();
         editcon.setText("");
+        setResult(1);
+        finish();
+    }
+    private void updateEnablement() {
+        if (sendbtn != null){
+            sendbtn.setEnabled(commentEnabled());
+        }
+    }
+    private boolean commentEnabled() {
+        return !TextUtils.isEmpty(editcon.getText());
     }
 
 }

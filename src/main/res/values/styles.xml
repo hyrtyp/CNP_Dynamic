@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="schoolindex_text">
-        <item name="android:textColor">@color/schoolindex_textcolor</item>
-        <item name="android:textSize">@dimen/schoolindex_text_size</item>
-        <item name="android:layout_marginBottom">@dimen/schoolindex_text_marginBottom</item>
-    </style>
-
-    <style name="schoolindex_image_size">
-        <item name="android:layout_width">@dimen/schoolindex_image_size_w_h</item>
-        <item name="android:layout_height">@dimen/schoolindex_image_size_w_h</item>
-    </style>
-
-    <style name="schoolindex_itemlayout">
-        <item name="android:layout_height">@dimen/cnp_schoolindex_item_height</item>
-        <item name="android:layout_width">fill_parent</item>
-    </style>
-
 
     <!---->
     <style name="cnp_school_layout">
@@ -47,6 +31,5 @@
         <item name="android:textSize">@dimen/cnp_school_text_size</item>
         <item name="android:textColor">@color/cnp_text_color</item>
     </style>
-
 
 </resources>

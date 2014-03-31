@@ -2,8 +2,8 @@ package com.hyrt.cnp.dynamic.requestListener;
 
 import android.app.Activity;
 
-import com.hyrt.cnp.account.model.Comment;
-import com.hyrt.cnp.account.requestListener.BaseRequestListener;
+import com.hyrt.cnp.base.account.model.Comment;
+import com.hyrt.cnp.base.account.requestListener.BaseRequestListener;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.ui.DynamicCommentActivity;
 import com.octo.android.robospice.persistence.exception.SpiceException;

@@ -7,8 +7,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hyrt.cnp.account.model.Dynamic;
+import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.ui.CommentListActivity;
 import com.hyrt.cnp.dynamic.ui.DynamicCommentActivity;
 import com.jingdong.app.pad.adapter.MySimpleAdapter;
 import com.jingdong.common.frame.BaseActivity;
@@ -37,26 +38,33 @@ public class DynamicAdapter extends MySimpleAdapter {
         ImageView imageView1=(ImageView)view.findViewById(R.id.dynamic_image1);
         ImageView imageView2=(ImageView)view.findViewById(R.id.dynamic_image2);
         ImageView imageView3=(ImageView)view.findViewById(R.id.dynamic_image3);
+        TextView tcontext=(TextView)view.findViewById(R.id.dynamic_dcontext);
         final int posi=position;
         if(list.get(position).getContent().equals("")){
             textView.setVisibility(View.GONE);
         }else{
             textView.setVisibility(View.VISIBLE);
         }
-        if(list.get(position).getsPicAry0().equals("")){
+        if(list.get(position).getsPicAry0()==null){
             imageView1.setVisibility(View.GONE);
         }else{
             imageView1.setVisibility(View.VISIBLE);
         }
-        if(list.get(position).getsPicAry1().equals("")){
+        if(list.get(position).getsPicAry1()==null){
             imageView2.setVisibility(View.GONE);
         }else{
             imageView2.setVisibility(View.VISIBLE);
         }
-        if(list.get(position).getsPicAry2().equals("")){
+        if(list.get(position).getsPicAry2()==null){
             imageView3.setVisibility(View.GONE);
         }else{
             imageView3.setVisibility(View.VISIBLE);
+        }
+
+        if(list.get(position).gettContent()==null){
+            tcontext.setVisibility(View.GONE);
+        }else{
+            tcontext.setVisibility(View.VISIBLE);
         }
 
         LinearLayout dynamic_zf=(LinearLayout)view.findViewById(R.id.dynamic_zf);
@@ -67,7 +75,7 @@ public class DynamicAdapter extends MySimpleAdapter {
                 intent.setClass(activity, DynamicCommentActivity.class);
                 intent.putExtra("vo", list.get(posi));
                 intent.putExtra("Category","zf");
-                activity.startActivity(intent);
+                activity.startActivityForResult(intent,0);
             }
         });
         LinearLayout dynamic_pl=(LinearLayout)view.findViewById(R.id.dynamic_pl);
@@ -75,10 +83,10 @@ public class DynamicAdapter extends MySimpleAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setClass(activity, DynamicCommentActivity.class);
+                intent.setClass(activity, CommentListActivity.class);
                 intent.putExtra("vo", list.get(posi));
                 intent.putExtra("Category","pl");
-                activity.startActivity(intent);
+                activity.startActivityForResult(intent,0);
             }
         });
         return view;

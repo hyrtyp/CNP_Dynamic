@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/cnp_bg">
-    <include layout="@layout/layout_dyn_title"></include>
-    <include layout="@layout/layout_fragment_babaymenu"></include>
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent">
@@ -34,5 +32,4 @@
                 android:background="@drawable/cnp_bg"/>
         </LinearLayout>
     </RelativeLayout>
-
 </LinearLayout>

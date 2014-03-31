@@ -4,25 +4,27 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.hyrt.cnp.base.account.model.Base;
-import com.hyrt.cnp.base.account.model.Comment;
 import com.hyrt.cnp.base.account.request.BaseRequest;
 import com.hyrt.cnp.base.account.service.CommentService;
 
 /**
- * Created by GYH on 14-1-22.
+ * Created by GYH on 14-2-24.
  */
-public class DynamicaddcommentRequest extends BaseRequest{
+public class CommetListRequest extends BaseRequest{
 
     @Inject
     private CommentService schoolListService;
-    private Comment comment;
-    public DynamicaddcommentRequest(Class clazz, Context context, Comment comment) {
+    private String infoid;
+    private String siteid;
+
+    public CommetListRequest(Class clazz, Context context, String infoid, String siteid) {
         super(clazz, context);
-        this.comment=comment;
+        this.infoid=infoid;
+        this.siteid= siteid;
     }
     @Override
     public Base run() {
-        return schoolListService.adddynamicCommentData(comment);
+        return schoolListService.getCommenthomeData(getRestTemplate(),infoid,siteid);
     }
 
 
@@ -32,6 +34,6 @@ public class DynamicaddcommentRequest extends BaseRequest{
     }
 
     public String getcachekey(){
-        return "classroomphotoaddcomment"+comment.getInfoID();
+        return "commentList"+siteid+infoid;
     }
 }

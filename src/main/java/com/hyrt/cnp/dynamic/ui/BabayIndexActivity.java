@@ -4,24 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.hyrt.cnp.account.model.BabyInfo;
-import com.hyrt.cnp.account.model.ClassRoomBabay;
-import com.hyrt.cnp.account.model.Dynamic;
-import com.hyrt.cnp.account.model.UserDetail;
-import com.hyrt.cnp.account.utils.FaceUtils;
+import com.hyrt.cnp.base.account.model.BabyInfo;
+import com.hyrt.cnp.base.account.model.Dynamic;
+import com.hyrt.cnp.base.account.model.UserDetail;
+import com.hyrt.cnp.base.account.utils.FaceUtils;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.DynamicAdapter;
 import com.hyrt.cnp.dynamic.request.BabayDynamicRequest;
 import com.hyrt.cnp.dynamic.request.BabayInfoRequest;
 import com.hyrt.cnp.dynamic.requestListener.BabayDynamicRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.BabayInfoRequestListener;
+import com.hyrt.cnp.base.view.XListView;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
+
+import java.util.ArrayList;
 
 /**
  * Created by GYH on 14-1-20.
@@ -34,17 +37,23 @@ public class BabayIndexActivity extends BaseActivity{
     @Inject
     @Named("userInfoActivity")
     private Class userInfoActivity;
-
+    private String STATE;
+    final private String REFRESH="refresh";
+    final private String ONLOADMORE="onLoadMore";
+    final private String HASDATA="hasdata";
+    private String more="1";
     private ImageView faceview;
     private ImageView imageviewback;
     private TextView nameview;
     private TextView introview;
-    private ClassRoomBabay classRoomBabay;
-    private  ListView listView;
+//    private BabyInfo classRoomBabay;
+    private XListView listView;
 
     private BabyInfo babyInfo;
 
     private DynamicAdapter dynamicAdapter;
+
+    private ArrayList<Dynamic> dynamics=new ArrayList<Dynamic>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +61,7 @@ public class BabayIndexActivity extends BaseActivity{
         setContentView(R.layout.activity_babayindex);
         actionBar.hide();
         initView();
+        STATE=HASDATA;
         loadData();
     }
 
@@ -60,7 +70,7 @@ public class BabayIndexActivity extends BaseActivity{
         faceview=(ImageView)findViewById(R.id.face_iv);
         nameview =(TextView)findViewById(R.id.name_tv);
         introview=(TextView)findViewById(R.id.intro);
-        listView = (ListView)findViewById(R.id.dynamic_listview);
+        listView = (XListView)findViewById(R.id.dynamic_listview);
         TextView all_daynamic=(TextView)findViewById(R.id.all_daynamic);
         TextView child_word=(TextView)findViewById(R.id.child_word);
         TextView daynamic_photos=(TextView)findViewById(R.id.daynamic_photos);
@@ -75,7 +85,7 @@ public class BabayIndexActivity extends BaseActivity{
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.putExtra("vo",classRoomBabay);
+                intent.putExtra("vo",babyInfo);
                 intent.setClass(BabayIndexActivity.this,BabayWordActivity.class);
                 startActivity(intent);
             }
@@ -87,7 +97,7 @@ public class BabayIndexActivity extends BaseActivity{
                 Intent intent = new Intent();
                 intent.setClass(BabayIndexActivity.this,schoolPhotoActivity);
                 intent.putExtra("Category","BabayIndexActivity");
-                intent.putExtra("vo",classRoomBabay);
+                intent.putExtra("vo",babyInfo);
                 startActivity(intent);
             }
         });
@@ -95,37 +105,96 @@ public class BabayIndexActivity extends BaseActivity{
         babay_information.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(babyInfo!=null){
-                    showBabayInfo();
-                }else{
-                    loadBabayinfoData();
-                }
+//                if(babyInfo!=null){
+//                    showBabayInfo();
+//                }else{
+//                    loadBabayinfoData();
+//                }
+                showBabayInfo();
 
             }
         });
         Intent intent=getIntent();
-        classRoomBabay = (ClassRoomBabay)intent.getSerializableExtra("vo");
-        showDetailImage(FaceUtils.getAvatar(classRoomBabay.getUser_id(),FaceUtils.FACE_BIG),faceview,false);
-        nameview.setText(classRoomBabay.getRenname().toString());
+        babyInfo = (BabyInfo)intent.getSerializableExtra("vo");
+        showDetailImage(FaceUtils.getAvatar(babyInfo.getUser_id(),FaceUtils.FACE_BIG),faceview,false);
+        nameview.setText(babyInfo.getRenname().toString());
+        if(babyInfo.getIntro().equals("")){
+            introview.setText("暂无签名");
+        }else{
+            introview.setText(babyInfo.getIntro());
+        }
+
+        listView.setPullLoadEnable(true);
+        listView.setPullRefreshEnable(true);
+        listView.setXListViewListener(new XListView.IXListViewListener() {
+            @Override
+            public void onRefresh() {
+                if(STATE.equals(HASDATA)||STATE.equals(ONLOADMORE)){
+                    Toast.makeText(BabayIndexActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
+                }else {
+                    STATE=REFRESH;
+                    more="1";
+//                    Toast.makeText(BabayIndexActivity.this,"正在刷新,请稍后!",Toast.LENGTH_SHORT).show();
+                    loadData();
+                }
+                listView.stopRefresh();
+            }
+
+            @Override
+            public void onLoadMore() {
+                if(STATE.equals(HASDATA)||STATE.equals(REFRESH)){
+                    Toast.makeText(BabayIndexActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
+                }else {
+                    loadMoreData();
+//                    Toast.makeText(BabayIndexActivity.this,"onLoadMore",Toast.LENGTH_SHORT).show();
+                }
+                listView.stopLoadMore();
+            }
+        });
     }
 
+    /**
+     *
+     * 更新ui界面
+     * */
+
     public void updateUI(Dynamic.Model model){
-        String[] resKeys=new String[]{"getUserphoto","getUserName",
-                "getPosttime3","getContent",
-                "getsPicAry0","getsPicAry1",
-                "getsPicAry2","getPosttime2"};
-        int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
-                R.id.dynamic_time,R.id.dynamic_context,
-                R.id.dynamic_image1,R.id.dynamic_image2,
-                R.id.dynamic_image3,R.id.dynamic_time2};
-        dynamicAdapter = new DynamicAdapter(this,model.getData(),R.layout.layout_item_dynamic,resKeys,reses);
-        listView.setAdapter(dynamicAdapter);
+
+        if(model==null&&dynamics.size()==0){
+            LinearLayout linearLayout =(LinearLayout)findViewById(R.id.layout_bottom);
+            linearLayout.setVisibility(View.VISIBLE);
+            TextView bottom_num = (TextView)findViewById(R.id.bottom_num);
+            bottom_num.setText("暂无信息");
+        }else if(model==null){
+            Toast.makeText(BabayIndexActivity.this,"已经全部加载",Toast.LENGTH_SHORT).show();
+        }else{
+            more=model.getMore();
+            if(STATE.equals(REFRESH)){//如果正在刷新就清空
+                dynamics.clear();
+            }
+            dynamics.addAll(model.getData());
+            if(dynamicAdapter==null){
+                String[] resKeys=new String[]{"getUserphoto","getUserName",
+                        "getPosttime3","getContent2",
+                        "getsPicAry0","getsPicAry1",
+                        "getsPicAry2","getPosttime2","getTransmit2","getReview2","gettContent"};
+                int[] reses=new int[]{R.id.dynamic_Avatar,R.id.dynamic_name,
+                        R.id.dynamic_time,R.id.dynamic_context,
+                        R.id.dynamic_image1,R.id.dynamic_image2,
+                        R.id.dynamic_image3,R.id.dynamic_time2,R.id.dynamic_zf_num,R.id.dynamic_pl_num,R.id.dynamic_dcontext};
+                dynamicAdapter = new DynamicAdapter(this,dynamics,R.layout.layout_item_dynamic,resKeys,reses);
+                listView.setAdapter(dynamicAdapter);
+            }else{
+                dynamicAdapter.notifyDataSetChanged();
+            }
+        }
+        STATE="";//清空状态
     }
 
 
     private void loadBabayinfoData(){
         BabayInfoRequestListener sendwordRequestListener = new BabayInfoRequestListener(this);
-        BabayInfoRequest schoolRecipeRequest=new BabayInfoRequest(BabyInfo.Model.class,this,classRoomBabay.getUser_id()+"");
+        BabayInfoRequest schoolRecipeRequest=new BabayInfoRequest(BabyInfo.Model.class,this,babyInfo.getUser_id()+"");
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }
@@ -139,7 +208,15 @@ public class BabayIndexActivity extends BaseActivity{
 
     public void loadData(){
         BabayDynamicRequestListener sendwordRequestListener = new BabayDynamicRequestListener(this);
-        BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(Dynamic.Model.class,this,classRoomBabay.getUser_id()+"");
+        BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(
+                Dynamic.Model.class,this,babyInfo.getUser_id()+"",more);
+        spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                sendwordRequestListener.start());
+    }
+    public void loadMoreData(){
+        BabayDynamicRequestListener sendwordRequestListener = new BabayDynamicRequestListener(this);
+        BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(
+                Dynamic.Model.class,this,babyInfo.getUser_id()+"",more);
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }
@@ -151,12 +228,24 @@ public class BabayIndexActivity extends BaseActivity{
         userDetail.setBirthday(babyInfo.getBirthday());
         userDetail.setNurseryName(babyInfo.getNurseryName());
         userDetail.setSex(babyInfo.getSex());
-        userDetail.setNationality("chian");
-        userDetail.setBloodType("A");
+        userDetail.setNationality(babyInfo.getNationality());
+        userDetail.setBloodType(babyInfo.getBloodType());
+        userDetail.setEthnic(babyInfo.getEthnic());
         userDetailModel.setData(userDetail);
         Intent intent = new Intent();
         intent.setClass(BabayIndexActivity.this,userInfoActivity);
         intent.putExtra("vo", userDetailModel);
+        intent.putExtra("mybabayinfo",false);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==0&&resultCode==1){
+            STATE=REFRESH;
+            more="1";
+            loadData();
+        }
     }
 }
