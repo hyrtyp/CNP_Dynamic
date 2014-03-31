@@ -128,10 +128,8 @@ public class HomeInteractiveActivity extends BaseActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getTitle().equals("发布动态")){
             Intent intent = new Intent();
-//            intent.setClass(HomeInteractiveActivity.this, DynamicCommentActivity.class);
-            intent.putExtra("Category", "pl");
-//            intent.putExtra("vo", dynamic);
-//            startActivityForResult(intent, 0);
+            intent.setClass(HomeInteractiveActivity.this, DynamicNewActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
