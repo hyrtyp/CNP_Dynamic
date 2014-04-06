@@ -13,7 +13,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.Dynamic;
+import com.hyrt.cnp.base.account.model.UserDetail;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.fragment.AboutmeFragment;
 import com.hyrt.cnp.dynamic.fragment.AlldynamicFragment;
@@ -26,19 +28,19 @@ import java.util.ArrayList;
 /**
  * Created by GYH on 14-3-12.
  */
-public class HomeInteractiveActivity extends BaseActivity{
+public class HomeInteractiveActivity extends BaseActivity {
 
     //fragment管理
     public FragmentTransaction fragmentTransaction;
     public FragmentManager fragmentManager;
 
-    public AlldynamicFragment alldaynamicfragment=null;//全部动态
-    public AboutmeFragment aboutmeFragment=null;//与我相关
-    public MyIndexFragment myIndexFragment=null;//我的主页
-    public MyAblumsFragment myAblumsFragment=null;//动感相册
+    public AlldynamicFragment alldaynamicfragment = null;//全部动态
+    public AboutmeFragment aboutmeFragment = null;//与我相关
+    public MyIndexFragment myIndexFragment = null;//我的主页
+    public MyAblumsFragment myAblumsFragment = null;//动感相册
     public static ArrayList<Fragment> pages = new ArrayList<Fragment>();
-    private HomeinterPageAdapter homeinterPageAdapter=null;
-    private ViewPager homeViewpager=null;
+    private HomeinterPageAdapter homeinterPageAdapter = null;
+    private ViewPager homeViewpager = null;
 
     private Menu mymenu;//菜单
 
@@ -54,6 +56,9 @@ public class HomeInteractiveActivity extends BaseActivity{
     private TextView tv_num_aboutme;
     private TextView tv_num_myindex;
     private TextView tv_num_ablums;
+
+    public UserDetail.UserDetailModel userDetail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,18 +68,24 @@ public class HomeInteractiveActivity extends BaseActivity{
     }
 
     /**
-     *初始化布局
-     * */
-    private void initView(){
+     * 初始化布局
+     */
+    private void initView() {
+        userDetail = (UserDetail.UserDetailModel)getIntent().getSerializableExtra("userinfo");
+        Fragment fragment = null;
+        pages.add(fragment);
+        pages.add(fragment);
+        pages.add(fragment);
+        pages.add(fragment);
 //        mContainer=(LinearLayout)findViewById(R.id.homeinter);
-        ly_ablums=(LinearLayout)findViewById(R.id.layout_bottom_ablums);
-        ly_myindex=(LinearLayout)findViewById(R.id.layout_bottom_myindex);
-        ly_aboutme=(LinearLayout)findViewById(R.id.layout_bottom_aboutme);
-        ly_alldynamic=(LinearLayout)findViewById(R.id.layout_bottom_alldynamic);
-        tv_num_alldynamic=(TextView)findViewById(R.id.layout_bottom_alldynamic_num);
-        tv_num_aboutme=(TextView)findViewById(R.id.layout_bottom_aboutme_num);
-        tv_num_myindex=(TextView)findViewById(R.id.layout_bottom_myindex_num);
-        tv_num_ablums=(TextView)findViewById(R.id.layout_bottom_ablums_num);
+        ly_ablums = (LinearLayout) findViewById(R.id.layout_bottom_ablums);
+        ly_myindex = (LinearLayout) findViewById(R.id.layout_bottom_myindex);
+        ly_aboutme = (LinearLayout) findViewById(R.id.layout_bottom_aboutme);
+        ly_alldynamic = (LinearLayout) findViewById(R.id.layout_bottom_alldynamic);
+        tv_num_alldynamic = (TextView) findViewById(R.id.layout_bottom_alldynamic_num);
+        tv_num_aboutme = (TextView) findViewById(R.id.layout_bottom_aboutme_num);
+        tv_num_myindex = (TextView) findViewById(R.id.layout_bottom_myindex_num);
+        tv_num_ablums = (TextView) findViewById(R.id.layout_bottom_ablums_num);
         ly_ablums.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,13 +131,13 @@ public class HomeInteractiveActivity extends BaseActivity{
                 .setIcon(R.drawable.editbtn)
                 .setShowAsAction(
                         MenuItem.SHOW_AS_ACTION_ALWAYS);
-        this.mymenu=menu;
+        this.mymenu = menu;
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getTitle().equals("发布动态")){
+        if (item.getTitle().equals("发布动态")) {
             Intent intent = new Intent();
             intent.setClass(HomeInteractiveActivity.this, DynamicNewActivity.class);
             startActivity(intent);
@@ -136,17 +147,17 @@ public class HomeInteractiveActivity extends BaseActivity{
 
     /**
      * 初始化界面布局
-     * */
+     */
 
-    private void initDataFragment(int id){
+    private void initDataFragment(int id) {
         fragmentManager = getSupportFragmentManager();//实例化fragment管理
 //        fragmentTransaction = fragmentManager.beginTransaction();//时候transaction来管理集合
 //        alldaynamicfragment=new AlldynamicFragment();
 //        fragmentTransaction.add(R.id.homeinter,alldaynamicfragment);//向布局中添加fragment
 //        fragmentTransaction.commit();//提交到ui线程中去
 
-        homeinterPageAdapter=new HomeinterPageAdapter(fragmentManager);
-        homeViewpager=(ViewPager)findViewById(R.id.pager);
+        homeinterPageAdapter = new HomeinterPageAdapter(fragmentManager);
+        homeViewpager = (ViewPager) findViewById(R.id.pager);
         homeViewpager.setAdapter(homeinterPageAdapter);
         homeViewpager.setOffscreenPageLimit(0);
         homeViewpager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -157,51 +168,65 @@ public class HomeInteractiveActivity extends BaseActivity{
         });
     }
 
-    public void upDataUI(Dynamic.Model model,int id){
+    public void upDataUI(Dynamic.Model model, int id) {
 
-        switch (id){
+        switch (id) {
             case 0:
-                if(alldaynamicfragment==null){
-                    alldaynamicfragment=(AlldynamicFragment)pages.get(0);
+                if (alldaynamicfragment == null) {
+                    alldaynamicfragment = (AlldynamicFragment) pages.get(0);
                 }
                 alldaynamicfragment.upUiData(model);
                 break;
             case 1:
                 break;
             case 2:
+                if (myIndexFragment == null) {
+                    myIndexFragment = (MyIndexFragment) pages.get(2);
+                }
+                myIndexFragment.updateUI(model);
                 break;
             case 3:
+
                 break;
         }
     }
 
+
+    public void upDataAblumUI(Album.Model model) {
+        if (myAblumsFragment == null) {
+            myAblumsFragment = (MyAblumsFragment) pages.get(3);
+        }
+        myAblumsFragment.updateUI(model);
+    }
+
+
     /**
      * fragment切换
-     * */
-    private void showFragment(int id){
+     */
+    private void showFragment(int id) {
         fragmentTransaction = fragmentManager.beginTransaction();//时候transaction来管理集合
-        switch (id){
+        switch (id) {
             case 0:
-                if(alldaynamicfragment==null){
-                    alldaynamicfragment=new AlldynamicFragment();
+                if (alldaynamicfragment == null) {
+                    alldaynamicfragment = new AlldynamicFragment();
                 }
 //                fragmentTransaction.replace(R.id.homeinter,alldaynamicfragment);//向布局中添加fragment
                 break;
             case 1:
-                if(aboutmeFragment==null){
-                    aboutmeFragment=new AboutmeFragment();
+                if (aboutmeFragment == null) {
+                    aboutmeFragment = new AboutmeFragment();
                 }
 //                fragmentTransaction.replace(R.id.homeinter,aboutmeFragment);//向布局中添加fragment
                 break;
             case 2:
-                if(myIndexFragment==null){
-                    myIndexFragment=new MyIndexFragment();
+                if (myIndexFragment == null) {
+                    myIndexFragment = new MyIndexFragment();
                 }
 //                fragmentTransaction.replace(R.id.homeinter,myIndexFragment);//向布局中添加fragment
                 break;
             case 3:
-                if(myAblumsFragment==null){
-                    myAblumsFragment=new MyAblumsFragment();
+                if (myAblumsFragment == null) {
+                    myAblumsFragment = new MyAblumsFragment();
                 }
 //                fragmentTransaction.replace(R.id.homeinter,myAblumsFragment);//向布局中添加fragment
                 break;
@@ -210,9 +235,9 @@ public class HomeInteractiveActivity extends BaseActivity{
     }
 
 
-    private void showTitle(int id){
+    private void showTitle(int id) {
         mymenu.clear();
-        switch (id){
+        switch (id) {
             case 0:
                 mymenu.add("发布动态")
                         .setIcon(R.drawable.editbtn)
@@ -246,8 +271,8 @@ public class HomeInteractiveActivity extends BaseActivity{
 
     /**
      * fragment切换adapter
-     * */
-    private class HomeinterPageAdapter extends FragmentPagerAdapter{
+     */
+    private class HomeinterPageAdapter extends FragmentPagerAdapter {
 
         public HomeinterPageAdapter(FragmentManager fm) {
             super(fm);
@@ -255,38 +280,38 @@ public class HomeInteractiveActivity extends BaseActivity{
 
         @Override
         public Fragment getItem(int i) {
-            Fragment  currfragment=null;
-            if (pages.size() > i) {
-                currfragment = pages.get(i);
-            } else {
-                switch (i){
-                    case 0:
-                        if(alldaynamicfragment==null){
-                            alldaynamicfragment=new AlldynamicFragment();
-                        }
-                        currfragment=alldaynamicfragment;
-                        break;
-                    case 1:
-                        if(aboutmeFragment==null){
-                            aboutmeFragment=new AboutmeFragment();
-                        }
-                        currfragment=aboutmeFragment;
-                        break;
-                    case 2:
-                        if(myIndexFragment==null){
-                            myIndexFragment=new MyIndexFragment();
-                        }
-                        currfragment=myIndexFragment;
-                        break;
-                    case 3:
-                        if(myAblumsFragment==null){
-                            myAblumsFragment=new MyAblumsFragment();
-                        }
-                        currfragment=myAblumsFragment;
-                        break;
-                }
-                pages.add(currfragment);
+            Fragment currfragment = null;
+//            if (pages.size() > i) {
+//                currfragment = pages.get(i);
+//            } else {
+            switch (i) {
+                case 0:
+                    if (alldaynamicfragment == null) {
+                        alldaynamicfragment = new AlldynamicFragment();
+                    }
+                    currfragment = alldaynamicfragment;
+                    break;
+                case 1:
+                    if (aboutmeFragment == null) {
+                        aboutmeFragment = new AboutmeFragment();
+                    }
+                    currfragment = aboutmeFragment;
+                    break;
+                case 2:
+                    if (myIndexFragment == null) {
+                        myIndexFragment = new MyIndexFragment();
+                    }
+                    currfragment = myIndexFragment;
+                    break;
+                case 3:
+                    if (myAblumsFragment == null) {
+                        myAblumsFragment = new MyAblumsFragment();
+                    }
+                    currfragment = myAblumsFragment;
+                    break;
             }
+            pages.set(i, currfragment);
+//            }
             return currfragment;
         }
 

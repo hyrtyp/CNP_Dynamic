@@ -1,5 +1,6 @@
 package com.hyrt.cnp.dynamic.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +11,9 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.ui.MyItListActivity;
+import com.hyrt.cnp.dynamic.ui.MyZFListActivity;
+import com.hyrt.cnp.dynamic.ui.MycommentListActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,10 +76,13 @@ public class AboutmeFragment extends Fragment{
     private void setOnlisview(int id){
         switch (id){
             case 0:
+                startActivity(new Intent().setClass(getActivity(), MyItListActivity.class));
                 break;
             case 1:
+                startActivity(new Intent().setClass(getActivity(), MycommentListActivity.class));
                 break;
             case 2:
+                startActivity(new Intent().setClass(getActivity(), MyZFListActivity.class));
                 break;
         }
     }

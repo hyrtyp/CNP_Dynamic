@@ -10,7 +10,7 @@
         android:id="@+id/edit_dynamic_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/small_tv_1"
+        style="@style/medium_tv"
         android:hint="说点什么吧......"/>
     <GridView
         android:id="@+id/gridview_dynamic_addphoto"
@@ -19,6 +19,7 @@
         android:numColumns="auto_fit"
         android:verticalSpacing="@dimen/view_margin_small"
         android:horizontalSpacing="@dimen/view_margin_small"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_margin="@dimen/view_margin_small">
     </GridView>
 </LinearLayout>
