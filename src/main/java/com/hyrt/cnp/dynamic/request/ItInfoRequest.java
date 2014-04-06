@@ -15,13 +15,30 @@ public class ItInfoRequest extends BaseRequest {
     @Inject
     private ItInfoService itInfoService;
     private String more;
+    private int type = 0;//0:与我相关 1:转发 2:评论
     public ItInfoRequest(Class clazz, Context context,String more) {
         super(clazz, context);
         this.more=more;
     }
+
+    public ItInfoRequest(Class clazz, Context context,String more, int type) {
+        super(clazz, context);
+        this.more=more;
+        this.type = type;
+    }
+
     @Override
     public Base run() {
-            return itInfoService.getMyitinfoData(getRestTemplate(), more);
+            switch (type){
+                case 0:
+                    return itInfoService.getMyitinfoData(getRestTemplate(), more);
+                case 1:
+                    return itInfoService.getForwardData(getRestTemplate(), more);
+                case 2:
+                    return itInfoService.getCommentData(getRestTemplate(), more);
+                default:
+                    return itInfoService.getMyitinfoData(getRestTemplate(), more);
+            }
     }
 
 
@@ -31,6 +48,6 @@ public class ItInfoRequest extends BaseRequest {
     }
 
     public String getcachekey(){
-        return "myitinfo"+more;
+        return "myitinfo"+more+type;
     }
 }

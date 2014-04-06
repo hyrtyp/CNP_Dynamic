@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.ui.ForwardActivity;
 import com.hyrt.cnp.dynamic.ui.MyItListActivity;
 import com.hyrt.cnp.dynamic.ui.MyZFListActivity;
 import com.hyrt.cnp.dynamic.ui.MycommentListActivity;
@@ -82,7 +83,7 @@ public class AboutmeFragment extends Fragment{
                 startActivity(new Intent().setClass(getActivity(), MycommentListActivity.class));
                 break;
             case 2:
-                startActivity(new Intent().setClass(getActivity(), MyZFListActivity.class));
+                startActivity(new Intent().setClass(getActivity(), ForwardActivity.class));
                 break;
         }
     }
