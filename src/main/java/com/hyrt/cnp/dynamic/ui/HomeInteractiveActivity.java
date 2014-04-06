@@ -141,6 +141,10 @@ public class HomeInteractiveActivity extends BaseActivity {
             Intent intent = new Intent();
             intent.setClass(HomeInteractiveActivity.this, DynamicNewActivity.class);
             startActivity(intent);
+        }else if(item.getTitle().equals("新建相册")){
+            Intent intent = new Intent();
+            intent.setClass(HomeInteractiveActivity.this, MyAddAblumActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -260,8 +264,8 @@ public class HomeInteractiveActivity extends BaseActivity {
                 titletext.setText("我的主页");
                 break;
             case 3:
-                mymenu.add("abc")
-                        .setIcon(R.drawable.actionbar_right)
+                mymenu.add("新建相册")
+                        .setIcon(R.drawable.editbtn)
                         .setShowAsAction(
                                 MenuItem.SHOW_AS_ACTION_ALWAYS);
                 titletext.setText("动感相册");

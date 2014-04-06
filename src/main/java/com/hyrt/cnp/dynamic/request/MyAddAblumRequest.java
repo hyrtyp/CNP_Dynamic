@@ -8,18 +8,21 @@ import com.hyrt.cnp.base.account.request.BaseRequest;
 import com.hyrt.cnp.base.account.service.AlbumService;
 
 /**
- * Created by GYH on 14-1-16.
+ * Created by GYH on 2014/4/6.
  */
-public class MyAlbumRequest extends BaseRequest{
+public class MyAddAblumRequest extends BaseRequest {
 
     @Inject
     private AlbumService schoolListService;
-    public MyAlbumRequest(Class clazz, Context context) {
+    private String albumName,describes;
+    public MyAddAblumRequest(Class clazz, Context context,String albumName,String describes) {
         super(clazz, context);
+        this.albumName=albumName;
+        this.describes=describes;
     }
     @Override
     public Base run() {
-         return schoolListService.getMyAlbumData(getRestTemplate());
+        return schoolListService.AddMyAlbumData(getRestTemplate(),albumName,describes);
     }
 
 
@@ -29,6 +32,6 @@ public class MyAlbumRequest extends BaseRequest{
     }
 
     public String getcachekey(){
-        return "myalbum11233";
+        return "addalbum"+albumName;
     }
 }
