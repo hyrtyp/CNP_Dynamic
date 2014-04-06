@@ -130,6 +130,7 @@ public class HomeInteractiveActivity extends BaseActivity{
             Intent intent = new Intent();
             intent.setClass(HomeInteractiveActivity.this, DynamicNewActivity.class);
             startActivity(intent);
+
         }
         return super.onOptionsItemSelected(item);
     }

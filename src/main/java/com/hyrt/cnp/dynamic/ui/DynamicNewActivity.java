@@ -38,5 +38,4 @@ public class DynamicNewActivity extends BaseActivity{
     private void initView(){
 //        dynamicAddphotoAdapter=new DynamicAddphotoAdapter();
     }
-
 }
