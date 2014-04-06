@@ -1,8 +1,13 @@
 package com.hyrt.cnp.dynamic.adapter;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+
+import com.hyrt.cnp.dynamic.R;
 
 import java.util.List;
 
@@ -12,10 +17,11 @@ import java.util.List;
 public class DynamicAddphotoAdapter extends BaseAdapter{
 
 
-    private List<String> list;
+    private List<Integer> list;
+    private Context context;
 
-    public DynamicAddphotoAdapter(List<String> list){
-
+    public DynamicAddphotoAdapter(List<Integer> list,Context context){
+        this.context=context;
         this.list=list;
     }
 
@@ -36,7 +42,13 @@ public class DynamicAddphotoAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        return null;
+
+    public View getView(int i, View convertView, ViewGroup viewGroup) {
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.layout_item_dynamicaddphoto, null);
+        }
+        ImageView imgView = (ImageView) convertView.findViewById(R.id.gridview_image);
+        imgView.setBackgroundResource(list.get(i));
+        return convertView;
     }
 }
