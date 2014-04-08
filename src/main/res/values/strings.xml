@@ -7,4 +7,5 @@
     <string name="nodata_title">温馨提示</string>
     <string name="nodata_content">暂时无数据，请稍后再试!</string>
     <string name="nodata_addcommentfial">添加失败!</string>
+    <string name="select_ablum_fail">选择文件图片出错</string>
 </resources>

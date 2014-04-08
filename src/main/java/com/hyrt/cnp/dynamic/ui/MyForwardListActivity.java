@@ -3,8 +3,6 @@ package com.hyrt.cnp.dynamic.ui;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +22,7 @@ import java.util.List;
 /**
  * Created by Zoe on 2014-04-06.
  */
-public class ForwardActivity extends BaseActivity{
+public class MyForwardListActivity extends BaseActivity{
 
     private XListView listView;
 
@@ -76,7 +74,7 @@ public class ForwardActivity extends BaseActivity{
                     int[] reses = new int[]{R.id.iv_forward_face, R.id.tv_forward_name,
                             R.id.tv_forward_content, R.id.tv_forward_content2,
                             R.id.tv_forward_time};
-                    mAdapter = new ListViewAdapter(ForwardActivity.this, datas, R.layout.forward_item, resKeys, reses);
+                    mAdapter = new ListViewAdapter(MyForwardListActivity.this, datas, R.layout.forward_item, resKeys, reses);
                     listView.setAdapter(mAdapter);
                 }else{
                     mAdapter.notifyDataSetChanged();
@@ -99,7 +97,7 @@ public class ForwardActivity extends BaseActivity{
             @Override
             public void onRefresh() {
                 if (STATE.equals(HASDATA) || STATE.equals(ONLOADMORE)) {
-                    Toast.makeText(ForwardActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyForwardListActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
                 } else {
                     STATE = REFRESH;
                     more = "1";
@@ -111,7 +109,7 @@ public class ForwardActivity extends BaseActivity{
             @Override
             public void onLoadMore() {
                 if (STATE.equals(HASDATA) || STATE.equals(REFRESH)) {
-                    Toast.makeText(ForwardActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyForwardListActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
                 } else {
                     loadData();
                 }

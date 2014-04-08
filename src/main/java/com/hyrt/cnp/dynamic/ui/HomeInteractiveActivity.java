@@ -143,7 +143,7 @@ public class HomeInteractiveActivity extends BaseActivity {
             startActivity(intent);
         }else if(item.getTitle().equals("新建相册")){
             Intent intent = new Intent();
-            intent.setClass(HomeInteractiveActivity.this, MyAddAblumActivity.class);
+            intent.setClass(HomeInteractiveActivity.this, AddAblumActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

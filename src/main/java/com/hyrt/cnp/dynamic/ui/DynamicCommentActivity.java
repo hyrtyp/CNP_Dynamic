@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.hyrt.cnp.base.account.model.Comment;
 import com.hyrt.cnp.base.account.model.Dynamic;
+import com.hyrt.cnp.base.account.model.ItInfo;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.request.DynamicCommentRequest;
 import com.hyrt.cnp.dynamic.request.DynamicaddcommentRequest;
@@ -30,6 +31,7 @@ public class DynamicCommentActivity extends BaseActivity{
     private TextView textcon;
     private EditText editcon;
     private Dynamic dynamic;
+    private ItInfo itInfo;
     private String Category;
     private MenuItem sendbtn;
     @Override
@@ -79,8 +81,10 @@ public class DynamicCommentActivity extends BaseActivity{
             if(!editcon.getText().toString().equals("")){
                 if(Category.equals("pl")){
                     addcomment();
-                }else{
+                }else if("zf".equals(Category)){
                     setzfData();
+                }else{
+                    hfComment();
                 }
             }else{
                 Toast.makeText(DynamicCommentActivity.this,"输入不能为空！",Toast.LENGTH_SHORT).show();
@@ -99,12 +103,16 @@ public class DynamicCommentActivity extends BaseActivity{
 
     private void initData(){
         Intent intent = getIntent();
-        dynamic=(Dynamic)intent.getSerializableExtra("vo");
-        textcon.setText(dynamic.getContent2().toString());
-//        editcon.setText(dynamic.getContent().toString());
         Category=intent.getStringExtra("Category");
+        if("hf".equals(Category)){
+            itInfo = (ItInfo) intent.getSerializableExtra("vo");
+            textcon.setText(itInfo.getMsgTitle());
+        }else{
+            dynamic=(Dynamic)intent.getSerializableExtra("vo");
+            textcon.setText(dynamic.getContent2().toString());
+        }
 
-        if(Category.equals("pl")){
+        if(Category.equals("pl") || Category.equals("hf")){
             titletext.setText("评论动态");
         }else{
             titletext.setText("转发动态");
@@ -147,6 +155,11 @@ public class DynamicCommentActivity extends BaseActivity{
                 new DynamicaddcommentRequest(Comment.Model3.class,this,comment);
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
+    }
+
+    public void hfComment(){
+        Comment comment = new Comment();
+//        comment.set_id(itInfo.getFromUid());
     }
 
     public void showSuccess(){

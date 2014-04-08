@@ -22,6 +22,7 @@ public class MyAddAblumRequest extends BaseRequest {
     }
     @Override
     public Base run() {
+        android.util.Log.i("tag", "albumName："+albumName+" describes:"+describes);
         return schoolListService.AddMyAlbumData(getRestTemplate(),albumName,describes);
     }
 

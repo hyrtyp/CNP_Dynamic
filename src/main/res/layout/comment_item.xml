@@ -11,7 +11,6 @@
         android:id="@+id/iv_comment_face"
         android:layout_width="@dimen/cnp_dynamic_item_image_height"
         android:layout_height="@dimen/cnp_dynamic_item_image_height"
-        android:background="@drawable/babay1"
         android:layout_marginTop="@dimen/view_margin_small"
         android:layout_marginLeft="@dimen/view_margin_small"/>
 
@@ -25,7 +24,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/medium_tv"
-                android:text="燕燕"
                 android:layout_marginBottom="@dimen/view_margin_smallest"/>
 
             <TextView
@@ -33,21 +31,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/small_tv"
-                android:text="30fenz"
                 android:layout_marginLeft="@dimen/view_margin"
                 android:layout_marginTop="0dp"/>
         </LinearLayout>
-        <Button
+        <TextView
             android:id="@+id/btn_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="回复"
+            style="@style/small_tv"
             android:background="@drawable/shape_line"
             android:paddingLeft="@dimen/view_margin_small"
             android:paddingRight="@dimen/view_margin_small"
             android:paddingTop="@dimen/view_margin_smallest"
             android:paddingBottom="@dimen/view_margin_smallest"
-            style="@style/small_tv"/>
+
+            />
 
     </LinearLayout>
     <TextView
@@ -55,7 +54,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/small_tv"
-        android:text="sdadsdasdsadsad"
         android:layout_margin="@dimen/view_margin_small"
         />
     <TextView
