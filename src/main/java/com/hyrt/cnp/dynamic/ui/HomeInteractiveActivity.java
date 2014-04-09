@@ -139,7 +139,7 @@ public class HomeInteractiveActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getTitle().equals("发布动态")) {
             Intent intent = new Intent();
-            intent.setClass(HomeInteractiveActivity.this, DynamicNewActivity.class);
+            intent.setClass(HomeInteractiveActivity.this, SendDynamicActivity.class);
             startActivity(intent);
         }else if(item.getTitle().equals("新建相册")){
             Intent intent = new Intent();
