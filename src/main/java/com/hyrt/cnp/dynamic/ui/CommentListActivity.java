@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.hyrt.cnp.base.account.model.Comment;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.adapter.CommentListAdapter;
 import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
 import com.hyrt.cnp.dynamic.request.CommetListRequest;
 import com.hyrt.cnp.dynamic.requestListener.CommentListRequestListener;
@@ -19,6 +21,7 @@ import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by GYH on 14-2-24.
@@ -28,7 +31,8 @@ public class CommentListActivity extends BaseActivity{
     private  Dynamic dynamic;
     private ListView xListView;
     private ArrayList<Comment> comments =new ArrayList<Comment>();
-    private ListViewAdapter dynamicAdapter;
+    private CommentListAdapter dynamicAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +59,15 @@ public class CommentListActivity extends BaseActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getTitle().equals("评论")){
             Intent intent = new Intent();
+            intent.setClass(this, SendDynamicActivity.class);
+            intent.putExtra("dynamic", dynamic);
+            intent.putExtra("type", SendDynamicActivity.TYPE_COMMENT);
+            startActivityForResult(intent,0);
+            /*Intent intent = new Intent();
             intent.setClass(CommentListActivity.this, DynamicCommentActivity.class);
             intent.putExtra("Category", "pl");
             intent.putExtra("vo", dynamic);
-            startActivityForResult(intent, 0);
+            startActivityForResult(intent, 0);*/
         }
         return super.onOptionsItemSelected(item);
     }
@@ -93,7 +102,7 @@ public class CommentListActivity extends BaseActivity{
                         "getContent","getCreatdate2"};
                 int[] reses=new int[]{R.id.comment_photo,R.id.comment_name,
                         R.id.comment_context,R.id.comment_time};
-                dynamicAdapter = new ListViewAdapter(this, comments,R.layout.layout_commentitem,resKeys,reses);
+                dynamicAdapter = new CommentListAdapter(this, comments,R.layout.layout_commentitem,resKeys,reses, dynamic, comments);
                 xListView.setAdapter(dynamicAdapter);
             }else{
                 dynamicAdapter.notifyDataSetChanged();

@@ -1,7 +1,10 @@
 package com.hyrt.cnp.dynamic.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.text.Editable;
@@ -20,12 +23,26 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hyrt.cnp.base.account.model.Comment;
+import com.hyrt.cnp.base.account.model.Dynamic;
+import com.hyrt.cnp.base.account.utils.FileUtils;
+import com.hyrt.cnp.base.account.utils.PhotoUpload;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.BrowGridAdapter;
+import com.hyrt.cnp.dynamic.request.DynamicaddcommentRequest;
+import com.hyrt.cnp.dynamic.request.SendDynamicRequest;
+import com.hyrt.cnp.dynamic.requestListener.DynamicaddcommentRequestListener;
+import com.hyrt.cnp.dynamic.requestListener.SendDynamicRequestListener;
 import com.jingdong.common.frame.BaseActivity;
+import com.octo.android.robospice.persistence.DurationInMillis;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,22 +58,56 @@ public class SendDynamicActivity extends BaseActivity{
     private ImageView btnAddPhoto;
     private ImageView btnAddAbout;
     private GridView gvBrows;
-    private GridView gvPhotos;
     private MenuItem sendbtn;
+    private LinearLayout layoutForwardSpan;
+    private LinearLayout layoutAddPhoto;
+    private ImageView photo;
+    private TextView tvForwardContent;
+
     private boolean hideKeyboard = false;
 
     private BrowGridAdapter mBrowGridAdapter;
 
     private Map<String, Integer> brows = new HashMap<String, Integer>();
     private List<Object[]> browArray = new ArrayList<Object[]>();
+    private Map<String, Integer> aboutArray = new HashMap<String, Integer>();
+    private Uri faceFile;
+    private PhotoUpload photoUpload;
+    private Bitmap bitmap;
+    private File targetFile;
+    private int type = 0;
 
-    private static final int FROM_ABOUT_FRIEND = 101;
+    private Dynamic mDynamic;
+    private Comment mComment;
+
+    public static final int FROM_ABOUT_FRIEND = 101;
+
+    public static final int TYPE_SEND = 0;
+    public static final int TYPE_FORWARD = 1;
+    public static final int TYPE_COMMENT = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_dynamic);
+        Intent intent = getIntent();
+        type = intent.getIntExtra("type", TYPE_SEND);
         findView();
+        if(type == TYPE_FORWARD){
+            layoutForwardSpan.setVisibility(View.VISIBLE);
+            btnAddAbout.setVisibility(View.VISIBLE);
+            mDynamic = (Dynamic) intent.getSerializableExtra("dynamic");
+            actionBar.setTitle("转发动态");
+            tvForwardContent.setText(mDynamic.getContent());
+        }else if(type == TYPE_COMMENT){
+            btnAddAbout.setVisibility(View.VISIBLE);
+            mDynamic = (Dynamic) intent.getSerializableExtra("dynamic");
+            mComment = (Comment) intent.getSerializableExtra("comment");
+            actionBar.setTitle("发评论");
+        }else{
+            layoutAddPhoto.setVisibility(View.VISIBLE);
+            actionBar.setTitle("发布动态");
+        }
         setListener();
         loadData();
     }
@@ -227,7 +278,13 @@ public class SendDynamicActivity extends BaseActivity{
                         if(tempStr.substring(tempStr.length()-1, tempStr.length()).equals("]")){
                             int start = tempStr.lastIndexOf("[img]");
                             etContent.getEditableText().delete(start, selectionStart);
-                        }else{
+                        }else if(tempStr.length() >= 2 && tempStr.substring(tempStr.length()-2, tempStr.length()).equals("//")) {
+                            int start = tempStr.lastIndexOf("@");
+                            String delName = tempStr.substring(start+1, tempStr.lastIndexOf("//")-1);
+                            aboutArray.remove(delName);
+                            etContent.getEditableText().delete(start, selectionStart);
+                        } else {
+                            android.util.Log.i("tag", tempStr.length() - 1+":"+ selectionStart);
                             etContent.getEditableText().delete(tempStr.length() - 1, selectionStart);
                         }
 
@@ -255,30 +312,79 @@ public class SendDynamicActivity extends BaseActivity{
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if(charSequence.length()>0){
-                    sendbtn.setEnabled(true);
-                }else{
-                    sendbtn.setEnabled(false);
+                if(sendbtn != null){
+                    if(charSequence.length()>0){
+                        sendbtn.setEnabled(true);
+                    }else{
+                        sendbtn.setEnabled(false);
+                    }
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) { }
         });
+
+        btnAddPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                faceFile = Uri.fromFile(FileUtils.createFile("cnp", "face_cover.png"));
+                photoUpload = new PhotoUpload(SendDynamicActivity.this, faceFile);
+//                photoUpload.setRang(true);
+                photoUpload.choiceItem();
+            }
+        });
+
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                faceFile = null;
+                photo.setVisibility(View.GONE);
+                TextView textview = (TextView) findViewById(R.id.tv_add_photo_text);
+                textview.setVisibility(View.VISIBLE);
+                btnAddPhoto.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
-    private void deleteEditTextSpan() {
-        Spanned s = etContent.getEditableText();
-        ImageSpan[] imageSpan = s.getSpans(0, s.length(), ImageSpan.class);
-        for (int i = imageSpan.length - 1; i >= 0; i--) {
-            if (i == imageSpan.length - 1) {
-                int start = s.getSpanStart(imageSpan[i]);
-                int end = s.getSpanEnd(imageSpan[i]);
-                Editable et = etContent.getText();
-                et.delete(start, end);
-            }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (etContent.getText().length() > 0) {
+            sendbtn.setEnabled(true);
+        }if(type == TYPE_FORWARD){
+            titletext.setText("转发动态");
+        }else if(type == TYPE_COMMENT){
+            titletext.setText("发评论");
+        }else{
+            titletext.setText("发布动态");
         }
-        etContent.invalidate();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == FROM_ABOUT_FRIEND) {
+            if(data != null){
+                String name = data.getStringExtra("name");
+                int uid = data.getIntExtra("uid", -1);
+                etContent.append(Html.fromHtml("<font color='#6ecbd9'>@"+name+"</font>//"));
+                aboutArray.put(name, uid);
+            }
+        }else if (requestCode == PhotoUpload.PHOTO_ZOOM && data != null && data.getParcelableExtra("data") != null) {
+            //保存剪切好的图片
+            bitmap = data.getParcelableExtra("data");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            targetFile = FileUtils.writeFile(baos.toByteArray(), "cnp", "dynamic_photo_"+System.currentTimeMillis()+".png");
+
+            BitmapDrawable bd = new BitmapDrawable(bitmap);
+            photo.setBackground(bd);
+            photo.setVisibility(View.VISIBLE);
+            TextView textview = (TextView) findViewById(R.id.tv_add_photo_text);
+            textview.setVisibility(View.GONE);
+            btnAddPhoto.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -292,12 +398,111 @@ public class SendDynamicActivity extends BaseActivity{
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getTitle().equals("发送")){
+            if(type == TYPE_COMMENT){
+                addComment();
+            }else if(type == TYPE_FORWARD){
+                addForward();
+            }else{
+                sendDynamic();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void addComment(){
+        Comment comment=new Comment();
+        if(mDynamic == null){
+            comment.set_id(mComment.get_id()+"");
+            comment.setInfoid2(mComment.get_id());
+            if(mComment.getInfoTitle().equals("")){
+                comment.setInfoTitle("null");
+            }else{
+                comment.setInfoTitle(mComment.getInfoTitle());
+            }
+            comment.setInfoUserId(mComment.getUserid()+"");
+            comment.setInfoNurseryId(mComment.getNursery_id()+"");
+            comment.setInfoClassroomId(mComment.getInfoClassroomId()+"");
+        }else{
+            comment.set_id(mDynamic.get_id()+"");
+            comment.setInfoid2(mDynamic.get_id());
+            if(mDynamic.getTitle().equals("")){
+                comment.setInfoTitle("null");
+            }else{
+                comment.setInfoTitle(mDynamic.getTitle());
+            }
+            comment.setInfoUserId(mDynamic.gettUserId()+"");
+            comment.setInfoNurseryId(mDynamic.getNueseryId()+"");
+            comment.setInfoClassroomId(mDynamic.getClassRoomId()+"");
+        }
+        comment.setSiteid("50");
+        comment.setUrl("null");
+        comment.setLstatus("Y");
+        comment.setContent(etContent.getText().toString());
+        comment.setReply("0");
+        comment.setRecontent("");
+        comment.setReuserId("");
+        comment.setReusername("");
+        comment.setRedate("");
+        DynamicaddcommentRequestListener sendwordRequestListener = new DynamicaddcommentRequestListener(this);
+        sendwordRequestListener.setListener(mAddCommentRequestListener);
+        DynamicaddcommentRequest schoolRecipeRequest=
+                new DynamicaddcommentRequest(Comment.Model3.class,this,comment);
+        spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                sendwordRequestListener.start());
+    }
+
+    private DynamicaddcommentRequestListener.requestListener mAddCommentRequestListener
+            = new DynamicaddcommentRequestListener.requestListener() {
+        @Override
+        public void onRequestSuccess(Object data) {
+            Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
+            setResult(1);
+            finish();
+        }
+
+        @Override
+        public void onRequestFailure(SpiceException e) {
+            Toast.makeText(SendDynamicActivity.this, "发送失败", 0).show();
+        }
+    };
+
+    public void addForward(){
+
+    }
+
+    public void sendDynamic(){
+        android.util.Log.i("tag", "targetFile:"+targetFile);
+        SendDynamicRequest request = new SendDynamicRequest(this, etContent.getText().toString(), targetFile, null, null);
+        SendDynamicRequestListener requestListener = new SendDynamicRequestListener(this);
+        requestListener.setListener(mSendDynamicRequestListener);
+        spiceManager.execute(request, request.createCacheKey(), DurationInMillis.ONE_SECOND, requestListener.start());
+    }
+
+    private SendDynamicRequestListener.requestListener mSendDynamicRequestListener = new SendDynamicRequestListener.requestListener() {
+        @Override
+        public void onRequestSuccess(Object o) {
+            Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
+            finish();
+        }
+
+        @Override
+        public void onRequestFailure(SpiceException e) {
+
+        }
+    };
+
     private void findView() {
         etContent = (EditText) findViewById(R.id.et_send_dynamic_content);
         btnAddBrow = (ImageView) findViewById(R.id.btn_add_brow);
         btnAddPhoto = (ImageView) findViewById(R.id.btn_add_photo);
         gvBrows = (GridView) findViewById(R.id.gv_brows);
-        gvPhotos = (GridView) findViewById(R.id.gv_photos);
         btnAddAbout = (ImageView) findViewById(R.id.btn_add_about);
+        layoutForwardSpan = (LinearLayout)findViewById(R.id.layout_forward_span);
+        layoutAddPhoto = (LinearLayout) findViewById(R.id.layout_add_photo);
+        photo = (ImageView) findViewById(R.id.iv_photo1);
+        tvForwardContent = (TextView) findViewById(R.id.tv_forward_content);
     }
 }

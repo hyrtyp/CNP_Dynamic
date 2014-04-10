@@ -177,7 +177,11 @@ public class HomeInteractiveActivity extends BaseActivity {
         switch (id) {
             case 0:
                 if (alldaynamicfragment == null) {
-                    alldaynamicfragment = (AlldynamicFragment) pages.get(0);
+                    if(pages.get(0) == null){
+                        alldaynamicfragment = new AlldynamicFragment();
+                    }else{
+                        alldaynamicfragment = (AlldynamicFragment) pages.get(0);
+                    }
                 }
                 alldaynamicfragment.upUiData(model);
                 break;

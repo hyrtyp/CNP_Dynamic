@@ -1,10 +1,12 @@
 package com.hyrt.cnp.dynamic.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +49,7 @@ public class AboutFriendActivity extends BaseActivity{
         findView();
         STATE=HASDATA;
         loadData();
+        setListener();
     }
 
     public void loadData(){
@@ -55,6 +58,21 @@ public class AboutFriendActivity extends BaseActivity{
         ClassroomBabayRequest request = new ClassroomBabayRequest(ClassRoomBabay.Model.class, this);
         spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 requestListener.start());
+    }
+
+    public void setListener(){
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ClassRoomBabay crb = datas.get(i-1);
+                Toast.makeText(AboutFriendActivity.this, crb.getRenname()+":"+crb.getUser_id(), 0).show();
+                Intent data = new Intent();
+                data.putExtra("name", crb.getRenname());
+                data.putExtra("uid", crb.getUser_id());
+                setResult(SendDynamicActivity.FROM_ABOUT_FRIEND, data);
+                finish();
+            }
+        });
     }
 
     private ClassroomBabayRequestListener.requestListener mRequestListener = new ClassroomBabayRequestListener.requestListener() {

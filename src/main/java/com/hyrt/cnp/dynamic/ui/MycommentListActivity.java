@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by GYH on 2014/4/5.
+ * Created by Zoe 2014/4/5.
  */
 public class MycommentListActivity extends BaseActivity{
 

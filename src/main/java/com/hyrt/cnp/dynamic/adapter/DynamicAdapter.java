@@ -11,6 +11,7 @@ import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.ui.CommentListActivity;
 import com.hyrt.cnp.dynamic.ui.DynamicCommentActivity;
+import com.hyrt.cnp.dynamic.ui.SendDynamicActivity;
 import com.jingdong.app.pad.adapter.MySimpleAdapter;
 import com.jingdong.common.frame.BaseActivity;
 
@@ -72,16 +73,25 @@ public class DynamicAdapter extends MySimpleAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setClass(activity, DynamicCommentActivity.class);
+                intent.setClass(activity, SendDynamicActivity.class);
+                intent.putExtra("dynamic", list.get(posi));
+                intent.putExtra("type", SendDynamicActivity.TYPE_FORWARD);
+                activity.startActivityForResult(intent,0);
+               /* intent.setClass(activity, DynamicCommentActivity.class);
                 intent.putExtra("vo", list.get(posi));
                 intent.putExtra("Category","zf");
-                activity.startActivityForResult(intent,0);
+                activity.startActivityForResult(intent,0);*/
             }
         });
         LinearLayout dynamic_pl=(LinearLayout)view.findViewById(R.id.dynamic_pl);
         dynamic_pl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+               /*
+                intent.setClass(activity, SendDynamicActivity.class);
+                intent.putExtra("dynamic", list.get(posi));
+                intent.putExtra("type", SendDynamicActivity.TYPE_COMMENT);
+                activity.startActivityForResult(intent,0);*/
                 Intent intent = new Intent();
                 intent.setClass(activity, CommentListActivity.class);
                 intent.putExtra("vo", list.get(posi));
