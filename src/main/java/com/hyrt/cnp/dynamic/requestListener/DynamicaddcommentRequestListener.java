@@ -35,12 +35,13 @@ public class DynamicaddcommentRequestListener extends BaseRequestListener{
     public void onRequestSuccess(Object data) {
         super.onRequestSuccess(data);
         if(data!=null){
-            DynamicCommentActivity activity = (DynamicCommentActivity)context.get();
+
             Comment.Model3 result= (Comment.Model3)data;
             if(result.getCode().equals("200")){
                 if(mListener != null){
                     mListener.onRequestSuccess(data);
                 }else{
+                    DynamicCommentActivity activity = (DynamicCommentActivity)context.get();
                     activity.showSuccess();
                 }
             }else{

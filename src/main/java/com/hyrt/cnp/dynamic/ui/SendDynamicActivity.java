@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +34,11 @@ import com.hyrt.cnp.base.account.utils.FileUtils;
 import com.hyrt.cnp.base.account.utils.PhotoUpload;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.BrowGridAdapter;
+import com.hyrt.cnp.dynamic.request.DynamicCommentRequest;
 import com.hyrt.cnp.dynamic.request.DynamicaddcommentRequest;
 import com.hyrt.cnp.dynamic.request.SendDynamicRequest;
 import com.hyrt.cnp.dynamic.requestListener.DynamicaddcommentRequestListener;
+import com.hyrt.cnp.dynamic.requestListener.DynamiccommentRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.SendDynamicRequestListener;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
@@ -63,6 +66,7 @@ public class SendDynamicActivity extends BaseActivity{
     private LinearLayout layoutAddPhoto;
     private ImageView photo;
     private TextView tvForwardContent;
+    private RelativeLayout layoutInput;
 
     private boolean hideKeyboard = false;
 
@@ -98,9 +102,15 @@ public class SendDynamicActivity extends BaseActivity{
             btnAddAbout.setVisibility(View.VISIBLE);
             mDynamic = (Dynamic) intent.getSerializableExtra("dynamic");
             actionBar.setTitle("转发动态");
-            tvForwardContent.setText(mDynamic.getContent());
+            if(mDynamic.gettContent().length()>0){
+                tvForwardContent.setText(mDynamic.gettContent());
+            }else{
+                tvForwardContent.setText(mDynamic.getContent());
+            }
+
         }else if(type == TYPE_COMMENT){
             btnAddAbout.setVisibility(View.VISIBLE);
+            layoutInput.getLayoutParams().height = getResources().getDimensionPixelOffset(R.dimen.send_dynamic_content_height_big);
             mDynamic = (Dynamic) intent.getSerializableExtra("dynamic");
             mComment = (Comment) intent.getSerializableExtra("comment");
             actionBar.setTitle("发评论");
@@ -339,6 +349,7 @@ public class SendDynamicActivity extends BaseActivity{
             @Override
             public void onClick(View view) {
                 faceFile = null;
+                targetFile = null;
                 photo.setVisibility(View.GONE);
                 TextView textview = (TextView) findViewById(R.id.tv_add_photo_text);
                 textview.setVisibility(View.VISIBLE);
@@ -350,7 +361,7 @@ public class SendDynamicActivity extends BaseActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        if (etContent.getText().length() > 0) {
+        if (etContent.getText().length() > 0 && sendbtn != null) {
             sendbtn.setEnabled(true);
         }if(type == TYPE_FORWARD){
             titletext.setText("转发动态");
@@ -376,7 +387,7 @@ public class SendDynamicActivity extends BaseActivity{
             bitmap = data.getParcelableExtra("data");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            targetFile = FileUtils.writeFile(baos.toByteArray(), "cnp", "dynamic_photo_"+System.currentTimeMillis()+".png");
+            targetFile = FileUtils.writeFile(baos.toByteArray(), "cnp", "dynamic_upload_photo.png");
 
             BitmapDrawable bd = new BitmapDrawable(bitmap);
             photo.setBackground(bd);
@@ -470,15 +481,35 @@ public class SendDynamicActivity extends BaseActivity{
     };
 
     public void addForward(){
-
+        Dynamic data=new Dynamic();
+        data.set_id(mDynamic.get_id());
+        data.setContent(etContent.getText().toString());
+        DynamiccommentRequestListener sendwordRequestListener = new DynamiccommentRequestListener(this);
+        sendwordRequestListener.setListener(mForwardRequestListener);
+        DynamicCommentRequest schoolRecipeRequest=new DynamicCommentRequest(Dynamic.Model3.class,this,data);
+        spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                sendwordRequestListener.start());
     }
+
+    private DynamiccommentRequestListener.RequestListener mForwardRequestListener = new DynamiccommentRequestListener.RequestListener() {
+        @Override
+        public void onRequestSuccess(Object data) {
+            Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
+            finish();
+        }
+
+        @Override
+        public void onRequestFailure(SpiceException e) {
+            Toast.makeText(SendDynamicActivity.this, "发送失败", 0).show();
+        }
+    };
 
     public void sendDynamic(){
         android.util.Log.i("tag", "targetFile:"+targetFile);
         SendDynamicRequest request = new SendDynamicRequest(this, etContent.getText().toString(), targetFile, null, null);
         SendDynamicRequestListener requestListener = new SendDynamicRequestListener(this);
         requestListener.setListener(mSendDynamicRequestListener);
-        spiceManager.execute(request, request.createCacheKey(), DurationInMillis.ONE_SECOND, requestListener.start());
+        spiceManager.execute(request, request.createCacheKey(), 0, requestListener.start());
     }
 
     private SendDynamicRequestListener.requestListener mSendDynamicRequestListener = new SendDynamicRequestListener.requestListener() {
@@ -490,7 +521,7 @@ public class SendDynamicActivity extends BaseActivity{
 
         @Override
         public void onRequestFailure(SpiceException e) {
-
+            Toast.makeText(SendDynamicActivity.this, "发送失败", 0).show();
         }
     };
 
@@ -504,5 +535,6 @@ public class SendDynamicActivity extends BaseActivity{
         layoutAddPhoto = (LinearLayout) findViewById(R.id.layout_add_photo);
         photo = (ImageView) findViewById(R.id.iv_photo1);
         tvForwardContent = (TextView) findViewById(R.id.tv_forward_content);
+        layoutInput = (RelativeLayout) findViewById(R.id.layout_input);
     }
 }

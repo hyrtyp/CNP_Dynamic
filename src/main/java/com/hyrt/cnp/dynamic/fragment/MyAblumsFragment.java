@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.view.BounceListView;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
+import com.hyrt.cnp.dynamic.adapter.MyAblumAdapter;
 import com.hyrt.cnp.dynamic.request.MyAlbumRequest;
 import com.hyrt.cnp.dynamic.requestListener.MyAlbumRequestListener;
 import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;
@@ -26,7 +28,7 @@ public class MyAblumsFragment extends Fragment{
     private View rootView;
 
     private BounceListView listview;
-    private ListViewAdapter listViewAdapter;
+    private MyAblumAdapter listViewAdapter;
     private String Category;
     private Album.Model model;
     private HomeInteractiveActivity activity;
@@ -49,8 +51,15 @@ public class MyAblumsFragment extends Fragment{
 //                intent.putExtra("vo",model.getData().get(i));
 //                intent.putExtra("Category",Category);
 //                startActivity(intent);
+
+//                Toast.makeText(getActivity(), "aaa", 0).show();
+//                if(view.getId() == R.id.btn_change_album){
+//                    Toast.makeText(getActivity(), "bbb", 0).show();
+//                }
             }
         });
+
+
     }
 
     private void loadData(){
@@ -75,8 +84,8 @@ public class MyAblumsFragment extends Fragment{
         }else{
             this.model=model;
             String[] resKeys=new String[]{"getImagepath","getAlbumName","getAlbumDesc","getPosttime2"};
-            int[] reses=new int[]{R.id.item_album_image,R.id.item_album_title,R.id.item_album_con,R.id.item_album_time};
-            listViewAdapter = new ListViewAdapter(activity,model.getData(),R.layout.layout_item_myalbum,resKeys,reses);
+            int[] reses=new int[]{R.id.item_album_image,R.id.item_album_title,R.id.tv_photo_describe,R.id.tv_photo_time};
+            listViewAdapter = new MyAblumAdapter(activity,model.getData(),R.layout.dynamic_album_item,resKeys,reses);
             listview.setAdapter(listViewAdapter);
         }
 

@@ -12,6 +12,9 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
  * Created by GYH on 14-1-23.
  */
 public class DynamiccommentRequestListener extends BaseRequestListener {
+
+    private RequestListener mListener;
+
     /**
      * @param context
      */
@@ -21,7 +24,12 @@ public class DynamiccommentRequestListener extends BaseRequestListener {
 
     @Override
     public void onRequestFailure(SpiceException e) {
-        showMessage(R.string.nodata_title,R.string.nodata_content);
+        if(mListener == null){
+            showMessage(R.string.nodata_title,R.string.nodata_content);
+        }else{
+            mListener.onRequestFailure(e);
+        }
+
         super.onRequestFailure(e);
     }
 
@@ -29,16 +37,33 @@ public class DynamiccommentRequestListener extends BaseRequestListener {
     public void onRequestSuccess(Object data) {
         super.onRequestSuccess(data);
         if(data!=null){
-            DynamicCommentActivity activity = (DynamicCommentActivity)context.get();
             Dynamic.Model3 result= (Dynamic.Model3)data;
+
+
+
             if(result.getCode().equals("200")){
-                activity.showSuccess();
+                if(mListener == null){
+                    DynamicCommentActivity activity = (DynamicCommentActivity)context.get();
+                    activity.showSuccess();
+                }else{
+                    mListener.onRequestSuccess(result);
+                }
+
             }else{
-                showMessage(R.string.nodata_title,R.string.nodata_addcommentfial);
+                if(mListener == null){
+                    showMessage(R.string.nodata_title,R.string.nodata_addcommentfial);
+                }else{
+                    mListener.onRequestFailure(null);
+                }
+
             }
 
         }else{
-            showMessage(R.string.nodata_title,R.string.nodata_content);
+            if(mListener == null){
+                showMessage(R.string.nodata_title,R.string.nodata_addcommentfial);
+            }else{
+                mListener.onRequestFailure(null);
+            }
         }
 
     }
@@ -47,5 +72,14 @@ public class DynamiccommentRequestListener extends BaseRequestListener {
     public DynamiccommentRequestListener start() {
         showIndeterminate("加载中...");
         return this;
+    }
+
+    public void setListener(RequestListener listener){
+        this.mListener = listener;
+    }
+
+    public static interface RequestListener{
+        public void onRequestSuccess(Object data);
+        public void onRequestFailure(SpiceException e);
     }
 }

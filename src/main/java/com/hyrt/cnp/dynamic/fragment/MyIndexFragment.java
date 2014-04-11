@@ -75,15 +75,21 @@ public class MyIndexFragment extends Fragment{
         faceviewbg=(ImageView)rootView.findViewById(R.id.imageView);
         imageviewback.setVisibility(View.GONE);
 
-        nameview.setText(activity.userDetail.getData().getRenname());
-        introview.setText(activity.userDetail.getData().getTimeText());
+        android.util.Log.i("tag", "activity:"+activity);
+        android.util.Log.i("tag", "activity.userDetail:"+activity.userDetail);
+        if(activity.userDetail != null){
+            nameview.setText(activity.userDetail.getData().getRenname());
+            introview.setText(activity.userDetail.getData().getTimeText());
 
-        String facePath = FaceUtils.getAvatar(activity.userDetail.getData().getUser_id(), FaceUtils.FACE_BIG);
-        activity.showDetailImage(facePath + "?time=" +activity.userDetail.getData().getLogo(), faceview, false);
+            String facePath = FaceUtils.getAvatar(activity.userDetail.getData().getUser_id(), FaceUtils.FACE_BIG);
+            activity.showDetailImage(facePath + "?time=" +activity.userDetail.getData().getLogo(), faceview, false);
 
-        //加载头像地址
-        String faceBgPath = FaceUtils.getAvatar(activity.userDetail.getData().getUser_id(), FaceUtils.FACE_BG);
-        activity.showDetailImage(faceBgPath, faceviewbg, true);
+            //加载头像地址
+            String faceBgPath = FaceUtils.getAvatar(activity.userDetail.getData().getUser_id(), FaceUtils.FACE_BG);
+            activity.showDetailImage(faceBgPath, faceviewbg, true);
+        }
+
+
 
         listView.setPullLoadEnable(true);
         listView.setPullRefreshEnable(true);

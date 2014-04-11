@@ -12,14 +12,35 @@ import com.hyrt.cnp.base.account.service.AlbumService;
  */
 public class MyAlbumRequest extends BaseRequest{
 
+    private int type = 0;//0:获取专辑列表；2:删除专辑；3:修改专辑
+    private String paid, albumName, describes;
+
     @Inject
     private AlbumService schoolListService;
     public MyAlbumRequest(Class clazz, Context context) {
         super(clazz, context);
     }
+
+    public MyAlbumRequest(Class clazz, Context context, String paid) {
+        super(clazz, context);
+        this.type = 1;
+    }
+
+    public MyAlbumRequest(Class clazz, Context context, String paid, String albumName, String describes) {
+        super(clazz, context);
+        this.type = 2;
+    }
+
     @Override
     public Base run() {
-         return schoolListService.getMyAlbumData(getRestTemplate());
+        if(type == 1){
+            return schoolListService.delAlbum(paid);
+        }else if(type == 2){
+            return schoolListService.alterAlbum(paid, albumName, describes);
+        }else{
+            return schoolListService.getMyAlbumData(getRestTemplate());
+        }
+
     }
 
 

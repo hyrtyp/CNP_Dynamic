@@ -9,9 +9,12 @@ import com.hyrt.cnp.dynamic.ui.BabayIndexActivity;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
 /**
- * Created by GYH on 14-1-23.
+ * Created by GYH on 14-1-23. / Zoe change on 14-4-11
  */
 public class BabayInfoRequestListener extends BaseRequestListener {
+
+    private requestListener mListener;
+
     /**
      * @param context
      */
@@ -22,18 +25,30 @@ public class BabayInfoRequestListener extends BaseRequestListener {
     @Override
     public void onRequestFailure(SpiceException e) {
         showMessage(R.string.nodata_title,R.string.nodata_content);
+        if(mListener != null){
+            mListener.onRequestFailure(e);
+        }
         super.onRequestFailure(e);
     }
 
     @Override
     public void onRequestSuccess(Object data) {
         super.onRequestSuccess(data);
-        BabayIndexActivity activity = (BabayIndexActivity)context.get();
+
         if(data!=null){
             BabyInfo.Model result= (BabyInfo.Model)data;
-            activity.UpdataBabayinfo(result);
+            if(mListener == null){
+                BabayIndexActivity activity = (BabayIndexActivity)context.get();
+                activity.UpdataBabayinfo(result);
+            }else{
+                mListener.onRequestSuccess(result);
+            }
+
         }else{
             showMessage(R.string.nodata_title,R.string.nodata_content);
+            if(mListener != null){
+                mListener.onRequestFailure(null);
+            }
         }
 
     }
@@ -42,5 +57,14 @@ public class BabayInfoRequestListener extends BaseRequestListener {
     public BabayInfoRequestListener start() {
         showIndeterminate("加载宝宝资料中...");
         return this;
+    }
+
+    public void setListener(requestListener listener){
+        this.mListener = listener;
+    }
+
+    public static interface requestListener{
+        public void onRequestSuccess(Object data);
+        public void onRequestFailure(SpiceException e);
     }
 }

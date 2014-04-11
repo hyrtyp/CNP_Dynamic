@@ -11,6 +11,9 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
  * Created by GYH on 14-1-16. change
  */
 public class MyAlbumRequestListener extends BaseRequestListener{
+
+    private RequestListener mListener;
+
     /**
      * @param context
      */
@@ -22,19 +25,34 @@ public class MyAlbumRequestListener extends BaseRequestListener{
     public void onRequestFailure(SpiceException e) {
 //        showMessage(R.string.nodata_title,R.string.nodata_content);
         super.onRequestFailure(e);
-        HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
-        activity.upDataAblumUI(null);
+        if(mListener == null){
+            HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
+            activity.upDataAblumUI(null);
+        }else{
+            mListener.onRequestFailure(e);
+        }
+
     }
 
     @Override
     public void onRequestSuccess(Object data) {
         super.onRequestSuccess(data);
         if(data!=null){
-        HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
-        activity.upDataAblumUI((Album.Model) data);
+            if(mListener == null){
+                HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
+                activity.upDataAblumUI((Album.Model) data);
+            }else{
+                mListener.onRequestSuccess((Album.Model)data);
+            }
+
         }else{
-            HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
-            activity.upDataAblumUI(null);
+            if(mListener == null){
+                HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
+                activity.upDataAblumUI(null);
+            }else{
+                mListener.onRequestFailure(null);
+            }
+
         }
 
     }
@@ -43,5 +61,14 @@ public class MyAlbumRequestListener extends BaseRequestListener{
     public MyAlbumRequestListener start() {
         showIndeterminate("加载中...");
         return this;
+    }
+
+    public void setListener(RequestListener listener){
+        this.mListener = listener;
+    }
+
+    public static interface RequestListener{
+        public void onRequestSuccess(Album.Model data);
+        public void onRequestFailure(SpiceException e);
     }
 }

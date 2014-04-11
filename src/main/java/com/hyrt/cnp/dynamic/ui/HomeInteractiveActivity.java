@@ -143,7 +143,7 @@ public class HomeInteractiveActivity extends BaseActivity {
             startActivity(intent);
         }else if(item.getTitle().equals("新建相册")){
             Intent intent = new Intent();
-            intent.setClass(HomeInteractiveActivity.this, AddAblumActivity.class);
+            intent.setClass(HomeInteractiveActivity.this, AddPhotoDynamicActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -204,6 +204,9 @@ public class HomeInteractiveActivity extends BaseActivity {
         if (myAblumsFragment == null) {
             myAblumsFragment = (MyAblumsFragment) pages.get(3);
         }
+        if(myAblumsFragment == null){
+            myAblumsFragment = new MyAblumsFragment();
+        }
         myAblumsFragment.updateUI(model);
     }
 
@@ -244,6 +247,9 @@ public class HomeInteractiveActivity extends BaseActivity {
 
 
     private void showTitle(int id) {
+        if(mymenu == null){
+            return;
+        }
         mymenu.clear();
         switch (id) {
             case 0:
@@ -269,7 +275,7 @@ public class HomeInteractiveActivity extends BaseActivity {
                 break;
             case 3:
                 mymenu.add("新建相册")
-                        .setIcon(R.drawable.editbtn)
+                        .setIcon(R.drawable.ic_actionbar_upload)
                         .setShowAsAction(
                                 MenuItem.SHOW_AS_ACTION_ALWAYS);
                 titletext.setText("动感相册");
