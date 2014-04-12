@@ -191,6 +191,9 @@ public class HomeInteractiveActivity extends BaseActivity {
                 if (myIndexFragment == null) {
                     myIndexFragment = (MyIndexFragment) pages.get(2);
                 }
+                if(myIndexFragment == null){
+                    myIndexFragment = new MyIndexFragment();
+                }
                 myIndexFragment.updateUI(model);
                 break;
             case 3:
@@ -199,6 +202,19 @@ public class HomeInteractiveActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == MyAblumsFragment.RESULT_FOR_ADD_ALBUM){
+            if (myAblumsFragment == null) {
+                myAblumsFragment = (MyAblumsFragment) pages.get(3);
+            }
+            if(myAblumsFragment == null){
+                myAblumsFragment = new MyAblumsFragment();
+            }
+            myAblumsFragment.loadData();
+        }
+    }
 
     public void upDataAblumUI(Album.Model model) {
         if (myAblumsFragment == null) {

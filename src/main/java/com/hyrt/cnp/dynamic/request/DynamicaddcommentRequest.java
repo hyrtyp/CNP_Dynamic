@@ -20,6 +20,9 @@ public class DynamicaddcommentRequest extends BaseRequest{
         super(clazz, context);
         this.comment=comment;
     }
+
+
+
     @Override
     public Base run() {
         return schoolListService.adddynamicCommentData(comment);

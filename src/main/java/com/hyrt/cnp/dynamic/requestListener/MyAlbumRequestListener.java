@@ -3,6 +3,7 @@ package com.hyrt.cnp.dynamic.requestListener;
 import android.app.Activity;
 
 import com.hyrt.cnp.base.account.model.Album;
+import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.requestListener.BaseRequestListener;
 import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -42,7 +43,7 @@ public class MyAlbumRequestListener extends BaseRequestListener{
                 HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
                 activity.upDataAblumUI((Album.Model) data);
             }else{
-                mListener.onRequestSuccess((Album.Model)data);
+                mListener.onRequestSuccess(data);
             }
 
         }else{
@@ -68,7 +69,7 @@ public class MyAlbumRequestListener extends BaseRequestListener{
     }
 
     public static interface RequestListener{
-        public void onRequestSuccess(Album.Model data);
+        public void onRequestSuccess(Object data);
         public void onRequestFailure(SpiceException e);
     }
 }

@@ -2,6 +2,7 @@ package com.hyrt.cnp.dynamic.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hyrt.cnp.base.account.model.Album;
@@ -16,6 +17,8 @@ import java.util.List;
  */
 public class MyAblumAdapter extends MySimpleAdapter{
 
+    private OnItemClickListener mListener;
+
     private List<Album> datas;
 
     public MyAblumAdapter(BaseActivity paramMyActivity, List data, int resourceId, String[] resKeys, int[] reses) {
@@ -28,19 +31,42 @@ public class MyAblumAdapter extends MySimpleAdapter{
         View view = super.getView(position, paramView, paramViewGroup);
         TextView btn_change_album = (TextView) view.findViewById(R.id.btn_change_album);
         TextView btn_del_album = (TextView) view.findViewById(R.id.btn_del_album);
+        ImageView item_album_image = (ImageView) view.findViewById(R.id.item_album_image);
 
         View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(view.getId() == R.id.btn_change_album){
-                    android.util.Log.i("tag", datas.get(position).getAlbumName()+"--修改");
+                    if(mListener != null){
+                        mListener.onClick(0, position);
+                    }
                 }else if(view.getId() == R.id.btn_del_album){
-                    android.util.Log.i("tag", datas.get(position).getAlbumName()+"--删除");
+                    if(mListener != null){
+                        mListener.onClick(1, position);
+                    }
+                }else if(view.getId() == R.id.item_album_image){
+                    if(mListener != null){
+                        mListener.onClick(2, position);
+                    }
                 }
             }
         };
         btn_change_album.setOnClickListener(mOnClickListener);
         btn_del_album.setOnClickListener(mOnClickListener);
+        item_album_image.setOnClickListener(mOnClickListener);
         return view;
+    }
+
+    public void setListener(OnItemClickListener listener){
+        this.mListener = listener;
+    }
+
+    public static interface OnItemClickListener{
+        /**
+         * 0:修改 1:删除 2:跳转
+         * @param type
+         * @param position
+         */
+        public void onClick(int type, int position);
     }
 }

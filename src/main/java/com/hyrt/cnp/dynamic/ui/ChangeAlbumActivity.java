@@ -86,7 +86,7 @@ public class ChangeAlbumActivity extends BaseActivity{
 
     private MyAlbumRequestListener.RequestListener mAlbumRequestListener = new MyAlbumRequestListener.RequestListener() {
         @Override
-        public void onRequestSuccess(Album.Model data) {
+        public void onRequestSuccess(Object data) {
             if(data == null){
                 LinearLayout linearLayout =(LinearLayout)findViewById(R.id.layout_bottom);
                 linearLayout.setVisibility(View.VISIBLE);
@@ -97,7 +97,7 @@ public class ChangeAlbumActivity extends BaseActivity{
                 if(STATE.equals(REFRESH)){//如果正在刷新就清空
                     datas.clear();
                 }
-                datas.addAll(data.getData());
+                datas.addAll(((Album.Model)data).getData());
                 if(mAdapter == null){
                     mAdapter = new ChangeAlbumAdapter(datas, ChangeAlbumActivity.this);
                     listview.setAdapter(mAdapter);

@@ -25,7 +25,6 @@ public class AddPhotoRequest extends BaseRequest{
                            String paid, String photoname,
                            String introduce, File photo_add) {
         super(clazz, context);
-        this.addPhotoService = addPhotoService;
         this.paid = paid;
         this.photoname = photoname;
         this.introduce = introduce;
@@ -43,6 +42,6 @@ public class AddPhotoRequest extends BaseRequest{
     }
 
     public String getcachekey(){
-        return "addphoto";
+        return "addphoto"+System.currentTimeMillis();
     }
 }

@@ -11,6 +11,9 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
  * Created by GYH on 14-2-24.
  */
 public class CommentListRequestListener extends BaseRequestListener {
+
+    private RequestListener mListener;
+
     /**
      * @param context
      */
@@ -22,20 +25,35 @@ public class CommentListRequestListener extends BaseRequestListener {
     public void onRequestFailure(SpiceException e) {
 //        showMessage(R.string.nodata_title,R.string.nodata_content);
         super.onRequestFailure(e);
-        CommentListActivity activity = (CommentListActivity)context.get();
-        activity.UpDataUI(null);
+
+        if(mListener == null){
+            CommentListActivity activity = (CommentListActivity)context.get();
+            activity.UpDataUI(null);
+        }else{
+            mListener.onRequestFailure(e);
+        }
     }
 
     @Override
     public void onRequestSuccess(Object data) {
         super.onRequestSuccess(data);
-        CommentListActivity activity = (CommentListActivity)context.get();
+
         if(data!=null){
             Comment.Model result= (Comment.Model)data;
-            activity.UpDataUI(result);
+            if(mListener == null){
+                CommentListActivity activity = (CommentListActivity)context.get();
+                activity.UpDataUI(result);
+            }else{
+                mListener.onRequestSuccess(result);
+            }
+
         }else{
-            activity.UpDataUI(null);
-//            showMessage(R.string.nodata_title,R.string.nodata_content);
+            if(mListener == null){
+                CommentListActivity activity = (CommentListActivity)context.get();
+                activity.UpDataUI(null);
+            }else{
+                mListener.onRequestSuccess(null);
+            }
         }
 
     }
@@ -44,5 +62,14 @@ public class CommentListRequestListener extends BaseRequestListener {
     public CommentListRequestListener start() {
         showIndeterminate("加载中...");
         return this;
+    }
+
+    public void setListener(RequestListener listener){
+        this.mListener = listener;
+    }
+
+    public static  interface RequestListener{
+        public void onRequestSuccess(Comment.Model data);
+        public void onRequestFailure(SpiceException e);
     }
 }

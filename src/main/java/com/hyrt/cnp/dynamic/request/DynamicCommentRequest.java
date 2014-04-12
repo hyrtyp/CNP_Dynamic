@@ -17,10 +17,20 @@ public class DynamicCommentRequest extends BaseRequest{
     private DynamicService schoolListService;
 
     private Dynamic dynamic;
+    private String infoid, siteid;
+    private int type = 0 ; //0:转发
+
     public DynamicCommentRequest(Class clazz, Context context,Dynamic dynamic) {
         super(clazz, context);
         this.dynamic=dynamic;
     }
+
+    public DynamicCommentRequest(Class clazz, Context context, String infoid, String siteid) {
+        super(clazz, context);
+        this.infoid = infoid;
+        this.siteid = siteid;
+    }
+
     @Override
     public Base run() {
         return schoolListService.adddynamiczfData(dynamic);

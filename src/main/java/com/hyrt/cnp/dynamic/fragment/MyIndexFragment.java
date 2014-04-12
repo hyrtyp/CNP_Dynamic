@@ -164,7 +164,7 @@ public class MyIndexFragment extends Fragment{
             Toast.makeText(getActivity(), "已经全部加载", Toast.LENGTH_SHORT).show();
         }else{
             more=model.getMore();
-            if(STATE.equals(REFRESH)){//如果正在刷新就清空
+            if(STATE != null && STATE.equals(REFRESH)){//如果正在刷新就清空
                 dynamics.clear();
             }
             dynamics.addAll(model.getData());
@@ -178,7 +178,9 @@ public class MyIndexFragment extends Fragment{
                         R.id.dynamic_image1,R.id.dynamic_image2,
                         R.id.dynamic_image3,R.id.dynamic_time2,R.id.dynamic_zf_num,R.id.dynamic_pl_num,R.id.dynamic_dcontext};
                 dynamicAdapter = new DynamicAdapter(activity,dynamics,R.layout.layout_item_dynamic,resKeys,reses);
-                listView.setAdapter(dynamicAdapter);
+                if(listView != null){
+                    listView.setAdapter(dynamicAdapter);
+                }
             }else{
                 dynamicAdapter.notifyDataSetChanged();
             }

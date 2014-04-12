@@ -37,6 +37,7 @@ public class DynamicaddcommentRequestListener extends BaseRequestListener{
         if(data!=null){
 
             Comment.Model3 result= (Comment.Model3)data;
+            android.util.Log.i("tag", "code:"+result.getCode()+" msg:"+result.getMsg());
             if(result.getCode().equals("200")){
                 if(mListener != null){
                     mListener.onRequestSuccess(data);

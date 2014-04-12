@@ -22,7 +22,7 @@ public class AddPhotoRequestListener extends BaseRequestListener{
         BaseTest result= (BaseTest)o;
 
         if(result != null){
-            android.util.Log.i("tag", "resultCode:"+result.getCode() +" msg:"+result.getMsg()+" data:"+result.getData());
+            android.util.Log.i("tag", "resultCode-:"+result.getCode() +" msg:"+result.getMsg()+" data:"+result.getData());
             if(mListener != null && result.getCode().equals("200")){
                 mListener.onRequestSuccess(o);
             }

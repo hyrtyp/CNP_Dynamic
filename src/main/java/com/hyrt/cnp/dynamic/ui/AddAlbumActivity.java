@@ -8,10 +8,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.hyrt.cnp.base.account.model.Album;
+import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.model.Comment;
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.fragment.MyAblumsFragment;
 import com.hyrt.cnp.dynamic.request.MyAddAblumRequest;
+import com.hyrt.cnp.dynamic.request.MyAlbumRequest;
 import com.hyrt.cnp.dynamic.requestListener.MyAddAblumRequestListener;
+import com.hyrt.cnp.dynamic.requestListener.MyAlbumRequestListener;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -25,11 +30,21 @@ public class AddAlbumActivity extends BaseActivity{
     private EditText etName;
     private MenuItem sendbtn;
 
+    private Album mAlbum;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_album);
+        mAlbum = (Album) getIntent().getSerializableExtra("album");
         findView();
+        if(mAlbum != null){
+            etDescribe.setText(mAlbum.getSimpleAlbumDesc());
+            etName.setText(mAlbum.getAlbumName());
+            if(sendbtn != null){
+                sendbtn.setEnabled(true);
+            }
+        }
         setListener();
     }
 
@@ -70,31 +85,48 @@ public class AddAlbumActivity extends BaseActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getTitle().equals("确定")){
-            MyAddAblumRequestListener requestListener = new MyAddAblumRequestListener(this);
-            requestListener.setListener(mAddAblumRequestListener);
-            MyAddAblumRequest request = new MyAddAblumRequest(
-                    Comment.Model3.class, this,
-                    etName.getText().toString(),
-                    etDescribe.getText().toString());
-            spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
-                    requestListener.start());
+            if(mAlbum == null){
+                MyAddAblumRequestListener requestListener = new MyAddAblumRequestListener(this);
+                requestListener.setListener( new MyAddAblumRequestListener.RequestListener() {
+                    @Override
+                    public void onRequestSuccess(Object data) {
+                        setResult(ChangeAlbumActivity.RESULT_FOR_ADD_ALBUM);
+                        finish();
+                    }
+
+                    @Override
+                    public void onRequestFailure(SpiceException e) {}
+                });
+                MyAddAblumRequest request = new MyAddAblumRequest(
+                        Comment.Model3.class, this,
+                        etName.getText().toString(),
+                        etDescribe.getText().toString());
+                spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                        requestListener.start());
+            }else{
+                MyAlbumRequestListener requestListener = new MyAlbumRequestListener(this);
+                requestListener.setListener(new MyAlbumRequestListener.RequestListener() {
+                    @Override
+                    public void onRequestSuccess(Object data) {
+                        setResult(MyAblumsFragment.RESULT_FOR_ADD_ALBUM);
+                        finish();
+                    }
+
+                    @Override
+                    public void onRequestFailure(SpiceException e) {}
+                });
+                MyAlbumRequest request = new MyAlbumRequest(
+                        BaseTest.class, this, mAlbum.getPaId()+"",
+                        etName.getText().toString(),
+                        etDescribe.getText().toString());
+                spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                        requestListener.start());
+            }
+
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
-    MyAddAblumRequestListener.RequestListener mAddAblumRequestListener = new MyAddAblumRequestListener.RequestListener() {
-        @Override
-        public void onRequestSuccess(Object data) {
-            setResult(ChangeAlbumActivity.RESULT_FOR_ADD_ALBUM);
-            finish();
-        }
-
-        @Override
-        public void onRequestFailure(SpiceException e) {
-
-        }
-    };
 
     private void findView() {
         etName = (EditText) findViewById(R.id.et_album_name);

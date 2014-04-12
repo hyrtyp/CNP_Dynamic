@@ -12,23 +12,28 @@ import com.hyrt.cnp.base.account.service.AlbumService;
  */
 public class MyAlbumRequest extends BaseRequest{
 
-    private int type = 0;//0:获取专辑列表；2:删除专辑；3:修改专辑
+    private int type = 0;//0:获取专辑列表；1:删除专辑；2:修改专辑
     private String paid, albumName, describes;
 
     @Inject
     private AlbumService schoolListService;
     public MyAlbumRequest(Class clazz, Context context) {
         super(clazz, context);
+        this.type = 0;
     }
 
     public MyAlbumRequest(Class clazz, Context context, String paid) {
         super(clazz, context);
+        this.paid = paid;
         this.type = 1;
     }
 
     public MyAlbumRequest(Class clazz, Context context, String paid, String albumName, String describes) {
         super(clazz, context);
         this.type = 2;
+        this.paid = paid;
+        this.albumName = albumName;
+        this.describes = describes;
     }
 
     @Override

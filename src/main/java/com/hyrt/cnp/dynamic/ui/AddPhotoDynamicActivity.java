@@ -78,9 +78,9 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
     private MyAlbumRequestListener.RequestListener mAlbumRequestListener = new MyAlbumRequestListener.RequestListener() {
         @Override
-        public void onRequestSuccess(Album.Model data) {
+        public void onRequestSuccess(Object data) {
             datas.clear();
-            datas.addAll(data.getData());
+            datas.addAll(((Album.Model)data).getData());
             if(datas.size() > 0 && tvAblumText.getText().length() <= 0){
                 tvAblumText.setText(datas.get(0).getAlbumName());
                 selectAlbum = datas.get(0);
@@ -202,13 +202,12 @@ public class AddPhotoDynamicActivity extends BaseActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getTitle().equals("上传") && selectAlbum != null){
-            Toast.makeText(this, "paid:"+selectAlbum.getPaId()+" AlbumName:"+selectAlbum.getAlbumName(), 0).show();
             AddPhotoRequestListener requestListener = new AddPhotoRequestListener(this);
             requestListener.setListener(mAddPhotoRequestListener);
             AddPhotoRequest request =
                     new AddPhotoRequest(BaseTest.class, this, selectAlbum.getPaId()+"",
                             selectAlbum.getAlbumName(), etContent.getText().toString(), targetFile);
-            spiceManager.execute(request, request.getcachekey(), 0,
+            spiceManager.execute(request, request.getcachekey(), 1,
                     requestListener.start());
             return true;
         }
