@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hyrt.cnp.base.account.model.Album;
@@ -52,6 +53,11 @@ public class HomeInteractiveActivity extends BaseActivity {
     private LinearLayout ly_myindex;
     private LinearLayout ly_ablums;
 
+    private RelativeLayout layoutParentAlldynamic;
+    private RelativeLayout layoutParentAboutme;
+    private RelativeLayout layoutParentMyindex;
+    private RelativeLayout layoutParentAblums;
+
     private TextView tv_num_alldynamic;
     private TextView tv_num_aboutme;
     private TextView tv_num_myindex;
@@ -86,6 +92,11 @@ public class HomeInteractiveActivity extends BaseActivity {
         tv_num_aboutme = (TextView) findViewById(R.id.layout_bottom_aboutme_num);
         tv_num_myindex = (TextView) findViewById(R.id.layout_bottom_myindex_num);
         tv_num_ablums = (TextView) findViewById(R.id.layout_bottom_ablums_num);
+        layoutParentAlldynamic = (RelativeLayout) findViewById(R.id.layout_parent_alldynamic);
+        layoutParentAboutme = (RelativeLayout) findViewById(R.id.layout_parent_aboutme);
+        layoutParentMyindex = (RelativeLayout) findViewById(R.id.layout_parent_myindex);
+        layoutParentAblums = (RelativeLayout) findViewById(R.id.layout_parent_ablums);
+
         ly_ablums.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,6 +134,8 @@ public class HomeInteractiveActivity extends BaseActivity {
 
             }
         });
+
+
     }
 
     @Override
@@ -230,7 +243,7 @@ public class HomeInteractiveActivity extends BaseActivity {
     /**
      * fragment切换
      */
-    private void showFragment(int id) {
+  /*  private void showFragment(int id) {
         fragmentTransaction = fragmentManager.beginTransaction();//时候transaction来管理集合
         switch (id) {
             case 0:
@@ -259,7 +272,7 @@ public class HomeInteractiveActivity extends BaseActivity {
                 break;
         }
         fragmentTransaction.commit();//提交到ui线程中去
-    }
+    }*/
 
 
     private void showTitle(int id) {
@@ -269,6 +282,13 @@ public class HomeInteractiveActivity extends BaseActivity {
         mymenu.clear();
         switch (id) {
             case 0:
+                if(actionBar != null){
+                    actionBar.show();
+                }
+                layoutParentAblums.setBackground(null);
+                layoutParentAlldynamic.setBackgroundResource(R.drawable.bg_homeinter_item);
+                layoutParentAboutme.setBackground(null);
+                layoutParentMyindex.setBackground(null);
                 mymenu.add("发布动态")
                         .setIcon(R.drawable.editbtn)
                         .setShowAsAction(
@@ -276,6 +296,13 @@ public class HomeInteractiveActivity extends BaseActivity {
                 titletext.setText("全部动态");
                 break;
             case 1:
+                if(actionBar != null){
+                    actionBar.show();
+                }
+                layoutParentAblums.setBackground(null);
+                layoutParentAlldynamic.setBackground(null);
+                layoutParentAboutme.setBackgroundResource(R.drawable.bg_homeinter_item);
+                layoutParentMyindex.setBackground(null);
                 mymenu.add("abc")
                         .setIcon(R.drawable.actionbar_right)
                         .setShowAsAction(
@@ -283,6 +310,13 @@ public class HomeInteractiveActivity extends BaseActivity {
                 titletext.setText("与我相关");
                 break;
             case 2:
+                if(actionBar != null){
+                    actionBar.hide();
+                }
+                layoutParentAblums.setBackground(null);
+                layoutParentAlldynamic.setBackground(null);
+                layoutParentAboutme.setBackground(null);
+                layoutParentMyindex.setBackgroundResource(R.drawable.bg_homeinter_item);
                 mymenu.add("abc")
                         .setIcon(R.drawable.actionbar_right)
                         .setShowAsAction(
@@ -290,6 +324,13 @@ public class HomeInteractiveActivity extends BaseActivity {
                 titletext.setText("我的主页");
                 break;
             case 3:
+                if(actionBar != null){
+                    actionBar.show();
+                }
+                layoutParentAblums.setBackgroundResource(R.drawable.bg_homeinter_item);
+                layoutParentAlldynamic.setBackground(null);
+                layoutParentAboutme.setBackground(null);
+                layoutParentMyindex.setBackground(null);
                 mymenu.add("新建相册")
                         .setIcon(R.drawable.ic_actionbar_upload)
                         .setShowAsAction(

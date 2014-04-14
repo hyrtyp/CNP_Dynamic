@@ -44,7 +44,7 @@ public class MyAblumAdapter extends MySimpleAdapter{
                     if(mListener != null){
                         mListener.onClick(1, position);
                     }
-                }else if(view.getId() == R.id.item_album_image){
+                }else{
                     if(mListener != null){
                         mListener.onClick(2, position);
                     }
@@ -54,6 +54,7 @@ public class MyAblumAdapter extends MySimpleAdapter{
         btn_change_album.setOnClickListener(mOnClickListener);
         btn_del_album.setOnClickListener(mOnClickListener);
         item_album_image.setOnClickListener(mOnClickListener);
+        view.setOnClickListener(mOnClickListener);
         return view;
     }
 

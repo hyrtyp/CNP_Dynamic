@@ -62,7 +62,7 @@ public class DynamicAdapter extends MySimpleAdapter {
             imageView3.setVisibility(View.VISIBLE);
         }
 
-        if(list.get(position).gettContent()==null){
+        if(list.get(position).gettContent()==null || list.get(position).gettContent().length()<=0){
             tcontext.setVisibility(View.GONE);
         }else{
             tcontext.setVisibility(View.VISIBLE);

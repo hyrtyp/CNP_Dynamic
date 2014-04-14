@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.internal.view.SupportMenuInflater;
@@ -18,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -41,6 +43,9 @@ import com.hyrt.cnp.dynamic.requestListener.DynamicaddcommentRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.DynamiccommentRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.SendDynamicRequestListener;
 import com.jingdong.common.frame.BaseActivity;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
@@ -67,6 +72,9 @@ public class SendDynamicActivity extends BaseActivity{
     private ImageView photo;
     private TextView tvForwardContent;
     private RelativeLayout layoutInput;
+    private ImageView ivForwardPhoto;
+
+    private DisplayImageOptions mImageloaderoptions;
 
     private boolean hideKeyboard = false;
 
@@ -97,15 +105,38 @@ public class SendDynamicActivity extends BaseActivity{
         Intent intent = getIntent();
         type = intent.getIntExtra("type", TYPE_SEND);
         findView();
+        initImageLoader();
         if(type == TYPE_FORWARD){
             layoutForwardSpan.setVisibility(View.VISIBLE);
             btnAddAbout.setVisibility(View.VISIBLE);
             mDynamic = (Dynamic) intent.getSerializableExtra("dynamic");
             actionBar.setTitle("转发动态");
-            if(mDynamic.gettContent().length()>0){
-                tvForwardContent.setText(mDynamic.gettContent());
+
+            if(mDynamic.getbPicAry().size()>0){
+                ImageLoader.getInstance().displayImage(mDynamic.getsPicAry0(), ivForwardPhoto, mImageloaderoptions);
+                ivForwardPhoto.setVisibility(View.VISIBLE);
             }else{
-                tvForwardContent.setText(mDynamic.getContent());
+                ivForwardPhoto.setVisibility(View.GONE);
+            }
+            if(mDynamic.gettContent().length()>0){
+                LinearLayout layout_forward_content_span = (LinearLayout) findViewById(R.id.layout_forward_content_span);
+                LinearLayout.LayoutParams mParams = (LinearLayout.LayoutParams) layout_forward_content_span.getLayoutParams();
+                if(mParams == null){
+                    mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                }else{
+                    mParams.width = LinearLayout.LayoutParams.FILL_PARENT;
+                }
+                tvForwardContent.setText(mDynamic.gettContent());
+                tvForwardContent.setVisibility(View.VISIBLE);
+            }else{
+                LinearLayout layout_forward_content_span = (LinearLayout) findViewById(R.id.layout_forward_content_span);
+                LinearLayout.LayoutParams mParams = (LinearLayout.LayoutParams) layout_forward_content_span.getLayoutParams();
+                if(mParams == null){
+                    mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                }else{
+                    mParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                }
+                tvForwardContent.setVisibility(View.GONE);
             }
 
         }else if(type == TYPE_COMMENT){
@@ -120,6 +151,17 @@ public class SendDynamicActivity extends BaseActivity{
         }
         setListener();
         loadData();
+    }
+
+    public void initImageLoader(){
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+
+        mImageloaderoptions = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.cnp_spinner_inner)
+                .showImageOnFail(R.drawable.cnp_spinner_inner)
+                .showImageForEmptyUri(R.drawable.cnp_spinner_inner)
+                .cacheInMemory(true)
+                .build();
     }
 
     public void loadData(){
@@ -536,5 +578,6 @@ public class SendDynamicActivity extends BaseActivity{
         photo = (ImageView) findViewById(R.id.iv_photo1);
         tvForwardContent = (TextView) findViewById(R.id.tv_forward_content);
         layoutInput = (RelativeLayout) findViewById(R.id.layout_input);
+        ivForwardPhoto = (ImageView) findViewById(R.id.iv_forward_photo);
     }
 }

@@ -126,7 +126,7 @@ public class AlldynamicFragment extends Fragment {
             Toast.makeText(activity, "已经全部加载", Toast.LENGTH_SHORT).show();
         } else {
             more = model.getMore();
-            if (STATE.equals(REFRESH)) {//如果正在刷新就清空
+            if (STATE == null || STATE.equals(REFRESH)) {//如果正在刷新就清空
                 dynamics.clear();
             }
             dynamics.addAll(model.getData());

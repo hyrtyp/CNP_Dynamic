@@ -8,20 +8,25 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.Comment;
 import com.hyrt.cnp.base.account.model.DynamicPhoto;
+import com.hyrt.cnp.base.account.model.ItInfo;
 import com.hyrt.cnp.base.account.model.Photo;
 import com.hyrt.cnp.classroom.adapter.ClassRoomAdapter;
 import com.hyrt.cnp.classroom.view.Mylistview;
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
 import com.hyrt.cnp.dynamic.request.CommetListRequest;
 import com.hyrt.cnp.dynamic.request.DynamicaddcommentRequest;
+import com.hyrt.cnp.dynamic.request.ItInfoRequest;
 import com.hyrt.cnp.dynamic.requestListener.CommentListRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.DynamicaddcommentRequestListener;
+import com.hyrt.cnp.dynamic.requestListener.ItInfoRequestListener;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -40,6 +45,7 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
     private DynamicPhoto photo;
     private Album mAlbum;
     private ClassRoomAdapter classRoomAdapter;
+    private int type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +86,7 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         Intent intent = getIntent();
         photo=(DynamicPhoto)intent.getSerializableExtra("dynamicPhoto");
         mAlbum = (Album) intent.getSerializableExtra("album");
+        type = intent.getIntExtra("type", 0);
         photoname.setText(Html.fromHtml("照片名称：<font color='#6ecbd9'>"+photo.getIntroduce()+"</font>"));
             titletext.setText("班级相册");
             albumname.setText(Html.fromHtml("专辑名称：<font color='#6ecbd9'>"+mAlbum.getAlbumName()+"</font>"));

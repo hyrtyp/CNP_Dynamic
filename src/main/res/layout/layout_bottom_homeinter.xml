@@ -6,26 +6,24 @@
     android:layout_height="wrap_content"
     >
 
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
             android:background="@color/actionbar_bg"
-            android:padding="@dimen/view_margin_smallest"
             android:layout_alignBottom="@id/item_image">
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:id="@+id/layout_parent_alldynamic"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
                 android:layout_weight="1"
-                >
-
+                android:background="@drawable/bg_homeinter_item">
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -59,15 +57,12 @@
                     android:background="@drawable/bat_bg"
                     android:layout_alignRight="@id/layout_bottom_alldynamic"
                     android:visibility="gone"/>
-            </RelativeLayout>
-
+                </RelativeLayout>
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                >
-
+                android:id="@+id/layout_parent_aboutme"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1">
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -100,44 +95,18 @@
                     android:background="@drawable/bat_bg"
                     android:layout_alignRight="@id/layout_bottom_aboutme"
                     android:visibility="gone"/>
-            </RelativeLayout>
-
+                </RelativeLayout>
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-               >
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_centerInParent="true"
-                    android:id="@+id/layout_bottom_aboutme">
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1">
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/cnp_aboutme"
-                        android:layout_gravity="center_horizontal"
-                         />
-
-                    <TextView
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:layout_gravity="center_horizontal"
-                        android:textColor="@color/schoolindex_textcolor" />
-                </LinearLayout>
-            </RelativeLayout>
-
+                </RelativeLayout>
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                >
-
+                android:id="@+id/layout_parent_myindex"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1">
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -150,7 +119,7 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/cnp_myindex"
                         android:layout_gravity="center_horizontal"
-                         />
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -170,15 +139,12 @@
                     android:background="@drawable/bat_bg"
                     android:layout_alignRight="@id/layout_bottom_myindex"
                     android:visibility="gone"/>
-            </RelativeLayout>
-
+                </RelativeLayout>
             <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                >
-
+                android:id="@+id/layout_parent_ablums"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1">
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -211,8 +177,9 @@
                     android:background="@drawable/bat_bg"
                     android:layout_alignRight="@id/layout_bottom_ablums"
                     android:visibility="gone"/>
-            </RelativeLayout>
-        </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

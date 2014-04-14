@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,9 +60,15 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
     public static final int RESULT_FOR_CHANGE_ALBUM = 101;
 
+    private boolean inited = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(inited){
+           return;
+        }
+        inited = true;
         setContentView(R.layout.activity_add_ablum);
         findView();
         setListener();
@@ -201,7 +208,9 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if(item.getTitle().equals("上传") && selectAlbum != null){
+            android.util.Log.i("tag", "selectAlbum:"+selectAlbum.getAlbumName()+"-"+selectAlbum.getPaId());
             AddPhotoRequestListener requestListener = new AddPhotoRequestListener(this);
             requestListener.setListener(mAddPhotoRequestListener);
             AddPhotoRequest request =
@@ -219,6 +228,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
         @Override
         public void onRequestSuccess(Object o) {
             Toast.makeText(AddPhotoDynamicActivity.this, "发送成功", 0).show();
+            Intent intent = new Intent();
+            intent.setClass(AddPhotoDynamicActivity.this, DynamicPhotoListActivity.class);
+            intent.putExtra("album", selectAlbum);
+            startActivity(intent);
             finish();
         }
 

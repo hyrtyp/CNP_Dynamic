@@ -1,9 +1,11 @@
 package com.hyrt.cnp.dynamic.ui;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +30,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import uk.co.senab.photoview.PhotoView;
 
 /**
- * Created by GYH on 14-1-17.
+ * Created by Zoe on 14-4-12.
  */
 public class DynamicPhotoListActivity extends BaseActivity{
 
@@ -134,12 +136,18 @@ public class DynamicPhotoListActivity extends BaseActivity{
             }else if(view.getId() == R.id.pop_img){
 
             }
-            if(popWin != null){
-                popWin.dismiss();
-            }
+
             selectPhoto = null;
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(popWin != null){
+            popWin.dismiss();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,7 +162,13 @@ public class DynamicPhotoListActivity extends BaseActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getTitle().equals("新建相册")){
-            
+            /*View mPhotoPopView = LayoutInflater.from(this).inflate(R.layout.layout_dynamic_photo_dialog, null);
+            PopupWindow mPhotoPop = new PopupWindow(mPhotoPopView, RelativeLayout.LayoutParams.MATCH_PARENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT);
+
+            Dialog d = new Dialog(this, R.style.MyDialog);
+            d.setContentView(R.layout.layout_dynamic_photo_dialog);
+            d.show();*/
         }
         return super.onOptionsItemSelected(item);
     }

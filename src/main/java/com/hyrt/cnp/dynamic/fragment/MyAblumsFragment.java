@@ -3,24 +3,22 @@ package com.hyrt.cnp.dynamic.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.view.BounceListView;
 import com.hyrt.cnp.dynamic.R;
-import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
 import com.hyrt.cnp.dynamic.adapter.MyAblumAdapter;
 import com.hyrt.cnp.dynamic.request.MyAlbumRequest;
 import com.hyrt.cnp.dynamic.requestListener.MyAlbumRequestListener;
 import com.hyrt.cnp.dynamic.ui.AddAlbumActivity;
-import com.hyrt.cnp.dynamic.ui.ChangeAlbumActivity;
 import com.hyrt.cnp.dynamic.ui.DynamicPhotoListActivity;
 import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;
 import com.jingdong.common.frame.BaseActivity;
@@ -44,7 +42,7 @@ public class MyAblumsFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        Log.i("tag", "onCreateView");
         rootView=inflater.inflate(R.layout.fragment_myablums,container,false);
         initView();
         loadData();
@@ -73,6 +71,7 @@ public class MyAblumsFragment extends Fragment{
     }
 
     public void loadData(){
+        Log.i("tag", "loadData");
         activity = (HomeInteractiveActivity) getActivity();
         MyAlbumRequestListener sendwordRequestListener = new MyAlbumRequestListener(activity);
         MyAlbumRequest schoolRecipeRequest=new MyAlbumRequest(Album.Model.class,activity);
@@ -85,6 +84,7 @@ public class MyAblumsFragment extends Fragment{
      * */
 
     public void updateUI(Album.Model model){
+        Log.i("tag", "updateUI");
         if (model==null){
             LinearLayout linearLayout =(LinearLayout)rootView.findViewById(R.id.layout_bottom);
             linearLayout.setVisibility(View.VISIBLE);

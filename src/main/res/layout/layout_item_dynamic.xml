@@ -17,6 +17,7 @@
             android:id="@+id/dynamic_Avatar"
             android:layout_width="@dimen/cnp_dynamic_item_image_height"
             android:layout_height="@dimen/cnp_dynamic_item_image_height"
+            android:layout_marginTop="@dimen/view_margin_smallest"
             />
 
         <LinearLayout
@@ -80,10 +81,9 @@
 
     <TextView
         android:id="@+id/dynamic_dcontext"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         style="@style/medium_tv"
-        android:text=""
         android:padding="@dimen/view_margin_smallest"
         android:layout_marginTop="@dimen/view_margin_small"
         android:background="@drawable/shape_line" />

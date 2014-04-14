@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e0000000">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dynamic_photo_dialog"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/view_margin_small">
+        <TextView
+            android:id="@+id/tv_alter_album"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@style/medium_tv"
+            android:text="修改相册"
+            android:layout_marginTop="@dimen/view_margin_small"
+            android:layout_marginBottom="@dimen/view_margin_small"
+            android:gravity="center_horizontal"
+            android:textColor="@color/actionbar_bg"
+            />
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+        <TextView
+            android:id="@+id/tv_del_album"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@style/medium_tv"
+            android:text="删除相册"
+            android:layout_marginTop="@dimen/view_margin_small"
+            android:layout_marginBottom="@dimen/view_margin_small"
+            android:gravity="center_horizontal"
+            android:textColor="@color/actionbar_bg"
+            />
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dynamic_photo_dialog"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/view_margin_small">
+        <TextView
+            android:id="@+id/tv_cancle_dialog"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@style/medium_tv"
+            android:text="取消"
+            android:textColor="@color/actionbar_bg"
+            android:layout_marginTop="@dimen/view_margin_small"
+            android:layout_marginBottom="@dimen/view_margin_small"
+            android:gravity="center_horizontal"
+            />
+    </LinearLayout>
+</LinearLayout>

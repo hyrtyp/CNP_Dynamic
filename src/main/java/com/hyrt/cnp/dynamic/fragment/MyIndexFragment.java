@@ -1,5 +1,6 @@
 package com.hyrt.cnp.dynamic.fragment;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -73,7 +74,12 @@ public class MyIndexFragment extends Fragment{
         introview=(TextView)rootView.findViewById(R.id.intro);
         listView = (XListView)rootView.findViewById(R.id.dynamic_listview);
         faceviewbg=(ImageView)rootView.findViewById(R.id.imageView);
-        imageviewback.setVisibility(View.GONE);
+        imageviewback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().finish();
+            }
+        });
 
         android.util.Log.i("tag", "activity:"+activity);
         android.util.Log.i("tag", "activity.userDetail:"+activity.userDetail);
