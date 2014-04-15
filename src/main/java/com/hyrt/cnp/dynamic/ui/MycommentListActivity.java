@@ -11,6 +11,7 @@ import com.hyrt.cnp.base.account.model.ItInfo;
 import com.hyrt.cnp.base.view.XListView;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
+import com.hyrt.cnp.dynamic.adapter.MyCommnentListAdapter;
 import com.hyrt.cnp.dynamic.request.ItInfoRequest;
 import com.hyrt.cnp.dynamic.requestListener.ItInfoRequestListener;
 import com.jingdong.common.frame.BaseActivity;
@@ -33,7 +34,7 @@ public class MycommentListActivity extends BaseActivity{
     final private String HASDATA="hasdata";
     private String more="1";
 
-    private ListViewAdapter mAdapter;
+    private MyCommnentListAdapter mAdapter;
 
     private List<ItInfo> datas = new ArrayList<ItInfo>();
 
@@ -69,12 +70,12 @@ public class MycommentListActivity extends BaseActivity{
                 }
                 datas.addAll(data.getData());
                 if(mAdapter == null){
-                    String[] resKeys = new String[]{"getUserphoto", "getFromName", "getPosttime3",
+                    String[] resKeys = new String[]{"getFromName", "getPosttime3",
                             "getMsgTitle", "getMsgData"};
-                    int[] reses = new int[]{R.id.iv_comment_face, R.id.tv_comment_name,
+                    int[] reses = new int[]{R.id.tv_comment_name,
                             R.id.tv_comment_time, R.id.tv_comment_content,
                             R.id.tv_comment_content2};
-                    mAdapter = new ListViewAdapter(MycommentListActivity.this, datas, R.layout.comment_item, resKeys, reses);
+                    mAdapter = new MyCommnentListAdapter(MycommentListActivity.this, datas, R.layout.comment_item, resKeys, reses);
                     listView.setAdapter(mAdapter);
                 }else{
                     mAdapter.notifyDataSetChanged();

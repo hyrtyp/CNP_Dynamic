@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,11 +19,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hyrt.cnp.base.account.model.Album;
+import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.model.DynamicPhoto;
 import com.hyrt.cnp.classroom.adapter.ClassRoomAdapter;
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.fragment.MyAblumsFragment;
 import com.hyrt.cnp.dynamic.request.DynamicPhotoListRequest;
+import com.hyrt.cnp.dynamic.request.MyAlbumRequest;
 import com.hyrt.cnp.dynamic.requestListener.DynamicPhotoListRequestListener;
+import com.hyrt.cnp.dynamic.requestListener.MyAlbumRequestListener;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -41,6 +46,11 @@ public class DynamicPhotoListActivity extends BaseActivity{
     private TextView bottom_num;
 
     private DynamicPhoto selectPhoto;
+    private Dialog mPhotoSelctDialog;
+
+    private boolean midified = false;
+
+    private static final int RESULT_FOR_ADD_ALBUM = 103;
 
     private Album mAlbum;
 
@@ -162,16 +172,82 @@ public class DynamicPhotoListActivity extends BaseActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getTitle().equals("新建相册")){
-            /*View mPhotoPopView = LayoutInflater.from(this).inflate(R.layout.layout_dynamic_photo_dialog, null);
-            PopupWindow mPhotoPop = new PopupWindow(mPhotoPopView, RelativeLayout.LayoutParams.MATCH_PARENT,
-                    RelativeLayout.LayoutParams.MATCH_PARENT);
+            if(mPhotoSelctDialog == null){
+                mPhotoSelctDialog = new Dialog(this, R.style.MyDialog);
+                mPhotoSelctDialog.setContentView(R.layout.layout_dynamic_photo_dialog);
+                mPhotoSelctDialog.getWindow().setLayout(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                LinearLayout layout_dialog_parent = (LinearLayout) mPhotoSelctDialog.findViewById(R.id.layout_dialog_parent);
+                TextView tv_alter_album = (TextView) mPhotoSelctDialog.findViewById(R.id.tv_alter_album);
+                TextView tv_del_album = (TextView) mPhotoSelctDialog.findViewById(R.id.tv_del_album);
+                TextView tv_cancle_dialog = (TextView) mPhotoSelctDialog.findViewById(R.id.tv_cancle_dialog);
 
-            Dialog d = new Dialog(this, R.style.MyDialog);
-            d.setContentView(R.layout.layout_dynamic_photo_dialog);
-            d.show();*/
+                View.OnClickListener mLayoutOnClickListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(view.getId() == R.id.tv_alter_album){
+                            Intent intent = new Intent();
+                            intent.setClass(DynamicPhotoListActivity.this, AddAlbumActivity.class);
+                            intent.putExtra("album", mAlbum);
+                            DynamicPhotoListActivity.this
+                                    .startActivityForResult(intent, RESULT_FOR_ADD_ALBUM);
+                        }else if(view.getId() == R.id.tv_del_album){
+                            MyAlbumRequestListener requestListener =
+                                    new MyAlbumRequestListener(DynamicPhotoListActivity.this);
+                            requestListener.setListener(mAlbumRequestListener);
+                            MyAlbumRequest request = new MyAlbumRequest(
+                                    BaseTest.class,
+                                    DynamicPhotoListActivity.this,
+                                    mAlbum.getPaId()+"");
+                            (DynamicPhotoListActivity.this).spiceManager.execute(
+                                    request, request.getcachekey(), 1,
+                                    requestListener.start());
+                        }
+                        mPhotoSelctDialog.dismiss();
+                    }
+                };
+                layout_dialog_parent.setOnClickListener(mLayoutOnClickListener);
+                tv_alter_album.setOnClickListener(mLayoutOnClickListener);
+                tv_del_album.setOnClickListener(mLayoutOnClickListener);
+                tv_cancle_dialog.setOnClickListener(mLayoutOnClickListener);
+            }
+            mPhotoSelctDialog.show();
+            return true;
+        }else if(item.getItemId() == android.R.id.home){
+            if(midified){
+                setResult(RESULT_FOR_ADD_ALBUM);
+            }
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(KeyEvent.KEYCODE_BACK == event.getKeyCode()){
+            if(midified){
+                setResult(RESULT_FOR_ADD_ALBUM);
+            }
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    MyAlbumRequestListener.RequestListener mAlbumRequestListener = new MyAlbumRequestListener.RequestListener() {
+        @Override
+        public void onRequestSuccess(Object data) {
+            setResult(RESULT_FOR_ADD_ALBUM);
+            finish();
+        }
+
+        @Override
+        public void onRequestFailure(SpiceException e) {
+
+        }
+    };
 
     private void loadData(){
         DynamicPhotoListRequestListener sendwordRequestListener = new DynamicPhotoListRequestListener(this);
@@ -179,6 +255,18 @@ public class DynamicPhotoListActivity extends BaseActivity{
         DynamicPhotoListRequest schoolRecipeRequest=new DynamicPhotoListRequest(DynamicPhoto.Model.class,this,mAlbum.getPaId());
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_FOR_ADD_ALBUM
+                && data != null
+                && data.getSerializableExtra("album") != null){
+            mAlbum = (Album) data.getSerializableExtra("album");
+            titletext.setText(mAlbum.getAlbumName());
+            midified = true;
+        }
     }
 
     private DynamicPhotoListRequestListener.RequestListener mPhotoListRequestListener =
@@ -192,6 +280,10 @@ public class DynamicPhotoListActivity extends BaseActivity{
         public void onRequestFailure(SpiceException e) {
         }
     };
+
+    public void finishActivity(){
+
+    }
 
     @Override
     protected void onDestroy() {

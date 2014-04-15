@@ -125,7 +125,7 @@ public class MyAblumsFragment extends Fragment{
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), DynamicPhotoListActivity.class);
                 intent.putExtra("album", data);
-                startActivity(intent);
+                startActivityForResult(intent, RESULT_FOR_ADD_ALBUM);
             }
 
         }

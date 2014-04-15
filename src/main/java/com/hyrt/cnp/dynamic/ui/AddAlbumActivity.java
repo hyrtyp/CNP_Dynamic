@@ -1,5 +1,6 @@
 package com.hyrt.cnp.dynamic.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.text.Editable;
@@ -108,7 +109,11 @@ public class AddAlbumActivity extends BaseActivity{
                 requestListener.setListener(new MyAlbumRequestListener.RequestListener() {
                     @Override
                     public void onRequestSuccess(Object data) {
-                        setResult(MyAblumsFragment.RESULT_FOR_ADD_ALBUM);
+                        Intent mData = new Intent();
+                        mAlbum.setAlbumName(etName.getText().toString());
+                        mAlbum.setAlbumDesc(etDescribe.getText().toString());
+                        mData.putExtra("album", mAlbum);
+                        setResult(MyAblumsFragment.RESULT_FOR_ADD_ALBUM, mData);
                         finish();
                     }
 

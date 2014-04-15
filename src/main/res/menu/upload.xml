@@ -6,6 +6,5 @@
         android:enabled="false"
         android:showAsAction="always"
         android:title="上传"
-        android:actionLayout="@color/schoolindex_photo"
         />
 </menu>

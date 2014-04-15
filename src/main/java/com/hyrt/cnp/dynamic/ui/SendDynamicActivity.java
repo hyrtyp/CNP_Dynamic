@@ -49,6 +49,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
+import net.oschina.app.AppContext;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
@@ -74,7 +76,7 @@ public class SendDynamicActivity extends BaseActivity{
     private RelativeLayout layoutInput;
     private ImageView ivForwardPhoto;
 
-    private DisplayImageOptions mImageloaderoptions;
+
 
     private boolean hideKeyboard = false;
 
@@ -105,7 +107,6 @@ public class SendDynamicActivity extends BaseActivity{
         Intent intent = getIntent();
         type = intent.getIntExtra("type", TYPE_SEND);
         findView();
-        initImageLoader();
         if(type == TYPE_FORWARD){
             layoutForwardSpan.setVisibility(View.VISIBLE);
             btnAddAbout.setVisibility(View.VISIBLE);
@@ -113,7 +114,7 @@ public class SendDynamicActivity extends BaseActivity{
             actionBar.setTitle("转发动态");
 
             if(mDynamic.getbPicAry().size()>0){
-                ImageLoader.getInstance().displayImage(mDynamic.getsPicAry0(), ivForwardPhoto, mImageloaderoptions);
+                ImageLoader.getInstance().displayImage(mDynamic.getsPicAry0(), ivForwardPhoto, AppContext.getInstance().mImageloaderoptions);
                 ivForwardPhoto.setVisibility(View.VISIBLE);
             }else{
                 ivForwardPhoto.setVisibility(View.GONE);
@@ -151,17 +152,6 @@ public class SendDynamicActivity extends BaseActivity{
         }
         setListener();
         loadData();
-    }
-
-    public void initImageLoader(){
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
-
-        mImageloaderoptions = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.cnp_spinner_inner)
-                .showImageOnFail(R.drawable.cnp_spinner_inner)
-                .showImageForEmptyUri(R.drawable.cnp_spinner_inner)
-                .cacheInMemory(true)
-                .build();
     }
 
     public void loadData(){
@@ -367,8 +357,10 @@ public class SendDynamicActivity extends BaseActivity{
                 if(sendbtn != null){
                     if(charSequence.length()>0){
                         sendbtn.setEnabled(true);
+                        sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>发送</font>"));
                     }else{
                         sendbtn.setEnabled(false);
+                        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>发送</font>"));
                     }
                 }
             }
@@ -405,6 +397,7 @@ public class SendDynamicActivity extends BaseActivity{
         super.onResume();
         if (etContent.getText().length() > 0 && sendbtn != null) {
             sendbtn.setEnabled(true);
+            sendbtn.setTitle(Html.fromHtml("<font color='#000000'>发送</font>"));
         }if(type == TYPE_FORWARD){
             titletext.setText("转发动态");
         }else if(type == TYPE_COMMENT){
@@ -448,6 +441,7 @@ public class SendDynamicActivity extends BaseActivity{
                 setCheckable(false).
                 setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         sendbtn = menu.findItem(R.id.senddy);
+        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>发送</font>"));
         return true;
     }
 
@@ -475,7 +469,8 @@ public class SendDynamicActivity extends BaseActivity{
             }else{
                 comment.setInfoTitle(mComment.getInfoTitle());
             }
-            comment.setInfoUserId(mComment.getUserid()+"");
+            comment.setInfoUserId(mComment.getInfoUserId()+"");
+
             comment.setInfoNurseryId(mComment.getNursery_id()+"");
             comment.setInfoClassroomId(mComment.getInfoClassroomId()+"");
         }else{
@@ -491,13 +486,12 @@ public class SendDynamicActivity extends BaseActivity{
             comment.setInfoClassroomId(mDynamic.getClassRoomId()+"");
         }
         comment.setSiteid("50");
-        comment.setUrl("null");
         comment.setLstatus("Y");
         comment.setContent(etContent.getText().toString());
         comment.setReply("0");
-        comment.setRecontent("");
-        comment.setReuserId("");
-        comment.setReusername("");
+        comment.setRecontent(mComment.getRecontent());
+        comment.setReuserId(mComment.getReuserId());
+        comment.setReusername(mComment.getReusername());
         comment.setRedate("");
         DynamicaddcommentRequestListener sendwordRequestListener = new DynamicaddcommentRequestListener(this);
         sendwordRequestListener.setListener(mAddCommentRequestListener);

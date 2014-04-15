@@ -43,16 +43,25 @@
         style="@style/small_tv"
         android:layout_margin="@dimen/view_margin_small"
         />
-    <TextView
-        android:id="@+id/tv_comment_content2"
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        style="@style/small_tv"
-        android:layout_marginTop="0dp"
-        android:layout_marginLeft="@dimen/view_margin_small"
-        android:layout_marginBottom="@dimen/view_margin_small"
-        android:padding="@dimen/view_margin_small"
-        android:background="@drawable/shape_line"
-        />
+        android:paddingBottom="@dimen/view_margin_small">
+
+        <TextView
+            android:id="@+id/tv_comment_content2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@style/medium_tv"
+            android:padding="@dimen/view_margin_smallest"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/shape_line" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_border_horn"
+            android:layout_marginLeft="30dp"/>
+    </RelativeLayout>
+
 
 </LinearLayout>

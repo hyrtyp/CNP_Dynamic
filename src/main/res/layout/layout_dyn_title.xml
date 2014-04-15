@@ -78,17 +78,23 @@
         android:id="@+id/line_index"
         android:layout_alignParentBottom="true" />
     <LinearLayout
+        android:id="@+id/layout_title_top"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:background="#4c000000">
+        android:background="#33000000">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/actionbar_title_back"
-            android:layout_marginTop="0dp"
             android:layout_marginLeft="@dimen/view_margin_small"
             android:id="@+id/imageviewback"
             android:layout_gravity="center_vertical"/>
+
     </LinearLayout>
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#4cffffff"
+        android:layout_below="@id/layout_title_top"/>
 
 </RelativeLayout>

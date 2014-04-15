@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -130,8 +131,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 if(sendbtn != null){
                     if(etContent.getText().length() > 0 && targetFile != null){
                         sendbtn.setEnabled(true);
+                        sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
                     }else{
                         sendbtn.setEnabled(false);
+                        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
                     }
                 }
             }
@@ -151,6 +154,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 btnAddPhoto.setVisibility(View.VISIBLE);
                 if(sendbtn != null){
                     sendbtn.setEnabled(false);
+                    sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
                 }
             }
         });
@@ -161,6 +165,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
         super.onResume();
         if (etContent.getText().length() > 0 && targetFile != null && sendbtn != null) {
             sendbtn.setEnabled(true);
+            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
         }
     }
 
@@ -190,6 +195,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
                 if(etContent.getText().length() > 0 && sendbtn != null){
                     sendbtn.setEnabled(true);
+                    sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
                 }
             }
         }
@@ -203,6 +209,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 setCheckable(false).
                 setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         sendbtn = menu.findItem(R.id.upload);
+        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
         return true;
     }
 

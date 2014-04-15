@@ -10,6 +10,7 @@ import com.hyrt.cnp.base.account.model.ItInfo;
 import com.hyrt.cnp.base.view.XListView;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
+import com.hyrt.cnp.dynamic.adapter.MyForwardListAdapter;
 import com.hyrt.cnp.dynamic.request.ItInfoRequest;
 import com.hyrt.cnp.dynamic.requestListener.ItInfoRequestListener;
 import com.jingdong.common.frame.BaseActivity;
@@ -32,7 +33,7 @@ public class MyForwardListActivity extends BaseActivity{
     final private String HASDATA="hasdata";
     private String more="1";
 
-    private ListViewAdapter mAdapter;
+    private MyForwardListAdapter mAdapter;
 
     private List<ItInfo> datas = new ArrayList<ItInfo>();
 
@@ -69,12 +70,12 @@ public class MyForwardListActivity extends BaseActivity{
                 }
                 datas.addAll(data.getData());
                 if(mAdapter == null){
-                    String[] resKeys = new String[]{"getUserphoto", "getFromName", "getMsgTitle",
+                    String[] resKeys = new String[]{"getFromName", "getMsgTitle",
                             "getMsgData", "getPosttime3"};
-                    int[] reses = new int[]{R.id.iv_forward_face, R.id.tv_forward_name,
+                    int[] reses = new int[]{ R.id.tv_forward_name,
                             R.id.tv_forward_content, R.id.tv_forward_content2,
                             R.id.tv_forward_time};
-                    mAdapter = new ListViewAdapter(MyForwardListActivity.this, datas, R.layout.forward_item, resKeys, reses);
+                    mAdapter = new MyForwardListAdapter(MyForwardListActivity.this, datas, R.layout.forward_item, resKeys, reses);
                     listView.setAdapter(mAdapter);
                 }else{
                     mAdapter.notifyDataSetChanged();

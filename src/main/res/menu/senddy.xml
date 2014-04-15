@@ -5,6 +5,5 @@
         android:enabled="false"
         android:showAsAction="always"
         android:title="发送"
-        android:actionLayout="@color/schoolindex_photo"
         />
 </menu>

@@ -1,6 +1,7 @@
 package com.hyrt.cnp.dynamic.adapter;
 
 import android.content.Intent;
+import android.media.Image;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,6 +15,9 @@ import com.hyrt.cnp.dynamic.ui.DynamicCommentActivity;
 import com.hyrt.cnp.dynamic.ui.SendDynamicActivity;
 import com.jingdong.app.pad.adapter.MySimpleAdapter;
 import com.jingdong.common.frame.BaseActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import net.oschina.app.AppContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +44,34 @@ public class DynamicAdapter extends MySimpleAdapter {
         ImageView imageView2=(ImageView)view.findViewById(R.id.dynamic_image2);
         ImageView imageView3=(ImageView)view.findViewById(R.id.dynamic_image3);
         TextView tcontext=(TextView)view.findViewById(R.id.dynamic_dcontext);
+
+        Dynamic mDynamic = list.get(position);
+        imageView1.setImageDrawable(null);
+        imageView2.setImageDrawable(null);
+        imageView3.setImageDrawable(null);
+
+        if(mDynamic.getsPicAry0()!= null){
+            ImageLoader.getInstance().displayImage(
+                    mDynamic.getsPicAry0(),
+                    imageView1,
+                    AppContext.getInstance().mImageloaderoptions);
+        }
+        if(mDynamic.getsPicAry1()!= null){
+            ImageLoader.getInstance().displayImage(
+                    mDynamic.getsPicAry2(),
+                    imageView2,
+                    AppContext.getInstance().mImageloaderoptions);
+        }
+        if(mDynamic.getsPicAry2()!= null){
+            ImageLoader.getInstance().displayImage(
+                    mDynamic.getsPicAry2(),
+                    imageView3,
+                    AppContext.getInstance().mImageloaderoptions);
+        }
+
+
         final int posi=position;
+
         if(list.get(position).getContent().equals("")){
             textView.setVisibility(View.GONE);
         }else{

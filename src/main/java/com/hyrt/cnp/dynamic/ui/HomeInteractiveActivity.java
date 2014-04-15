@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.base.account.model.UserDetail;
+import com.hyrt.cnp.base.view.MyViewPager;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.fragment.AboutmeFragment;
 import com.hyrt.cnp.dynamic.fragment.AlldynamicFragment;
@@ -41,7 +42,7 @@ public class HomeInteractiveActivity extends BaseActivity {
     public MyAblumsFragment myAblumsFragment = null;//动感相册
     public static ArrayList<Fragment> pages = new ArrayList<Fragment>();
     private HomeinterPageAdapter homeinterPageAdapter = null;
-    private ViewPager homeViewpager = null;
+    private MyViewPager homeViewpager = null;
 
     private Menu mymenu;//菜单
 
@@ -174,7 +175,8 @@ public class HomeInteractiveActivity extends BaseActivity {
 //        fragmentTransaction.commit();//提交到ui线程中去
 
         homeinterPageAdapter = new HomeinterPageAdapter(fragmentManager);
-        homeViewpager = (ViewPager) findViewById(R.id.pager);
+        homeViewpager = (MyViewPager) findViewById(R.id.pager);
+        homeViewpager.setScrollable(false);
         homeViewpager.setAdapter(homeinterPageAdapter);
         homeViewpager.setOffscreenPageLimit(0);
         homeViewpager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -218,6 +220,7 @@ public class HomeInteractiveActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        android.util.Log.i("tag", "onActivityResult-resultCode:"+resultCode);
         if(resultCode == MyAblumsFragment.RESULT_FOR_ADD_ALBUM){
             if (myAblumsFragment == null) {
                 myAblumsFragment = (MyAblumsFragment) pages.get(3);
