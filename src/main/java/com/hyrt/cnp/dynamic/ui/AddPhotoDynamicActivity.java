@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.text.Editable;
 import android.text.Html;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.utils.FileUtils;
 import com.hyrt.cnp.base.account.utils.PhotoUpload;
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.adapter.AddPhotoAdapter;
 import com.hyrt.cnp.dynamic.request.AddPhotoRequest;
 import com.hyrt.cnp.dynamic.request.MyAlbumRequest;
 import com.hyrt.cnp.dynamic.requestListener.AddPhotoRequestListener;
@@ -34,9 +37,20 @@ import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Zoe on 2014-04-08.
@@ -49,6 +63,9 @@ public class AddPhotoDynamicActivity extends BaseActivity{
     private ImageView btnAddPhoto;
     private MenuItem sendbtn;
     private ImageView photo;
+    private GridView gvPhoto;
+
+    private AddPhotoAdapter mAdapter;
 
     private Uri faceFile;
     private PhotoUpload photoUpload;
@@ -58,8 +75,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
     private Album selectAlbum;
 
     private List<Album> datas = new ArrayList<Album>();
+    private ArrayList<String> checkeds = new ArrayList<String>();
 
     public static final int RESULT_FOR_CHANGE_ALBUM = 101;
+    public static final int RESULT_FOR_PHONE_ALBUM = 102;
 
     private boolean inited = false;
 
@@ -72,6 +91,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
         inited = true;
         setContentView(R.layout.activity_add_ablum);
         findView();
+
+        mAdapter = new AddPhotoAdapter(checkeds, this);
+        gvPhoto.setAdapter(mAdapter);
+
         setListener();
         loadData();
     }
@@ -110,6 +133,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 photoUpload = new PhotoUpload(AddPhotoDynamicActivity.this, faceFile);
 //                photoUpload.setRang(true);
                 photoUpload.choiceItem();
+
+                /*Intent intent = new Intent();
+                intent.setClass(AddPhotoDynamicActivity.this, AlbumBrowserActivity.class);
+                startActivity(intent);*/
             }
         });
 
@@ -129,7 +156,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 if(sendbtn != null){
-                    if(etContent.getText().length() > 0 && targetFile != null){
+                    if(etContent.getText().length() > 0 && checkeds.size() > 0){
                         sendbtn.setEnabled(true);
                         sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
                     }else{
@@ -152,9 +179,33 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 TextView textview = (TextView) findViewById(R.id.tv_add_photo_text);
                 textview.setVisibility(View.VISIBLE);
                 btnAddPhoto.setVisibility(View.VISIBLE);
-                if(sendbtn != null){
+                if(sendbtn != null && checkeds.size() <= 0){
                     sendbtn.setEnabled(false);
                     sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
+                }
+            }
+        });
+
+        mAdapter.setOnClickListener(new AddPhotoAdapter.OnClickListener() {
+            @Override
+            public void onClick(int type, int position) {
+                if(type == 0){
+                    Intent intent = new Intent();
+                    intent.setClass(AddPhotoDynamicActivity.this, AlbumBrowserActivity.class);
+                    intent.putStringArrayListExtra("checkeds", checkeds);
+                    startActivityForResult(intent, AddPhotoDynamicActivity.RESULT_FOR_PHONE_ALBUM);
+                }else{
+                    checkeds.remove(checkeds.get(position));
+                    mAdapter.notifyDataSetChanged();
+                    if(sendbtn != null){
+                        if(etContent.getText().length() > 0 && checkeds.size() > 0){
+                            sendbtn.setEnabled(true);
+                            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
+                        }else{
+                            sendbtn.setEnabled(false);
+                            sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
+                        }
+                    }
                 }
             }
         });
@@ -163,7 +214,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        if (etContent.getText().length() > 0 && targetFile != null && sendbtn != null) {
+        if (etContent.getText().length() > 0 && checkeds.size() > 0 && sendbtn != null) {
             sendbtn.setEnabled(true);
             sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
         }
@@ -179,23 +230,40 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                     selectAlbum = tempSelectAlbum;
                     tvAblumText.setText(selectAlbum.getAlbumName());
                 }
-            }else if (requestCode == PhotoUpload.PHOTO_ZOOM && data.getParcelableExtra("data") != null) {
+            }else if (requestCode == PhotoUpload.FROM_CAMERA && data.getParcelableExtra("data") != null) {
                 //保存剪切好的图片
                 bitmap = data.getParcelableExtra("data");
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                targetFile = FileUtils.writeFile(baos.toByteArray(), "cnp", "dynamic_upload_photo.png");
-
-                BitmapDrawable bd = new BitmapDrawable(bitmap);
+                targetFile = FileUtils.writeFile(baos.toByteArray(), "cnp", "dynamic_upload_photo"+System.currentTimeMillis()+".png");
+                android.util.Log.i("tag", "getPath():"+targetFile.getPath());
+                checkeds.add(targetFile.getPath());
+                mAdapter.notifyDataSetChanged();
+               /* BitmapDrawable bd = new BitmapDrawable(bitmap);
                 photo.setBackground(bd);
                 photo.setVisibility(View.VISIBLE);
                 TextView textview = (TextView) findViewById(R.id.tv_add_photo_text);
                 textview.setVisibility(View.GONE);
-                btnAddPhoto.setVisibility(View.GONE);
+                btnAddPhoto.setVisibility(View.GONE);*/
 
                 if(etContent.getText().length() > 0 && sendbtn != null){
                     sendbtn.setEnabled(true);
                     sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
+                }
+            }else if(resultCode == RESULT_FOR_PHONE_ALBUM){
+                if(data.getSerializableExtra("checkeds") != null){
+                    checkeds.clear();
+                    checkeds.addAll(data.getStringArrayListExtra("checkeds"));
+                    mAdapter.notifyDataSetChanged();
+                    if(sendbtn != null){
+                        if(etContent.getText().length() > 0 && checkeds.size() > 0){
+                            sendbtn.setEnabled(true);
+                            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
+                        }else{
+                            sendbtn.setEnabled(false);
+                            sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
+                        }
+                    }
                 }
             }
         }
@@ -254,6 +322,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
         tvAblumText = (TextView) findViewById(R.id.tv_ablum_text);
         btnAddPhoto = (ImageView) findViewById(R.id.btn_add_photo);
         photo = (ImageView) findViewById(R.id.iv_photo1);
+        gvPhoto = (GridView) findViewById(R.id.gv_photo);
     }
 
 

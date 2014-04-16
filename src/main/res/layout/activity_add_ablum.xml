@@ -53,13 +53,25 @@
             android:textColor="@android:color/darker_gray" />
     </RelativeLayout>
 
+    <GridView
+        android:id="@+id/gv_photo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:numColumns="4"
+        android:horizontalSpacing="@dimen/view_margin_smallest"
+        android:verticalSpacing="@dimen/view_margin_smallest"
+        android:layout_marginTop="@dimen/view_margin_small"
+        android:padding="@dimen/view_margin_small"/>
+
     <LinearLayout
         android:id="@+id/layout_add_photo"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/view_margin_small"
         android:background="@android:color/white"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
