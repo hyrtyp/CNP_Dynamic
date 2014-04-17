@@ -65,7 +65,6 @@ public class AboutFriendActivity extends BaseActivity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ClassRoomBabay crb = datas.get(i-1);
-                Toast.makeText(AboutFriendActivity.this, crb.getRenname()+":"+crb.getUser_id(), 0).show();
                 Intent data = new Intent();
                 data.putExtra("name", crb.getRenname());
                 data.putExtra("uid", crb.getUser_id());

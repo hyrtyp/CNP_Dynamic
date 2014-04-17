@@ -98,10 +98,8 @@ public class CommentListActivity extends BaseActivity{
             comments.clear();
             comments.addAll(model.getData());
             if(dynamicAdapter==null){
-                String[] resKeys=new String[]{"getphotoImage","getUsername",
-                        "getContent","getCreatdate2"};
-                int[] reses=new int[]{R.id.comment_photo,R.id.comment_name,
-                        R.id.comment_context,R.id.comment_time};
+                String[] resKeys=new String[]{"getphotoImage","getUsername","getCreatdate2"};
+                int[] reses=new int[]{R.id.comment_photo,R.id.comment_name,R.id.comment_time};
                 dynamicAdapter = new CommentListAdapter(this, comments,R.layout.layout_commentitem,resKeys,reses, dynamic, comments);
                 xListView.setAdapter(dynamicAdapter);
             }else{

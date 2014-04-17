@@ -9,11 +9,13 @@ import com.hyrt.cnp.dynamic.ui.DynamicCommentActivity;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
 /**
- * Created by HY on 2014-04-10.
+ * Created by Zoe on 2014-04-10.
  */
 public class SendDynamicRequestListener extends BaseRequestListener{
 
     private requestListener mListener;
+
+    private final String TAG = "SendDynamicRequestListener";
 
     public SendDynamicRequestListener(Activity context) {
         super(context);

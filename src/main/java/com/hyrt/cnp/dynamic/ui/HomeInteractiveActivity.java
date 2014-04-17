@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.base.account.model.UserDetail;
+import com.hyrt.cnp.base.account.utils.StringUtils;
 import com.hyrt.cnp.base.view.MyViewPager;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.fragment.AboutmeFragment;

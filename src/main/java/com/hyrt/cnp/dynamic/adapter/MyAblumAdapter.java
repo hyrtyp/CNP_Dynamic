@@ -9,6 +9,9 @@ import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.dynamic.R;
 import com.jingdong.app.pad.adapter.MySimpleAdapter;
 import com.jingdong.common.frame.BaseActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import net.oschina.app.AppContext;
 
 import java.util.List;
 
@@ -32,6 +35,12 @@ public class MyAblumAdapter extends MySimpleAdapter{
         TextView btn_change_album = (TextView) view.findViewById(R.id.btn_change_album);
         TextView btn_del_album = (TextView) view.findViewById(R.id.btn_del_album);
         ImageView item_album_image = (ImageView) view.findViewById(R.id.item_album_image);
+
+        item_album_image.setImageDrawable(null);
+        ImageLoader.getInstance().displayImage(
+                datas.get(position).getImagepath(),
+                item_album_image
+                , AppContext.getInstance().mImageloaderoptions);
 
         View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override

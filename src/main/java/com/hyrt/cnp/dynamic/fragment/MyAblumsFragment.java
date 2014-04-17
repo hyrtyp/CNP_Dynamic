@@ -92,8 +92,8 @@ public class MyAblumsFragment extends Fragment{
             bottom_num.setText("暂无信息");
         }else{
             this.model=model;
-            String[] resKeys=new String[]{"getImagepath","getAlbumName","getAlbumDesc","getPosttime2"};
-            int[] reses=new int[]{R.id.item_album_image,R.id.item_album_title,R.id.tv_photo_describe,R.id.tv_photo_time};
+            String[] resKeys=new String[]{"getAlbumName","getAlbumDesc","getPosttime2"};
+            int[] reses=new int[]{R.id.item_album_title,R.id.tv_photo_describe,R.id.tv_photo_time};
             listViewAdapter = new MyAblumAdapter(activity,model.getData(),R.layout.dynamic_album_item,resKeys,reses);
             listViewAdapter.setListener(mAblumAdapter);
             if(listview != null){

@@ -19,7 +19,10 @@ import com.hyrt.cnp.dynamic.adapter.DynamicAdapter;
 import com.hyrt.cnp.dynamic.request.BabayDynamicRequest;
 import com.hyrt.cnp.dynamic.requestListener.MyIndexRequestListener;
 import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.octo.android.robospice.persistence.DurationInMillis;
+
+import net.oschina.app.AppContext;
 
 import java.util.ArrayList;
 
@@ -87,12 +90,20 @@ public class MyIndexFragment extends Fragment{
             nameview.setText(activity.userDetail.getData().getRenname());
             introview.setText(activity.userDetail.getData().getTimeText());
 
-            String facePath = FaceUtils.getAvatar(activity.userDetail.getData().getUser_id(), FaceUtils.FACE_BIG);
-            activity.showDetailImage(facePath + "?time=" +activity.userDetail.getData().getLogo(), faceview, false);
+            String facePath = FaceUtils.getAvatar(
+                    activity.userDetail.getData().getUser_id(),
+                    FaceUtils.FACE_BIG);
+            ImageLoader.getInstance().displayImage(
+                    facePath + "?time=" + activity.userDetail.getData().getLogo(),
+                    faceview, AppContext.getInstance().mImageloaderoptions);
+//            activity.showDetailImage(facePath + "?time=" +activity.userDetail.getData().getLogo(), faceview, false);
 
             //加载头像地址
             String faceBgPath = FaceUtils.getAvatar(activity.userDetail.getData().getUser_id(), FaceUtils.FACE_BG);
-            activity.showDetailImage(faceBgPath, faceviewbg, true);
+            ImageLoader.getInstance().displayImage(
+                    faceBgPath,
+                    faceviewbg, AppContext.getInstance().mImageloaderoptions);
+//            activity.showDetailImage(faceBgPath, faceviewbg, true);
         }
 
 

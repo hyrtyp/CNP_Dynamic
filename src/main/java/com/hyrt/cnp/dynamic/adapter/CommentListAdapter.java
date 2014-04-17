@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.hyrt.cnp.base.account.model.Comment;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.base.account.model.ItInfo;
+import com.hyrt.cnp.base.account.utils.StringUtils;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.ui.CommentListActivity;
 import com.hyrt.cnp.dynamic.ui.SendDynamicActivity;
@@ -40,6 +41,11 @@ public class CommentListAdapter extends MySimpleAdapter{
     public View getView(final int position, View paramView, ViewGroup paramViewGroup) {
         View view = super.getView(position, paramView, paramViewGroup);
         TextView btn_comment = (TextView) view.findViewById(R.id.btn_comment);
+
+        TextView comment_context = (TextView) view.findViewById(R.id.comment_context);
+        comment_context.setText(StringUtils.getSpannableString(datas.get(position).getContent(), mActivity));
+
+
         btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

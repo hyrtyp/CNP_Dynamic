@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hyrt.cnp.base.account.model.Dynamic;
+import com.hyrt.cnp.base.account.utils.StringUtils;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.ui.CommentListActivity;
 import com.hyrt.cnp.dynamic.ui.DynamicCommentActivity;
@@ -43,12 +44,14 @@ public class DynamicAdapter extends MySimpleAdapter {
         ImageView imageView1=(ImageView)view.findViewById(R.id.dynamic_image1);
         ImageView imageView2=(ImageView)view.findViewById(R.id.dynamic_image2);
         ImageView imageView3=(ImageView)view.findViewById(R.id.dynamic_image3);
+        ImageView dynamic_Avatar = (ImageView) view.findViewById(R.id.dynamic_Avatar);
         TextView tcontext=(TextView)view.findViewById(R.id.dynamic_dcontext);
 
         Dynamic mDynamic = list.get(position);
         imageView1.setImageDrawable(null);
         imageView2.setImageDrawable(null);
         imageView3.setImageDrawable(null);
+        dynamic_Avatar.setImageDrawable(null);
 
         if(mDynamic.getsPicAry0()!= null){
             ImageLoader.getInstance().displayImage(
@@ -69,6 +72,13 @@ public class DynamicAdapter extends MySimpleAdapter {
                     AppContext.getInstance().mImageloaderoptions);
         }
 
+        ImageLoader.getInstance().displayImage(
+                mDynamic.getUserphoto(),
+                dynamic_Avatar,
+                AppContext.getInstance().mImageloaderoptions);
+
+        textView.setText(StringUtils.getSpannableString(mDynamic.getContent2(), activity));
+        tcontext.setText(StringUtils.getSpannableString(mDynamic.gettContent(), activity));
 
         final int posi=position;
 
