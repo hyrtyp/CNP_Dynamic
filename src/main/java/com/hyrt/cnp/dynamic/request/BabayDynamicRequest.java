@@ -16,12 +16,16 @@ public class BabayDynamicRequest extends BaseRequest {
     private DynamicService schoolListService;
     private String uid;
     private String more;
+    private String did;
     private boolean isAll;
+    private int type;//0:动态；1.转发
+
     public BabayDynamicRequest(Class clazz, Context context,String uid,String more) {
         super(clazz, context);
         this.uid=uid;
         this.more=more;
         isAll = false;
+        this.type = 0;
     }
 
     public BabayDynamicRequest(Class clazz, Context context,String uid,String more, boolean isAll) {
@@ -29,15 +33,29 @@ public class BabayDynamicRequest extends BaseRequest {
         this.uid=uid;
         this.more=more;
         this.isAll = isAll;
+        this.type = 0;
+    }
+
+    public BabayDynamicRequest(Class clazz, Context context,String uid, String did, String more) {
+        super(clazz, context);
+        this.uid=uid;
+        this.more=more;
+        this.type = 1;
+        this.did = did;
     }
 
     @Override
     public Base run() {
-        if(more.equals("1")){
-            return schoolListService.getBabayDynamicData(getRestTemplate(),uid, isAll);
+        if(type == 1){
+            return schoolListService.getBabayDynamicData(getRestTemplate(),uid, did);
         }else{
-            return schoolListService.getBabayDynamicMoreData(getRestTemplate(), uid, more, isAll);
+            if(more.equals("1")){
+                return schoolListService.getBabayDynamicData(getRestTemplate(),uid, isAll);
+            }else{
+                return schoolListService.getBabayDynamicMoreData(getRestTemplate(), uid, more, isAll);
+            }
         }
+
     }
 
 

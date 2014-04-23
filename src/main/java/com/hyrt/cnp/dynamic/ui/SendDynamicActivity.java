@@ -1,12 +1,16 @@
 package com.hyrt.cnp.dynamic.ui;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.text.Editable;
 import android.text.Html;
@@ -36,6 +40,7 @@ import com.hyrt.cnp.base.account.utils.FileUtils;
 import com.hyrt.cnp.base.account.utils.PhotoUpload;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.BrowGridAdapter;
+import com.hyrt.cnp.dynamic.fragment.AlldynamicFragment;
 import com.hyrt.cnp.dynamic.request.DynamicCommentRequest;
 import com.hyrt.cnp.dynamic.request.DynamicaddcommentRequest;
 import com.hyrt.cnp.dynamic.request.SendDynamicRequest;
@@ -43,17 +48,15 @@ import com.hyrt.cnp.dynamic.requestListener.DynamicaddcommentRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.DynamiccommentRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.SendDynamicRequestListener;
 import com.jingdong.common.frame.BaseActivity;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
 import net.oschina.app.AppContext;
-import net.oschina.app.bean.Entity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -364,10 +367,10 @@ public class SendDynamicActivity extends BaseActivity{
                 if(sendbtn != null){
                     if(charSequence.length()>0){
                         sendbtn.setEnabled(true);
-                        sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>发送</font>"));
+//                        sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>发送</font>"));
                     }else{
                         sendbtn.setEnabled(false);
-                        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>发送</font>"));
+//                        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>发送</font>"));
                     }
                 }
             }
@@ -381,7 +384,6 @@ public class SendDynamicActivity extends BaseActivity{
             public void onClick(View view) {
                 faceFile = Uri.fromFile(FileUtils.createFile("cnp", "face_cover.png"));
                 photoUpload = new PhotoUpload(SendDynamicActivity.this, faceFile);
-//                photoUpload.setRang(true);
                 photoUpload.choiceItem();
             }
         });
@@ -399,12 +401,14 @@ public class SendDynamicActivity extends BaseActivity{
         });
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
         if (etContent.getText().length() > 0 && sendbtn != null) {
             sendbtn.setEnabled(true);
-            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>发送</font>"));
+//            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>发送</font>"));
         }
         if(type == TYPE_FORWARD){
             titletext.setText("转发动态");
@@ -438,6 +442,16 @@ public class SendDynamicActivity extends BaseActivity{
             TextView textview = (TextView) findViewById(R.id.tv_add_photo_text);
             textview.setVisibility(View.GONE);
             btnAddPhoto.setVisibility(View.GONE);
+        }else if(resultCode == AppContext.getInstance().RESULT_FOR_PHONE_ALBUM){
+            ArrayList<String> checkeds = data.getStringArrayListExtra("checkeds");
+            if(checkeds != null && checkeds.size() > 0){
+                ImageLoader.getInstance().displayImage("file:///"+checkeds.get(0), photo, AppContext.getInstance().mImageloaderoptions);
+                photo.setVisibility(View.VISIBLE);
+                TextView textview = (TextView) findViewById(R.id.tv_add_photo_text);
+                textview.setVisibility(View.GONE);
+                btnAddPhoto.setVisibility(View.GONE);
+                targetFile = new File("", checkeds.get(0));
+            }
         }
     }
 
@@ -449,7 +463,7 @@ public class SendDynamicActivity extends BaseActivity{
                 setCheckable(false).
                 setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         sendbtn = menu.findItem(R.id.senddy);
-        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>发送</font>"));
+//        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>发送</font>"));
         return true;
     }
 
@@ -551,7 +565,7 @@ public class SendDynamicActivity extends BaseActivity{
         @Override
         public void onRequestSuccess(Object data) {
             Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
-            setResult(1);
+            setResult(AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC);
             finish();
         }
 
@@ -576,6 +590,7 @@ public class SendDynamicActivity extends BaseActivity{
         @Override
         public void onRequestSuccess(Object data) {
             Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
+            setResult(AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC);
             finish();
         }
 
@@ -589,14 +604,17 @@ public class SendDynamicActivity extends BaseActivity{
         String toUid = "";
         String toName = "";
         Map<String, Integer> selectedAboutArray = findAboutName(etContent.getText().toString());
-        Iterator<Map.Entry<String, Integer>> it = selectedAboutArray.entrySet().iterator();
-        while(it.hasNext()){
-            Map.Entry<String, Integer> et = it.next();
-            toUid += et.getValue()+",";
-            toName += et.getKey()+",";
+        if(selectedAboutArray.size() > 0){
+            Iterator<Map.Entry<String, Integer>> it = selectedAboutArray.entrySet().iterator();
+            while(it.hasNext()){
+                Map.Entry<String, Integer> et = it.next();
+                toUid += et.getValue()+",";
+                toName += et.getKey()+",";
+            }
+            toUid.substring(0, toUid.length()-1);
+            toName.substring(0, toName.length()-1);
         }
-        toUid.substring(0, toUid.length()-1);
-        toName.substring(0, toName.length()-1);
+
 
         android.util.Log.i("tag", "targetFile:"+targetFile+" toUid:"+toUid+" toName:"+toName);
         SendDynamicRequest request = new SendDynamicRequest(this, etContent.getText().toString(), targetFile, toUid, toName);
@@ -609,6 +627,7 @@ public class SendDynamicActivity extends BaseActivity{
         @Override
         public void onRequestSuccess(Object o) {
             Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
+            setResult(AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC);
             finish();
         }
 

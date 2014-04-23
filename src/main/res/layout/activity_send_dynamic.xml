@@ -103,13 +103,13 @@
                 android:id="@+id/iv_photo1"
                 android:layout_width="@dimen/imageview_smallest"
                 android:layout_height="@dimen/imageview_smallest"
-                android:background="@drawable/babay1"
                 android:textColor="@android:color/darker_gray"
                 android:layout_marginTop="@dimen/view_margin_small"
                 android:layout_marginBottom="@dimen/view_margin_small"
                 android:layout_marginLeft="@dimen/view_margin_small"
                 android:layout_marginRight="0dp"
                 android:textSize="100dp"
+                android:scaleType="centerCrop"
                 android:visibility="gone"/>
         </LinearLayout>
         <ImageView

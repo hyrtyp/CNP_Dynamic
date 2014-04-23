@@ -2,6 +2,7 @@ package com.hyrt.cnp.dynamic.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -155,7 +156,7 @@ public class HomeInteractiveActivity extends BaseActivity {
         if (item.getTitle().equals("发布动态")) {
             Intent intent = new Intent();
             intent.setClass(HomeInteractiveActivity.this, SendDynamicActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC);
         }else if(item.getTitle().equals("新建相册")){
             Intent intent = new Intent();
             intent.setClass(HomeInteractiveActivity.this, AddPhotoDynamicActivity.class);
@@ -195,6 +196,7 @@ public class HomeInteractiveActivity extends BaseActivity {
                 if (alldaynamicfragment == null) {
                     if(pages.get(0) == null){
                         alldaynamicfragment = new AlldynamicFragment();
+                        pages.set(0, alldaynamicfragment);
                     }else{
                         alldaynamicfragment = (AlldynamicFragment) pages.get(0);
                     }
@@ -209,6 +211,7 @@ public class HomeInteractiveActivity extends BaseActivity {
                 }
                 if(myIndexFragment == null){
                     myIndexFragment = new MyIndexFragment();
+                    pages.set(2, myIndexFragment);
                 }
                 myIndexFragment.updateUI(model);
                 break;
@@ -228,8 +231,20 @@ public class HomeInteractiveActivity extends BaseActivity {
             }
             if(myAblumsFragment == null){
                 myAblumsFragment = new MyAblumsFragment();
+                pages.set(3, myAblumsFragment);
             }
             myAblumsFragment.loadData();
+        }
+        if(resultCode == AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC){
+            if(alldaynamicfragment == null){
+                alldaynamicfragment = (AlldynamicFragment) pages.get(0);
+            }
+            if(alldaynamicfragment == null){
+                alldaynamicfragment = new AlldynamicFragment();
+                pages.set(0, alldaynamicfragment);
+            }
+            alldaynamicfragment.STATE = alldaynamicfragment.REFRESH;
+            alldaynamicfragment.loadData();
         }
     }
 
@@ -239,6 +254,7 @@ public class HomeInteractiveActivity extends BaseActivity {
         }
         if(myAblumsFragment == null){
             myAblumsFragment = new MyAblumsFragment();
+            pages.set(3, myAblumsFragment);
         }
         myAblumsFragment.updateUI(model);
     }

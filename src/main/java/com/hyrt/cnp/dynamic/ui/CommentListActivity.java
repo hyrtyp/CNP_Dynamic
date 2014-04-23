@@ -2,11 +2,11 @@ package com.hyrt.cnp.dynamic.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -14,36 +14,60 @@ import com.hyrt.cnp.base.account.model.Comment;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.CommentListAdapter;
-import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
-import com.hyrt.cnp.dynamic.request.CommetListRequest;
-import com.hyrt.cnp.dynamic.requestListener.CommentListRequestListener;
+import com.hyrt.cnp.dynamic.fragment.AlldynamicFragment;
+import com.hyrt.cnp.dynamic.fragment.CommentListFragment;
+import com.hyrt.cnp.dynamic.fragment.ForwardListFragment;
 import com.jingdong.common.frame.BaseActivity;
-import com.octo.android.robospice.persistence.DurationInMillis;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by GYH on 14-2-24.
  */
 public class CommentListActivity extends BaseActivity{
 
-    private  Dynamic dynamic;
+    private TextView tv_transmit_num;
+    private TextView tv_review_num;
     private ListView xListView;
+
+    private  Dynamic dynamic;
+
     private ArrayList<Comment> comments =new ArrayList<Comment>();
     private CommentListAdapter dynamicAdapter;
+    private boolean isComment;
+
+    CommentListFragment mCommentListFragment;
+    ForwardListFragment mForwardListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commentlist);
         initView();
+        setListener();
+        initDataFragment();
+    }
+
+    private void initDataFragment(){
+        FragmentTransaction mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if(mCommentListFragment == null){
+            mCommentListFragment = new CommentListFragment(dynamic);
+            mFragmentTransaction.add(R.id.fragment, mCommentListFragment);
+        }else{
+            mFragmentTransaction.show(mCommentListFragment);
+        }
+        if(mForwardListFragment != null){
+            mFragmentTransaction.hide(mForwardListFragment);
+        }
+        mFragmentTransaction.addToBackStack(null);
+        mFragmentTransaction.commit();
+        isComment = true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initData();
+//        initData();
     }
 
     @Override
@@ -58,11 +82,19 @@ public class CommentListActivity extends BaseActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getTitle().equals("评论")){
+
+
             Intent intent = new Intent();
             intent.setClass(this, SendDynamicActivity.class);
             intent.putExtra("dynamic", dynamic);
-            intent.putExtra("type", SendDynamicActivity.TYPE_COMMENT);
-            startActivityForResult(intent,0);
+            if(isComment){
+                intent.putExtra("type", SendDynamicActivity.TYPE_COMMENT);
+            }else{
+                intent.putExtra("type", SendDynamicActivity.TYPE_FORWARD);
+            }
+            startActivityForResult(intent, AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC);
+
+
             /*Intent intent = new Intent();
             intent.setClass(CommentListActivity.this, DynamicCommentActivity.class);
             intent.putExtra("Category", "pl");
@@ -72,23 +104,89 @@ public class CommentListActivity extends BaseActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private void initView(){
-        dynamic = (Dynamic)getIntent().getSerializableExtra("vo");
-        xListView=(ListView)findViewById(R.id.commentlist_listview);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC){
+            if(isComment){
+                if(mCommentListFragment != null){
+                    mCommentListFragment.loadData();
+                }
+            }else{
+                if(mForwardListFragment != null){
+                    mForwardListFragment.loadData();
+                }
+            }
+        }
     }
 
-    private void initData(){
+    private void initView(){
+        dynamic = (Dynamic)getIntent().getSerializableExtra("vo");
+//        xListView=(ListView)findViewById(R.id.commentlist_listview);
+        tv_transmit_num = (TextView) findViewById(R.id.tv_transmit_num);
+        tv_review_num = (TextView) findViewById(R.id.tv_review_num);
+
+        tv_transmit_num.setText(dynamic.getTransmit()+"转发");
+        tv_review_num.setText(dynamic.getReview()+"评论");
+
+    }
+
+    private void setListener(){
+        tv_transmit_num.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                if(mForwardListFragment == null){
+                    mForwardListFragment = new ForwardListFragment(dynamic);
+                    mFragmentTransaction.add(R.id.fragment, mForwardListFragment);
+                }else{
+                    mFragmentTransaction.show(mForwardListFragment);
+                }
+                if(mCommentListFragment != null){
+                    mFragmentTransaction.hide(mCommentListFragment);
+                }
+                mFragmentTransaction.addToBackStack(null);
+                mFragmentTransaction.commit();
+                tv_transmit_num.setTextColor(getResources().getColor(android.R.color.black));
+                tv_review_num.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                isComment = false;
+            }
+        });
+
+        tv_review_num.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                if(mCommentListFragment == null){
+                    mCommentListFragment = new CommentListFragment(dynamic);
+                    mFragmentTransaction.add(R.id.fragment, mCommentListFragment);
+                }else{
+                    mFragmentTransaction.show(mCommentListFragment);
+                }
+                if(mForwardListFragment != null){
+                    mFragmentTransaction.hide(mForwardListFragment);
+                }
+                mFragmentTransaction.addToBackStack(null);
+                mFragmentTransaction.commit();
+                tv_transmit_num.setTextColor(getResources().getColor(android.R.color.darker_gray));
+                tv_review_num.setTextColor(getResources().getColor(android.R.color.black));
+                isComment = true;
+            }
+        });
+    }
+
+   /* private void initData(){
         CommentListRequestListener sendwordRequestListener = new CommentListRequestListener(this);
         CommetListRequest schoolRecipeRequest=new CommetListRequest(
                 Comment.Model.class,this,dynamic.get_id(),"50");
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
-    }
+    }*/
 
     /**
      * 跟新ui
      * */
-    public void UpDataUI(Comment.Model model){
+   /* public void UpDataUI(Comment.Model model){
         if(model==null&&comments.size()==0){
             LinearLayout linearLayout =(LinearLayout)findViewById(R.id.layout_bottom);
             linearLayout.setVisibility(View.VISIBLE);
@@ -108,5 +206,5 @@ public class CommentListActivity extends BaseActivity{
             LinearLayout linearLayout =(LinearLayout)findViewById(R.id.layout_bottom);
             linearLayout.setVisibility(View.GONE);
         }
-    }
+    }*/
 }

@@ -100,10 +100,10 @@ public class MyIndexFragment extends Fragment{
 
             //加载头像地址
             String faceBgPath = FaceUtils.getAvatar(activity.userDetail.getData().getUser_id(), FaceUtils.FACE_BG);
-            ImageLoader.getInstance().displayImage(
-                    faceBgPath,
-                    faceviewbg, AppContext.getInstance().mImageloaderoptions);
-//            activity.showDetailImage(faceBgPath, faceviewbg, true);
+//            ImageLoader.getInstance().displayImage(
+//                    faceBgPath,
+//                    faceviewbg, AppContext.getInstance().mImageloaderoptions);
+            activity.showDetailImage(faceBgPath, faceviewbg, true);
         }
 
 

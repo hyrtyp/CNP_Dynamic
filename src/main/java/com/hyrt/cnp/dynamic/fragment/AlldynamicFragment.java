@@ -29,8 +29,8 @@ public class AlldynamicFragment extends Fragment {
     private String more = "1";
     private HomeInteractiveActivity activity;
 
-    private String STATE;
-    final private String REFRESH = "refresh";
+    public String STATE;
+    final public String REFRESH = "refresh";
     final private String ONLOADMORE = "onLoadMore";
     final private String HASDATA = "hasdata";
 
@@ -40,6 +40,8 @@ public class AlldynamicFragment extends Fragment {
     private View rootview;
 
     private boolean isFirst = true;
+
+    public static final int RESULT_FOR_SEND_DYNAMIC = 105;
 
     public static AlldynamicFragment instantiation(int position) {
         AlldynamicFragment fragment = new AlldynamicFragment();
@@ -107,12 +109,12 @@ public class AlldynamicFragment extends Fragment {
         });
     }
 
-    private void loadData() {
+    public void loadData() {
         activity = (HomeInteractiveActivity) getActivity();
         MyDynamicRequestListener sendwordRequestListener = new MyDynamicRequestListener(activity);
         BabayDynamicRequest schoolRecipeRequest = new BabayDynamicRequest(
                 Dynamic.Model.class, activity, "", more, true);
-        activity.spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+        activity.spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), 1,
                 sendwordRequestListener.start());
     }
 
@@ -131,12 +133,14 @@ public class AlldynamicFragment extends Fragment {
             }
             dynamics.addAll(model.getData());
             if (dynamicAdapter == null) {
-                String[] resKeys = new String[]{"getUserphoto", "getUserName",
+                String[] resKeys = new String[]{"getUserphoto", "getUserName", "getType",
                         "getPosttime3",  "getPosttime2", "getTransmit2", "getReview2"};
-                int[] reses = new int[]{R.id.dynamic_Avatar, R.id.dynamic_name,
+                int[] reses = new int[]{R.id.dynamic_Avatar, R.id.dynamic_name, R.id.dynamic_type,
                         R.id.dynamic_time,  R.id.dynamic_time2, R.id.dynamic_zf_num, R.id.dynamic_pl_num};
                 dynamicAdapter = new DynamicAdapter(activity, dynamics, R.layout.layout_item_dynamic, resKeys, reses);
-                xListView.setAdapter(dynamicAdapter);
+                if(xListView != null){
+                    xListView.setAdapter(dynamicAdapter);
+                }
             } else {
                 dynamicAdapter.notifyDataSetChanged();
             }

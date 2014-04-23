@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.hyrt.cnp.base.account.utils.FileUtils;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.ui.AddPhotoDynamicActivity;
-import com.hyrt.cnp.dynamic.ui.AlbumBrowserActivity;
+import com.hyrt.cnp.base.account.ui.AlbumBrowserActivity;
 import com.jingdong.common.frame.BaseActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

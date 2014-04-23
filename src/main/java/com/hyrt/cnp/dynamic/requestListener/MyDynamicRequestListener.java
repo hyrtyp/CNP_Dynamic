@@ -11,6 +11,9 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
  * Created by GYH on 14-1-23.
  */
 public class MyDynamicRequestListener extends BaseRequestListener {
+
+    private RequestListener mListener;
+
     /**
      * @param context
      */
@@ -22,20 +25,35 @@ public class MyDynamicRequestListener extends BaseRequestListener {
     public void onRequestFailure(SpiceException e) {
 //        showMessage(R.string.nodata_title,R.string.nodata_content);
         super.onRequestFailure(e);
-        HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
-        activity.upDataUI(null,0);
+        if(mListener == null){
+            HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
+            activity.upDataUI(null,0);
+        }else{
+            mListener.onRequestFailure(e);
+        }
+
     }
 
     @Override
     public void onRequestSuccess(Object data) {
         super.onRequestSuccess(data);
         if(data!=null){
-            HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
             Dynamic.Model result= (Dynamic.Model)data;
-            activity.upDataUI(result,0);
+            if(mListener == null){
+                HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
+                activity.upDataUI(result,0);
+            }else{
+                mListener.onRequestSuccess(result);
+            }
+
         }else{
-            HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
-            activity.upDataUI(null,0);
+            if(mListener == null){
+                HomeInteractiveActivity activity = (HomeInteractiveActivity)context.get();
+                activity.upDataUI(null,0);
+            }else{
+                mListener.onRequestSuccess(null);
+            }
+
 //            showMessage(R.string.nodata_title,R.string.nodata_content);
         }
 
@@ -45,5 +63,14 @@ public class MyDynamicRequestListener extends BaseRequestListener {
     public MyDynamicRequestListener start() {
         showIndeterminate("加载中...");
         return this;
+    }
+
+    public void setListener(RequestListener listener){
+        this.mListener = listener;
+    }
+
+    public static interface RequestListener{
+        public void onRequestSuccess(Dynamic.Model data);
+        public void onRequestFailure(SpiceException e);
     }
 }

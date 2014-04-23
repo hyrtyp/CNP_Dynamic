@@ -1,5 +1,7 @@
 package com.hyrt.cnp.dynamic.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,6 +26,8 @@ import android.widget.Toast;
 import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.Base;
 import com.hyrt.cnp.base.account.model.BaseTest;
+import com.hyrt.cnp.base.account.ui.AlbumBrowserActivity;
+import com.hyrt.cnp.base.account.ui.LightAlertDialog;
 import com.hyrt.cnp.base.account.utils.FileUtils;
 import com.hyrt.cnp.base.account.utils.PhotoUpload;
 import com.hyrt.cnp.dynamic.R;
@@ -51,6 +55,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 /**
  * Created by Zoe on 2014-04-08.
@@ -81,6 +87,8 @@ public class AddPhotoDynamicActivity extends BaseActivity{
     public static final int RESULT_FOR_PHONE_ALBUM = 102;
 
     private boolean inited = false;
+
+    private static final String TAG = "AddPhotoDynamicActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,10 +166,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 if(sendbtn != null){
                     if(etContent.getText().length() > 0 && checkeds.size() > 0){
                         sendbtn.setEnabled(true);
-                        sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
+//                        sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
                     }else{
                         sendbtn.setEnabled(false);
-                        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
+//                        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
                     }
                 }
             }
@@ -181,7 +189,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 btnAddPhoto.setVisibility(View.VISIBLE);
                 if(sendbtn != null && checkeds.size() <= 0){
                     sendbtn.setEnabled(false);
-                    sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
+//                    sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
                 }
             }
         });
@@ -200,10 +208,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                     if(sendbtn != null){
                         if(etContent.getText().length() > 0 && checkeds.size() > 0){
                             sendbtn.setEnabled(true);
-                            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
+//                            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
                         }else{
                             sendbtn.setEnabled(false);
-                            sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
+//                            sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
                         }
                     }
                 }
@@ -216,7 +224,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
         super.onResume();
         if (etContent.getText().length() > 0 && checkeds.size() > 0 && sendbtn != null) {
             sendbtn.setEnabled(true);
-            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
+//            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
         }
     }
 
@@ -236,7 +244,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
                 targetFile = FileUtils.writeFile(baos.toByteArray(), "cnp", "dynamic_upload_photo"+System.currentTimeMillis()+".png");
-                android.util.Log.i("tag", "getPath():"+targetFile.getPath());
+                android.util.Log.i(TAG, "getPath():"+targetFile.getPath());
                 checkeds.add(targetFile.getPath());
                 mAdapter.notifyDataSetChanged();
                /* BitmapDrawable bd = new BitmapDrawable(bitmap);
@@ -248,7 +256,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
                 if(etContent.getText().length() > 0 && sendbtn != null){
                     sendbtn.setEnabled(true);
-                    sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
+//                    sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
                 }
             }else if(resultCode == RESULT_FOR_PHONE_ALBUM){
                 if(data.getSerializableExtra("checkeds") != null){
@@ -258,10 +266,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                     if(sendbtn != null){
                         if(etContent.getText().length() > 0 && checkeds.size() > 0){
                             sendbtn.setEnabled(true);
-                            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
+//                            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
                         }else{
                             sendbtn.setEnabled(false);
-                            sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
+//                            sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
                         }
                     }
                 }
@@ -277,7 +285,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 setCheckable(false).
                 setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         sendbtn = menu.findItem(R.id.upload);
-        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
+//        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
         return true;
     }
 
@@ -285,7 +293,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if(item.getTitle().equals("上传") && selectAlbum != null){
-            android.util.Log.i("tag", "selectAlbum:"+selectAlbum.getAlbumName()+"-"+selectAlbum.getPaId());
+            android.util.Log.i(TAG, "selectAlbum:"+selectAlbum.getAlbumName()+"-"+selectAlbum.getPaId());
             AddPhotoRequestListener requestListener = new AddPhotoRequestListener(this);
             requestListener.setListener(mAddPhotoRequestListener);
             AddPhotoRequest request =
@@ -312,7 +320,20 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
         @Override
         public void onRequestFailure(SpiceException e) {
-            Toast.makeText(AddPhotoDynamicActivity.this, "发送失败", 0).show();
+//            Toast.makeText(AddPhotoDynamicActivity.this, "发送失败", 0).show();
+            AlertDialog dialog = LightAlertDialog.create(AddPhotoDynamicActivity.this);
+            dialog.setTitle("温馨提示");
+            dialog.setMessage("发送失败!");
+            dialog.setButton(BUTTON_POSITIVE, getString(android.R.string.ok),
+                    new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
         }
     };
 

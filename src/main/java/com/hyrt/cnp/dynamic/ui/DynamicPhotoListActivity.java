@@ -162,7 +162,7 @@ public class DynamicPhotoListActivity extends BaseActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add("新建相册")
-                .setIcon(R.drawable.ic_actionbar_upload)
+                .setIcon(R.drawable.ic_setting)
                 .setShowAsAction(
                         MenuItem.SHOW_AS_ACTION_ALWAYS);
         this.mymenu = menu;

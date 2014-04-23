@@ -27,8 +27,8 @@ public class CommentListRequestListener extends BaseRequestListener {
         super.onRequestFailure(e);
 
         if(mListener == null){
-            CommentListActivity activity = (CommentListActivity)context.get();
-            activity.UpDataUI(null);
+//            CommentListActivity activity = (CommentListActivity)context.get();
+//            activity.UpDataUI(null);
         }else{
             mListener.onRequestFailure(e);
         }
@@ -41,16 +41,16 @@ public class CommentListRequestListener extends BaseRequestListener {
         if(data!=null){
             Comment.Model result= (Comment.Model)data;
             if(mListener == null){
-                CommentListActivity activity = (CommentListActivity)context.get();
-                activity.UpDataUI(result);
+//                CommentListActivity activity = (CommentListActivity)context.get();
+//                activity.UpDataUI(result);
             }else{
                 mListener.onRequestSuccess(result);
             }
 
         }else{
             if(mListener == null){
-                CommentListActivity activity = (CommentListActivity)context.get();
-                activity.UpDataUI(null);
+//                CommentListActivity activity = (CommentListActivity)context.get();
+//                activity.UpDataUI(null);
             }else{
                 mListener.onRequestSuccess(null);
             }

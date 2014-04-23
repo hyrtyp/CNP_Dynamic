@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.requestListener.BaseRequestListener;
+import com.hyrt.cnp.dynamic.R;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
 /**
@@ -22,7 +23,6 @@ public class AddPhotoRequestListener extends BaseRequestListener{
         BaseTest result= (BaseTest)o;
 
         if(result != null){
-            android.util.Log.i("tag", "resultCode-:"+result.getCode() +" msg:"+result.getMsg()+" data:"+result.getData());
             if(mListener != null && result.getCode().equals("200")){
                 mListener.onRequestSuccess(o);
             }

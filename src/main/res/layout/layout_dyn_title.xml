@@ -13,7 +13,8 @@
         android:layout_above="@+id/face_parentLl"
         android:layout_marginBottom="-50dp"
         android:scaleType="centerCrop"
-        android:id="@+id/imageView" />
+        android:id="@+id/imageView"
+        android:src="@drawable/hua2"/>
 
     <LinearLayout
         android:layout_width="match_parent"
