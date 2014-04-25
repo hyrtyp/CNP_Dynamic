@@ -19,6 +19,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +38,9 @@ import android.widget.Toast;
 
 import com.hyrt.cnp.base.account.model.Comment;
 import com.hyrt.cnp.base.account.model.Dynamic;
+import com.hyrt.cnp.base.account.model.Photo;
+import com.hyrt.cnp.base.account.request.BaseClassroomaddcommentRequest;
+import com.hyrt.cnp.base.account.requestListener.BaseClassroomaddcommentRequestListener;
 import com.hyrt.cnp.base.account.utils.FileUtils;
 import com.hyrt.cnp.base.account.utils.PhotoUpload;
 import com.hyrt.cnp.dynamic.R;
@@ -73,13 +78,22 @@ public class SendDynamicActivity extends BaseActivity{
     private ImageView btnAddPhoto;
     private ImageView btnAddAbout;
     private GridView gvBrows;
-    private MenuItem sendbtn;
+//    private MenuItem sendbtn;
     private LinearLayout layoutForwardSpan;
     private LinearLayout layoutAddPhoto;
     private ImageView photo;
     private TextView tvForwardContent;
     private RelativeLayout layoutInput;
     private ImageView ivForwardPhoto;
+    private View btn_back;
+    private TextView tv_send;
+    private TextView tv_action_title;
+
+    private boolean sendEnabled;
+
+    private static final String TAG = "SendDynamicActivity";
+
+    private Photo mPhoto;
 
 
 
@@ -364,14 +378,10 @@ public class SendDynamicActivity extends BaseActivity{
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if(sendbtn != null){
-                    if(charSequence.length()>0){
-                        sendbtn.setEnabled(true);
-//                        sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>发送</font>"));
-                    }else{
-                        sendbtn.setEnabled(false);
-//                        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>发送</font>"));
-                    }
+                if(charSequence.length()>0){
+                    setSendEnabled(true);
+                }else{
+                    setSendEnabled(false);
                 }
             }
 
@@ -399,6 +409,28 @@ public class SendDynamicActivity extends BaseActivity{
                 btnAddPhoto.setVisibility(View.VISIBLE);
             }
         });
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        tv_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sendEnabled){
+                    if(type == TYPE_COMMENT){
+                        addComment();
+                    }else if(type == TYPE_FORWARD){
+                        addForward();
+                    }else{
+                        sendDynamic();
+                    }
+                }
+            }
+        });
     }
 
 
@@ -406,16 +438,17 @@ public class SendDynamicActivity extends BaseActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        if (etContent.getText().length() > 0 && sendbtn != null) {
-            sendbtn.setEnabled(true);
-//            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>发送</font>"));
+        if (etContent.getText().length() > 0) {
+            setSendEnabled(true);
+        }else{
+            setSendEnabled(false);
         }
         if(type == TYPE_FORWARD){
-            titletext.setText("转发动态");
+            tv_action_title.setText("转发动态");
         }else if(type == TYPE_COMMENT){
-            titletext.setText("发评论");
+            tv_action_title.setText("发评论");
         }else{
-            titletext.setText("发布动态");
+            tv_action_title.setText("发布动态");
         }
     }
 
@@ -456,29 +489,8 @@ public class SendDynamicActivity extends BaseActivity{
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        SupportMenuInflater mMenuInflater = new SupportMenuInflater(this);
-        mMenuInflater.inflate(R.menu.senddy, menu);
-        menu.findItem(R.id.senddy).
-                setCheckable(false).
-                setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        sendbtn = menu.findItem(R.id.senddy);
-//        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>发送</font>"));
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.senddy){
-            if(type == TYPE_COMMENT){
-                addComment();
-            }else if(type == TYPE_FORWARD){
-                addForward();
-            }else{
-                sendDynamic();
-            }
-        }
-        return super.onOptionsItemSelected(item);
+    protected void initTitleview() {
+        actionBar.hide();
     }
 
     public void addComment(){
@@ -508,7 +520,7 @@ public class SendDynamicActivity extends BaseActivity{
             }else{
                 comment.setInfoTitle(mDynamic.getTitle());
             }
-            comment.setInfoUserId(mDynamic.gettUserId()+"");
+            comment.setInfoUserId(mDynamic.getUserId()+"");
             comment.setInfoNurseryId(mDynamic.getNueseryId()+"");
             comment.setInfoClassroomId(mDynamic.getClassRoomId()+"");
 
@@ -525,8 +537,12 @@ public class SendDynamicActivity extends BaseActivity{
 
         DynamicaddcommentRequestListener sendwordRequestListener = new DynamicaddcommentRequestListener(this);
         sendwordRequestListener.setListener(mAddCommentRequestListener);
-        DynamicaddcommentRequest schoolRecipeRequest=
-                new DynamicaddcommentRequest(Comment.Model3.class,this,comment);
+        DynamicaddcommentRequest schoolRecipeRequest= null;
+        if(mComment == null){
+            schoolRecipeRequest = new DynamicaddcommentRequest(Comment.Model3.class,this,comment, 0);
+        }else{
+            schoolRecipeRequest = new DynamicaddcommentRequest(Comment.Model3.class,this,comment, 1);
+        }
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }
@@ -564,14 +580,18 @@ public class SendDynamicActivity extends BaseActivity{
             = new DynamicaddcommentRequestListener.requestListener() {
         @Override
         public void onRequestSuccess(Object data) {
-            Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
+            Toast toast = Toast.makeText(SendDynamicActivity.this, "发送成功", 0);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
             setResult(AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC);
             finish();
         }
 
         @Override
         public void onRequestFailure(SpiceException e) {
-            Toast.makeText(SendDynamicActivity.this, "发送失败", 0).show();
+            Toast toast = Toast.makeText(SendDynamicActivity.this, "发送失败", 0);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         }
     };
 
@@ -637,6 +657,16 @@ public class SendDynamicActivity extends BaseActivity{
         }
     };
 
+    private void setSendEnabled(boolean enable){
+        if(enable){
+            sendEnabled = true;
+            tv_send.setTextColor(getResources().getColor(android.R.color.white));
+        }else{
+            sendEnabled = false;
+            tv_send.setTextColor(getResources().getColor(R.color.sendbtn_enable_color));
+        }
+    }
+
     private void findView() {
         etContent = (EditText) findViewById(R.id.et_send_dynamic_content);
         btnAddBrow = (ImageView) findViewById(R.id.btn_add_brow);
@@ -649,5 +679,8 @@ public class SendDynamicActivity extends BaseActivity{
         tvForwardContent = (TextView) findViewById(R.id.tv_forward_content);
         layoutInput = (RelativeLayout) findViewById(R.id.layout_input);
         ivForwardPhoto = (ImageView) findViewById(R.id.iv_forward_photo);
+        btn_back = findViewById(R.id.btn_back);
+        tv_send = (TextView) findViewById(R.id.tv_send);
+        tv_action_title = (TextView) findViewById(R.id.tv_action_title);
     }
 }

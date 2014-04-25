@@ -39,6 +39,9 @@ public class CommentListActivity extends BaseActivity{
     CommentListFragment mCommentListFragment;
     ForwardListFragment mForwardListFragment;
 
+    private int forwardCount;
+    private int commentCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +62,6 @@ public class CommentListActivity extends BaseActivity{
         if(mForwardListFragment != null){
             mFragmentTransaction.hide(mForwardListFragment);
         }
-        mFragmentTransaction.addToBackStack(null);
         mFragmentTransaction.commit();
         isComment = true;
     }
@@ -109,10 +111,14 @@ public class CommentListActivity extends BaseActivity{
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC){
             if(isComment){
+                commentCount++;
+                tv_review_num.setText(commentCount+"评论");
                 if(mCommentListFragment != null){
                     mCommentListFragment.loadData();
                 }
             }else{
+                forwardCount++;
+                tv_transmit_num.setText(forwardCount+"转发");
                 if(mForwardListFragment != null){
                     mForwardListFragment.loadData();
                 }
@@ -126,6 +132,8 @@ public class CommentListActivity extends BaseActivity{
         tv_transmit_num = (TextView) findViewById(R.id.tv_transmit_num);
         tv_review_num = (TextView) findViewById(R.id.tv_review_num);
 
+        forwardCount = dynamic.getTransmit();
+        commentCount = dynamic.getReview();
         tv_transmit_num.setText(dynamic.getTransmit()+"转发");
         tv_review_num.setText(dynamic.getReview()+"评论");
 
@@ -145,7 +153,6 @@ public class CommentListActivity extends BaseActivity{
                 if(mCommentListFragment != null){
                     mFragmentTransaction.hide(mCommentListFragment);
                 }
-                mFragmentTransaction.addToBackStack(null);
                 mFragmentTransaction.commit();
                 tv_transmit_num.setTextColor(getResources().getColor(android.R.color.black));
                 tv_review_num.setTextColor(getResources().getColor(android.R.color.darker_gray));
@@ -166,7 +173,6 @@ public class CommentListActivity extends BaseActivity{
                 if(mForwardListFragment != null){
                     mFragmentTransaction.hide(mForwardListFragment);
                 }
-                mFragmentTransaction.addToBackStack(null);
                 mFragmentTransaction.commit();
                 tv_transmit_num.setTextColor(getResources().getColor(android.R.color.darker_gray));
                 tv_review_num.setTextColor(getResources().getColor(android.R.color.black));

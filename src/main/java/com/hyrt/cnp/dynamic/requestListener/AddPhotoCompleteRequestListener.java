@@ -1,19 +1,20 @@
 package com.hyrt.cnp.dynamic.requestListener;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.requestListener.BaseRequestListener;
-import com.hyrt.cnp.dynamic.R;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
 /**
- * Created by Zoe on 2014-04-11.
+ * Created by HY on 2014-04-24.
  */
-public class AddPhotoRequestListener extends BaseRequestListener{
+public class AddPhotoCompleteRequestListener extends BaseRequestListener{
+
     private RequestListener mListener;
 
-    public AddPhotoRequestListener(Activity context) {
+    public AddPhotoCompleteRequestListener(Activity context) {
         super(context);
     }
 
@@ -21,7 +22,7 @@ public class AddPhotoRequestListener extends BaseRequestListener{
     public void onRequestSuccess(Object o) {
         super.onRequestSuccess(o);
         BaseTest result= (BaseTest)o;
-
+        Log.i("AddPhoto", "result:"+result.getCode()+"-"+result.getMsg());
         if(result != null){
             if(mListener != null && result.getCode().equals("200")){
                 mListener.onRequestSuccess(o);
@@ -31,7 +32,6 @@ public class AddPhotoRequestListener extends BaseRequestListener{
                 mListener.onRequestFailure(null);
             }
         }
-
     }
 
     @Override
@@ -45,11 +45,6 @@ public class AddPhotoRequestListener extends BaseRequestListener{
     @Override
     public BaseRequestListener start() {
         showIndeterminate("上传中...");
-        return this;
-    }
-
-    public BaseRequestListener start(int cur, int total) {
-        showIndeterminate("上传中..."+cur+"/"+total);
         return this;
     }
 

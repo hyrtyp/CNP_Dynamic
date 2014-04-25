@@ -50,6 +50,7 @@ public class BabayIndexActivity extends BaseActivity{
     private XListView listView;
 
     private BabyInfo babyInfo;
+    private boolean needLoad = false;
 
     private DynamicAdapter dynamicAdapter;
 
@@ -61,8 +62,14 @@ public class BabayIndexActivity extends BaseActivity{
         setContentView(R.layout.activity_babayindex);
         actionBar.hide();
         initView();
-        STATE=HASDATA;
-        loadData();
+        Intent intent=getIntent();
+        needLoad = intent.getBooleanExtra("needLoad", false);
+        babyInfo = (BabyInfo)intent.getSerializableExtra("vo");
+        if(needLoad){
+            loadBabayinfoData();
+        }else{
+            UpdataBabayinfo(babyInfo);
+        }
     }
 
     private void initView(){
@@ -114,15 +121,6 @@ public class BabayIndexActivity extends BaseActivity{
 
             }
         });
-        Intent intent=getIntent();
-        babyInfo = (BabyInfo)intent.getSerializableExtra("vo");
-        showDetailImage(FaceUtils.getAvatar(babyInfo.getUser_id(),FaceUtils.FACE_BIG),faceview,false);
-        nameview.setText(babyInfo.getRenname().toString());
-        if(babyInfo.getIntro().equals("")){
-            introview.setText("暂无签名");
-        }else{
-            introview.setText(babyInfo.getIntro());
-        }
 
         listView.setPullLoadEnable(true);
         listView.setPullRefreshEnable(true);
@@ -199,11 +197,18 @@ public class BabayIndexActivity extends BaseActivity{
                 sendwordRequestListener.start());
     }
 
-    public void UpdataBabayinfo(BabyInfo.Model babyInfomodel){
-        babyInfo=babyInfomodel.getData();
+    public void UpdataBabayinfo(BabyInfo babyInfo){
         showDetailImage(FaceUtils.getAvatar(babyInfo.getUser_id(),FaceUtils.FACE_BIG),faceview,false);
         nameview.setText(babyInfo.getRenname().toString());
-        showBabayInfo();
+        if(babyInfo.getIntro().equals("")){
+            introview.setText("暂无签名");
+        }else{
+            introview.setText(babyInfo.getIntro());
+        }
+        //showBabayInfo();
+
+        STATE=HASDATA;
+        loadData();
     }
 
     public void loadData(){

@@ -3,6 +3,7 @@ package com.hyrt.cnp.dynamic.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -17,8 +18,7 @@ import com.hyrt.cnp.base.account.model.Comment;
 import com.hyrt.cnp.base.account.model.DynamicPhoto;
 import com.hyrt.cnp.base.account.model.ItInfo;
 import com.hyrt.cnp.base.account.model.Photo;
-import com.hyrt.cnp.classroom.adapter.ClassRoomAdapter;
-import com.hyrt.cnp.classroom.view.Mylistview;
+import com.hyrt.cnp.base.view.Mylistview;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
 import com.hyrt.cnp.dynamic.request.CommetListRequest;
@@ -27,6 +27,7 @@ import com.hyrt.cnp.dynamic.request.ItInfoRequest;
 import com.hyrt.cnp.dynamic.requestListener.CommentListRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.DynamicaddcommentRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.ItInfoRequestListener;
+import com.jingdong.app.pad.adapter.MySimpleAdapter;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -44,8 +45,9 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
     private Mylistview listView;
     private DynamicPhoto photo;
     private Album mAlbum;
-    private ClassRoomAdapter classRoomAdapter;
+    private MySimpleAdapter classRoomAdapter;
     private int type;
+    private boolean etFocus = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,14 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         initView();
         initData();
         LoadData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(etFocus){
+            editcommit.requestFocus();
+        }
     }
 
     private void initView(){
@@ -85,6 +95,7 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
     private void initData(){
         Intent intent = getIntent();
         photo=(DynamicPhoto)intent.getSerializableExtra("dynamicPhoto");
+        etFocus = intent.getBooleanExtra("etFocus", false);
         mAlbum = (Album) intent.getSerializableExtra("album");
         type = intent.getIntExtra("type", 0);
         photoname.setText(Html.fromHtml("照片名称：<font color='#6ecbd9'>"+photo.getIntroduce()+"</font>"));
@@ -121,12 +132,15 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         }
         String[] resKeys=new String[]{"getphotoImage","getUsername","getCreatdate2","getContent"};
         int[] reses=new int[]{R.id.comment_photo,R.id.text_name,R.id.text_time,R.id.text_con};
-        classRoomAdapter = new ClassRoomAdapter(this,model.getData(),R.layout.layout_item_comment,resKeys,reses);
+        classRoomAdapter = new MySimpleAdapter(this,model.getData(),R.layout.layout_item_comment,resKeys,reses);
         listView.setAdapter(classRoomAdapter);
     }
 
     public void ShowSuccess(){
-        Toast.makeText(DynamicPhotoInfoActivity.this,"添加评论成功",Toast.LENGTH_SHORT).show();
+        Toast toast = Toast.makeText(DynamicPhotoInfoActivity.this, "添加评论成功", 0);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+//        Toast.makeText(DynamicPhotoInfoActivity.this,"添加评论成功",Toast.LENGTH_SHORT).show();
         editcommit.setText("");
         LoadData();//刷新
         //隐藏键盘
@@ -144,7 +158,7 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         comment.setInfoNurseryId(photo.getNurseryID()+"");
         comment.setInfoClassroomId(photo.getClassroomID()+"");
         comment.setSiteid("51");
-        comment.setUrl(photo.getImagepics());
+        comment.setUrl("null");
         comment.setLstatus("Y");
         comment.setContent(editcommit.getText().toString());
         comment.setReply("0");
@@ -155,7 +169,7 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         DynamicaddcommentRequestListener sendwordRequestListener = new DynamicaddcommentRequestListener(this);
         sendwordRequestListener.setListener(mAddCommentRequestListener);
         DynamicaddcommentRequest schoolRecipeRequest=
-                new DynamicaddcommentRequest(Comment.Model3.class,this,comment);
+                new DynamicaddcommentRequest(Comment.Model3.class,this,comment, 0);
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }

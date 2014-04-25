@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,16 +22,18 @@ import android.widget.TextView;
 import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.model.DynamicPhoto;
-import com.hyrt.cnp.classroom.adapter.ClassRoomAdapter;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.fragment.MyAblumsFragment;
 import com.hyrt.cnp.dynamic.request.DynamicPhotoListRequest;
 import com.hyrt.cnp.dynamic.request.MyAlbumRequest;
 import com.hyrt.cnp.dynamic.requestListener.DynamicPhotoListRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.MyAlbumRequestListener;
+import com.jingdong.app.pad.adapter.MySimpleAdapter;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+
+import java.util.ArrayList;
 
 import uk.co.senab.photoview.PhotoView;
 
@@ -40,14 +43,16 @@ import uk.co.senab.photoview.PhotoView;
 public class DynamicPhotoListActivity extends BaseActivity{
 
     private GridView gridView;
-    private ClassRoomAdapter classRoomAdapter;
+    private MySimpleAdapter classRoomAdapter;
     private DynamicPhoto.Model model;
     private String  Category;
     private TextView bottom_num;
 
+
     private DynamicPhoto selectPhoto;
     private Dialog mPhotoSelctDialog;
 
+    private ArrayList<String> imageUrls = new ArrayList<String>();
     private boolean midified = false;
 
     private static final int RESULT_FOR_ADD_ALBUM = 103;
@@ -75,9 +80,13 @@ public class DynamicPhotoListActivity extends BaseActivity{
             bottom_num.setText("暂无信息");
         }else{
             this.model=model;
+            imageUrls.clear();
+            for(int i=0,j=model.getData().size(); i<j; i++){
+                imageUrls.add(model.getData().get(i).getImagepics());
+            }
             String[] resKeys=new String[]{"getImagethpath","getTitle"};
             int[] reses=new int[]{R.id.gridview_image,R.id.gridview_name};
-            classRoomAdapter = new ClassRoomAdapter(this,model.getData(),R.layout.layout_item_gridview_image1,resKeys,reses);
+            classRoomAdapter = new MySimpleAdapter(this,model.getData(),R.layout.layout_item_gridview_image1,resKeys,reses);
             gridView.setAdapter(classRoomAdapter);
             bottom_num.setText("共 "+model.getData().size()+" 张");
         }
@@ -89,12 +98,27 @@ public class DynamicPhotoListActivity extends BaseActivity{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 selectPhoto = model.getData().get(i);
-                showPop(gridView, selectPhoto.getImagepics());
+                showPop3(gridView, imageUrls, i, DynamicPhotoListActivity.this, mShowPop3Listener);
+//                showPop(gridView, selectPhoto.getImagepics());
             }
         });
     }
 
-    @Override
+    private showPop3Listener mShowPop3Listener = new showPop3Listener() {
+        @Override
+        public void onClick(int type, int position) {
+            if(type == 1 || type == 2){
+                Intent intent = new Intent();
+                Log.i("tag", "position:"+position);
+                intent.setClass(DynamicPhotoListActivity.this, DynamicPhotoInfoActivity.class);
+                intent.putExtra("dynamicPhoto", model.getData().get(position));
+                intent.putExtra("album", mAlbum);
+                startActivity(intent);
+            }
+        }
+    };
+
+    /*@Override
     public void showPop(View view, String bigImgPath) {
         View popView = this.getLayoutInflater().inflate(
                 R.layout.layout_dynamic_photo_popupwindow, null);
@@ -120,7 +144,7 @@ public class DynamicPhotoListActivity extends BaseActivity{
         popWin.setTouchable(true);
         popWin.showAtLocation(view, Gravity.CENTER, 0, 0);
         showDetailImage1(bigImgPath, pop_img, false, true);
-    }
+    }*/
 
     private View.OnClickListener mPopOnClickListener = new View.OnClickListener() {
         @Override

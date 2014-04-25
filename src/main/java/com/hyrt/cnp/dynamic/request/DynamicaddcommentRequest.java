@@ -16,16 +16,18 @@ public class DynamicaddcommentRequest extends BaseRequest{
     @Inject
     private CommentService schoolListService;
     private Comment comment;
-    public DynamicaddcommentRequest(Class clazz, Context context, Comment comment) {
+    private int type;
+    public DynamicaddcommentRequest(Class clazz, Context context, Comment comment, int type) {
         super(clazz, context);
         this.comment=comment;
+        this.type = type;
     }
 
 
 
     @Override
     public Base run() {
-        return schoolListService.adddynamicCommentData(comment);
+        return schoolListService.adddynamicCommentData(comment, type);
     }
 
 

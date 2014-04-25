@@ -12,9 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyrt.cnp.base.account.model.ClassRoomBabay;
+import com.hyrt.cnp.base.account.request.BaseClassroomBabayRequest;
+import com.hyrt.cnp.base.account.requestListener.BaseClassroomBabayRequestListener;
 import com.hyrt.cnp.base.view.XListView;
-import com.hyrt.cnp.classroom.request.ClassroomBabayRequest;
-import com.hyrt.cnp.classroom.requestListener.ClassroomBabayRequestListener;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
 import com.jingdong.common.frame.BaseActivity;
@@ -53,9 +53,9 @@ public class AboutFriendActivity extends BaseActivity{
     }
 
     public void loadData(){
-        ClassroomBabayRequestListener requestListener = new ClassroomBabayRequestListener(this);
+        BaseClassroomBabayRequestListener requestListener = new BaseClassroomBabayRequestListener(this);
         requestListener.setListener(mRequestListener);
-        ClassroomBabayRequest request = new ClassroomBabayRequest(ClassRoomBabay.Model.class, this);
+        BaseClassroomBabayRequest request = new BaseClassroomBabayRequest(ClassRoomBabay.Model.class, this);
         spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 requestListener.start());
     }
@@ -74,7 +74,7 @@ public class AboutFriendActivity extends BaseActivity{
         });
     }
 
-    private ClassroomBabayRequestListener.requestListener mRequestListener = new ClassroomBabayRequestListener.requestListener() {
+    private BaseClassroomBabayRequestListener.requestListener mRequestListener = new BaseClassroomBabayRequestListener.requestListener() {
         @Override
         public void onRequestSuccess(ClassRoomBabay.Model data) {
             if(data == null){

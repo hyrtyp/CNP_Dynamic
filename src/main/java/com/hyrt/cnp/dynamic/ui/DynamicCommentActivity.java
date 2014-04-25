@@ -152,7 +152,7 @@ public class DynamicCommentActivity extends BaseActivity{
         comment.setRedate("");
         DynamicaddcommentRequestListener sendwordRequestListener = new DynamicaddcommentRequestListener(this);
         DynamicaddcommentRequest schoolRecipeRequest=
-                new DynamicaddcommentRequest(Comment.Model3.class,this,comment);
+                new DynamicaddcommentRequest(Comment.Model3.class,this,comment, 0);
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }

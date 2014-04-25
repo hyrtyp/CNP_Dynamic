@@ -70,8 +70,8 @@ public class MyForwardListActivity extends BaseActivity{
                 }
                 datas.addAll(data.getData());
                 if(mAdapter == null){
-                    String[] resKeys = new String[]{"getFromName", "getMsgTitle",
-                            "getMsgData", "getPosttime3"};
+                    String[] resKeys = new String[]{"getFromName", "getdContent",
+                            "gettContent", "getPosttime3"};
                     int[] reses = new int[]{ R.id.tv_forward_name,
                             R.id.tv_forward_content, R.id.tv_forward_content2,
                             R.id.tv_forward_time};

@@ -39,7 +39,12 @@ public class BabayInfoRequestListener extends BaseRequestListener {
             BabyInfo.Model result= (BabyInfo.Model)data;
             if(mListener == null){
                 BabayIndexActivity activity = (BabayIndexActivity)context.get();
-                activity.UpdataBabayinfo(result);
+                if(result != null){
+                    activity.UpdataBabayinfo(result.getData());
+                }else{
+                    showMessage(R.string.nodata_title,R.string.nodata_content);
+                }
+
             }else{
                 mListener.onRequestSuccess(result);
             }

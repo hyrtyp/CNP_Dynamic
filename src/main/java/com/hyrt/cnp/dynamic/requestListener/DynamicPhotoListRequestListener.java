@@ -5,7 +5,6 @@ import android.app.Activity;
 import com.hyrt.cnp.base.account.model.DynamicPhoto;
 import com.hyrt.cnp.base.account.model.Photo;
 import com.hyrt.cnp.base.account.requestListener.BaseRequestListener;
-import com.hyrt.cnp.classroom.ui.ClassroomphotolistActivity;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
 /**

@@ -2,13 +2,19 @@ package com.hyrt.cnp.dynamic.adapter;
 
 import android.content.Intent;
 import android.media.Image;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hyrt.cnp.base.account.model.Dynamic;
+import com.hyrt.cnp.base.account.utils.Log;
 import com.hyrt.cnp.base.account.utils.StringUtils;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.ui.CommentListActivity;
@@ -30,6 +36,7 @@ public class DynamicAdapter extends MySimpleAdapter {
 
     private BaseActivity activity;
     private ArrayList<Dynamic> list;
+    private DynamicAdapterCallback mCallback;
     public DynamicAdapter(BaseActivity context, List data, int layoutId, String[] resKeys, int[] reses) {
         super(context, data, layoutId, resKeys, reses);
         this.list=(ArrayList<Dynamic>)data;
@@ -41,53 +48,157 @@ public class DynamicAdapter extends MySimpleAdapter {
     public View getView(final int position, View paramView, ViewGroup paramViewGroup) {
         View view= super.getView(position, paramView, paramViewGroup);
         TextView textView =(TextView)view.findViewById(R.id.dynamic_context);
-        ImageView imageView1=(ImageView)view.findViewById(R.id.dynamic_image1);
-        ImageView imageView2=(ImageView)view.findViewById(R.id.dynamic_image2);
-        ImageView imageView3=(ImageView)view.findViewById(R.id.dynamic_image3);
+//        ImageView imageView1=(ImageView)view.findViewById(R.id.dynamic_image1);
+//        ImageView imageView2=(ImageView)view.findViewById(R.id.dynamic_image2);
+//        ImageView imageView3=(ImageView)view.findViewById(R.id.dynamic_image3);
         ImageView dynamic_Avatar = (ImageView) view.findViewById(R.id.dynamic_Avatar);
         TextView tcontext=(TextView)view.findViewById(R.id.dynamic_dcontext);
+        GridView gv_photos = (GridView) view.findViewById(R.id.gv_photos);
+        final Dynamic mDynamic = list.get(position);
+        LinearLayout.LayoutParams gvPhotoParams = (LinearLayout.LayoutParams) gv_photos.getLayoutParams();
+        gvPhotoParams.width =
+                (activity.getResources().getDimensionPixelOffset(R.dimen.imageview_small)
+                        + activity.getResources().getDimensionPixelOffset(R.dimen.view_margin_smallest))*3;
+        if(mDynamic.getbPicAry2().size() < 4){
+            gvPhotoParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        }else{
+            gvPhotoParams.height = (activity.getResources().getDimensionPixelOffset(R.dimen.imageview_small)
+                    + activity.getResources().getDimensionPixelOffset(R.dimen.view_margin_smallest))*2;
+        }
 
-        Dynamic mDynamic = list.get(position);
-        imageView1.setImageDrawable(null);
-        imageView2.setImageDrawable(null);
-        imageView3.setImageDrawable(null);
+        gv_photos.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return mDynamic.getbPicAry2().size();
+            }
+
+
+            @Override
+            public Object getItem(int i) {
+                return mDynamic.getbPicAry2().get(i);
+            }
+
+            @Override
+            public long getItemId(int i) {
+                return i;
+            }
+
+            @Override
+            public View getView(int i, View view, ViewGroup viewGroup) {
+                if(view == null){
+                    view = LayoutInflater.from(activity).inflate(R.layout.layout_small_img_item, null);
+                }
+                ImageView iv = (ImageView) view.findViewById(R.id.iv_phone_album_img);
+                iv.setImageDrawable(null);
+
+                ImageLoader.getInstance().displayImage(
+                        mDynamic.getbPicAry2().get(i),
+                        iv,
+                        AppContext.getInstance().mImageloaderoptions);
+                return view;
+            }
+        });
+
+        gv_photos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(mCallback != null){
+                    mCallback.onPhotoClick(position, i);
+                }
+            }
+        });
+
+
+//        imageView1.setImageDrawable(null);
+//        imageView2.setImageDrawable(null);
+//        imageView3.setImageDrawable(null);
         dynamic_Avatar.setImageDrawable(null);
 
-        if(mDynamic.getsPicAry0()!= null){
+        /*if(mDynamic.getsPicAry0()!= null){
             ImageLoader.getInstance().displayImage(
                     mDynamic.getsPicAry0(),
                     imageView1,
                     AppContext.getInstance().mImageloaderoptions);
+            imageView1.setVisibility(View.VISIBLE);
+        }else{
+            imageView1.setVisibility(View.GONE);
         }
         if(mDynamic.getsPicAry1()!= null){
             ImageLoader.getInstance().displayImage(
                     mDynamic.getsPicAry2(),
                     imageView2,
                     AppContext.getInstance().mImageloaderoptions);
+            imageView2.setVisibility(View.VISIBLE);
+        }else{
+            imageView2.setVisibility(View.GONE);
         }
         if(mDynamic.getsPicAry2()!= null){
             ImageLoader.getInstance().displayImage(
                     mDynamic.getsPicAry2(),
                     imageView3,
                     AppContext.getInstance().mImageloaderoptions);
+            imageView3.setVisibility(View.VISIBLE);
+        }else{
+            imageView3.setVisibility(View.GONE);
         }
+
+        imageView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCallback != null){
+                    mCallback.onPhotoClick(position, 0);
+                }
+            }
+        });
+
+        imageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCallback != null){
+                    mCallback.onPhotoClick(position, 1);
+                }
+            }
+        });
+
+        imageView3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCallback != null){
+                    mCallback.onPhotoClick(position, 2);
+                }
+            }
+        });*/
 
         ImageLoader.getInstance().displayImage(
                 mDynamic.getUserphoto(),
                 dynamic_Avatar,
                 AppContext.getInstance().mImageloaderoptions);
 
-        textView.setText(StringUtils.getSpannableString(mDynamic.getContent2(), activity));
+        dynamic_Avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCallback != null){
+                    mCallback.onFaceClick(position);
+                }
+            }
+        });
+
+        if(list.get(position).getContent2().trim().equals("")){
+            textView.setText(list.get(position).getTitle());
+        }else{
+            textView.setText(StringUtils.getSpannableString(mDynamic.getContent2(), activity));
+        }
+
         tcontext.setText(StringUtils.getSpannableString(mDynamic.gettContent(), activity));
 
         final int posi=position;
 
-        if(list.get(position).getContent().equals("")){
+        if(list.get(position).getContent().trim().equals("") && list.get(position).getTitle().trim().equals("")){
             textView.setVisibility(View.GONE);
         }else{
             textView.setVisibility(View.VISIBLE);
         }
-        if(list.get(position).getsPicAry0()==null){
+        /*if(list.get(position).getsPicAry0()==null){
             imageView1.setVisibility(View.GONE);
         }else{
             imageView1.setVisibility(View.VISIBLE);
@@ -101,7 +212,7 @@ public class DynamicAdapter extends MySimpleAdapter {
             imageView3.setVisibility(View.GONE);
         }else{
             imageView3.setVisibility(View.VISIBLE);
-        }
+        }*/
 
         if(list.get(position).gettContent()==null || list.get(position).gettContent().length()<=0){
             tcontext.setVisibility(View.GONE);
@@ -141,5 +252,24 @@ public class DynamicAdapter extends MySimpleAdapter {
             }
         });
         return view;
+    }
+
+    public void setCallback(DynamicAdapterCallback callback){
+        this.mCallback = callback;
+    }
+
+    public static interface DynamicAdapterCallback{
+        /**
+         *点击头像
+         * @param position 动态下标
+         */
+        public void onFaceClick(int position);
+
+        /**
+         * 点击图片
+         * @param position 动态下标
+         * @param PhotoPosition 图片下标
+         */
+        public void onPhotoClick(int position, int PhotoPosition);
     }
 }

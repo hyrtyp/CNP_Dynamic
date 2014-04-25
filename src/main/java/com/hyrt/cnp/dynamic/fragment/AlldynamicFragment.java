@@ -1,7 +1,9 @@
 package com.hyrt.cnp.dynamic.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +11,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hyrt.cnp.base.account.CNPClient;
+import com.hyrt.cnp.base.account.model.BabyInfo;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.DynamicAdapter;
 import com.hyrt.cnp.dynamic.request.BabayDynamicRequest;
 import com.hyrt.cnp.dynamic.requestListener.MyDynamicRequestListener;
+import com.hyrt.cnp.dynamic.ui.BabayIndexActivity;
 import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;
 import com.hyrt.cnp.base.view.XListView;
+import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
+
+import net.oschina.app.AppContext;
 
 import java.util.ArrayList;
 
@@ -40,6 +48,8 @@ public class AlldynamicFragment extends Fragment {
     private View rootview;
 
     private boolean isFirst = true;
+
+    private static final String TAG = "AlldynamicFragment";
 
     public static final int RESULT_FOR_SEND_DYNAMIC = 105;
 
@@ -138,6 +148,7 @@ public class AlldynamicFragment extends Fragment {
                 int[] reses = new int[]{R.id.dynamic_Avatar, R.id.dynamic_name, R.id.dynamic_type,
                         R.id.dynamic_time,  R.id.dynamic_time2, R.id.dynamic_zf_num, R.id.dynamic_pl_num};
                 dynamicAdapter = new DynamicAdapter(activity, dynamics, R.layout.layout_item_dynamic, resKeys, reses);
+                dynamicAdapter.setCallback(mDynamicAdapterCallback);
                 if(xListView != null){
                     xListView.setAdapter(dynamicAdapter);
                 }
@@ -147,6 +158,35 @@ public class AlldynamicFragment extends Fragment {
         }
         STATE = "";//清空状态
     }
+
+    private DynamicAdapter.DynamicAdapterCallback mDynamicAdapterCallback = new DynamicAdapter.DynamicAdapterCallback() {
+        @Override
+        public void onFaceClick(int position) {
+            int userId = dynamics.get(position).getUserId();
+            CNPClient cnpClient = new CNPClient();
+            cnpClient.configureRequest();
+            if(AppContext.getInstance().uuid != -1){
+                if(AppContext.getInstance().uuid == userId){
+                    activity.showTitle(2);
+                    activity.homeViewpager.setCurrentItem(2);
+                }else{
+                    BabyInfo mBabyInfo = new BabyInfo();
+                    mBabyInfo.setUser_id(userId);
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), BabayIndexActivity.class);
+                    intent.putExtra("needLoad", true);
+                    intent.putExtra("vo",mBabyInfo);
+                    startActivity(intent);
+                }
+            }
+
+        }
+
+        @Override
+        public void onPhotoClick(int position, int PhotoPosition) {
+            ((BaseActivity)getActivity()).showPop2(rootview, dynamics.get(position).getbPicAry2(), PhotoPosition, getActivity());
+        }
+    };
 
     /**
      * 将已有的数据放到listview中

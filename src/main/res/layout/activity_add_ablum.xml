@@ -5,7 +5,41 @@
     android:layout_height="match_parent"
     android:background="@drawable/cnp_bg"
     android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/layout_title_top"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@color/actionbar_bg">
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/actionbar_title_back"
+            android:layout_marginLeft="@dimen/view_margin_small"
 
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/tv_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/medium_tv"
+            android:text="发送"
+            android:textColor="#fff"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:id="@+id/tv_action_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/large_tv"
+            android:textColor="#fff"
+            android:layout_margin="0dp"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
     <EditText
         android:id="@+id/et_add_ablum_content"
         android:layout_width="fill_parent"

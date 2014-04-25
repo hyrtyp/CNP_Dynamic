@@ -44,7 +44,7 @@ public class HomeInteractiveActivity extends BaseActivity {
     public MyAblumsFragment myAblumsFragment = null;//动感相册
     public static ArrayList<Fragment> pages = new ArrayList<Fragment>();
     private HomeinterPageAdapter homeinterPageAdapter = null;
-    private MyViewPager homeViewpager = null;
+    public MyViewPager homeViewpager = null;
 
     private Menu mymenu;//菜单
 
@@ -295,7 +295,7 @@ public class HomeInteractiveActivity extends BaseActivity {
     }*/
 
 
-    private void showTitle(int id) {
+    public void showTitle(int id) {
         if(mymenu == null){
             return;
         }

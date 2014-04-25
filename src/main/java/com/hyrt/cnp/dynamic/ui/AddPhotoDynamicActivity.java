@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,8 +33,10 @@ import com.hyrt.cnp.base.account.utils.FileUtils;
 import com.hyrt.cnp.base.account.utils.PhotoUpload;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.AddPhotoAdapter;
+import com.hyrt.cnp.dynamic.request.AddPhotoCompleteRequest;
 import com.hyrt.cnp.dynamic.request.AddPhotoRequest;
 import com.hyrt.cnp.dynamic.request.MyAlbumRequest;
+import com.hyrt.cnp.dynamic.requestListener.AddPhotoCompleteRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.AddPhotoRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.MyAlbumRequestListener;
 import com.jingdong.common.frame.BaseActivity;
@@ -67,11 +70,17 @@ public class AddPhotoDynamicActivity extends BaseActivity{
     private RelativeLayout layoutChangeAblum;
     private TextView tvAblumText;
     private ImageView btnAddPhoto;
-    private MenuItem sendbtn;
+//    private MenuItem sendbtn;
     private ImageView photo;
     private GridView gvPhoto;
+    private AlertDialog uploaddialog;
+    private View btn_back;
+    private TextView tv_send;
+    private TextView tv_action_title;
 
     private AddPhotoAdapter mAdapter;
+
+    private boolean sendEnabled;
 
     private Uri faceFile;
     private PhotoUpload photoUpload;
@@ -82,6 +91,8 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
     private List<Album> datas = new ArrayList<Album>();
     private ArrayList<String> checkeds = new ArrayList<String>();
+    private ArrayList<String> imageUploadQueue = new ArrayList<String>();
+    private ArrayList<String> successMsgs = new ArrayList<String>();
 
     public static final int RESULT_FOR_CHANGE_ALBUM = 101;
     public static final int RESULT_FOR_PHONE_ALBUM = 102;
@@ -163,14 +174,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if(sendbtn != null){
-                    if(etContent.getText().length() > 0 && checkeds.size() > 0){
-                        sendbtn.setEnabled(true);
-//                        sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
-                    }else{
-                        sendbtn.setEnabled(false);
-//                        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
-                    }
+                if(etContent.getText().length() > 0 && checkeds.size() > 0){
+                    setSendEnabled(true);
+                }else{
+                    setSendEnabled(false);
                 }
             }
 
@@ -187,9 +194,8 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 TextView textview = (TextView) findViewById(R.id.tv_add_photo_text);
                 textview.setVisibility(View.VISIBLE);
                 btnAddPhoto.setVisibility(View.VISIBLE);
-                if(sendbtn != null && checkeds.size() <= 0){
-                    sendbtn.setEnabled(false);
-//                    sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
+                if( checkeds.size() <= 0){
+                    setSendEnabled(false);
                 }
             }
         });
@@ -205,14 +211,33 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 }else{
                     checkeds.remove(checkeds.get(position));
                     mAdapter.notifyDataSetChanged();
-                    if(sendbtn != null){
-                        if(etContent.getText().length() > 0 && checkeds.size() > 0){
-                            sendbtn.setEnabled(true);
-//                            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
-                        }else{
-                            sendbtn.setEnabled(false);
-//                            sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
-                        }
+                    if(etContent.getText().length() > 0 && checkeds.size() > 0){
+                        setSendEnabled(true);
+                    }else{
+                        setSendEnabled(false);
+                    }
+                }
+            }
+        });
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        tv_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sendEnabled){
+                    if(selectAlbum != null){
+                        successMsgs.clear();
+                        imageUploadQueue.clear();
+                        imageUploadQueue.addAll(checkeds);
+                        String path = imageUploadQueue.remove(0);
+                        targetFile = new File("", path);
+                        uploadImage();
                     }
                 }
             }
@@ -222,9 +247,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        if (etContent.getText().length() > 0 && checkeds.size() > 0 && sendbtn != null) {
-            sendbtn.setEnabled(true);
-//            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
+        if (etContent.getText().length() > 0 && checkeds.size() > 0) {
+            setSendEnabled(true);
+        }else{
+            setSendEnabled(false);
         }
     }
 
@@ -254,88 +280,121 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 textview.setVisibility(View.GONE);
                 btnAddPhoto.setVisibility(View.GONE);*/
 
-                if(etContent.getText().length() > 0 && sendbtn != null){
-                    sendbtn.setEnabled(true);
-//                    sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
+                if(etContent.getText().length() > 0){
+                    setSendEnabled(true);
                 }
             }else if(resultCode == RESULT_FOR_PHONE_ALBUM){
                 if(data.getSerializableExtra("checkeds") != null){
                     checkeds.clear();
                     checkeds.addAll(data.getStringArrayListExtra("checkeds"));
                     mAdapter.notifyDataSetChanged();
-                    if(sendbtn != null){
-                        if(etContent.getText().length() > 0 && checkeds.size() > 0){
-                            sendbtn.setEnabled(true);
-//                            sendbtn.setTitle(Html.fromHtml("<font color='#ffffff'>上传</font>"));
-                        }else{
-                            sendbtn.setEnabled(false);
-//                            sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
-                        }
+                    if(etContent.getText().length() > 0 && checkeds.size() > 0){
+                        setSendEnabled(true);
+                    }else{
+                        setSendEnabled(false);
                     }
                 }
             }
         }
     }
 
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        SupportMenuInflater mMenuInflater = new SupportMenuInflater(this);
-        mMenuInflater.inflate(R.menu.upload, menu);
-        menu.findItem(R.id.upload).
-                setCheckable(false).
-                setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        sendbtn = menu.findItem(R.id.upload);
-//        sendbtn.setTitle(Html.fromHtml("<font color='#999999'>上传</font>"));
-        return true;
+    protected void initTitleview() {
+        actionBar.hide();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public void uploadImage(){
+        /*uploaddialog = LightAlertDialog.create(AddPhotoDynamicActivity.this);
+        uploaddialog.setTitle("上传中...");
+        uploaddialog.setMessage("发送失败!");
+        uploaddialog.show();*/
 
-        if(item.getTitle().equals("上传") && selectAlbum != null){
-            android.util.Log.i(TAG, "selectAlbum:"+selectAlbum.getAlbumName()+"-"+selectAlbum.getPaId());
-            AddPhotoRequestListener requestListener = new AddPhotoRequestListener(this);
-            requestListener.setListener(mAddPhotoRequestListener);
-            AddPhotoRequest request =
-                    new AddPhotoRequest(BaseTest.class, this, selectAlbum.getPaId()+"",
-                            selectAlbum.getAlbumName(), etContent.getText().toString(), targetFile);
-            spiceManager.execute(request, request.getcachekey(), 1,
-                    requestListener.start());
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-
+        android.util.Log.i(TAG, "selectAlbum:"+selectAlbum.getAlbumName()+"-"+selectAlbum.getPaId());
+        AddPhotoRequestListener requestListener = new AddPhotoRequestListener(this);
+        requestListener.setListener(mAddPhotoRequestListener);
+        AddPhotoRequest request =
+                new AddPhotoRequest(BaseTest.class, this, selectAlbum.getPaId()+"",
+                        selectAlbum.getAlbumName(), etContent.getText().toString(), targetFile);
+        spiceManager.execute(request, request.getcachekey(), 1,
+                requestListener.start());
     }
 
     private AddPhotoRequestListener.RequestListener mAddPhotoRequestListener = new AddPhotoRequestListener.RequestListener() {
         @Override
         public void onRequestSuccess(Object o) {
-            Toast.makeText(AddPhotoDynamicActivity.this, "发送成功", 0).show();
-            Intent intent = new Intent();
-            intent.setClass(AddPhotoDynamicActivity.this, DynamicPhotoListActivity.class);
-            intent.putExtra("album", selectAlbum);
-            startActivity(intent);
-            finish();
+            String msg = ((BaseTest)o).getMsg();
+            Log.i(TAG, "msg:"+msg);
+            successMsgs.add(msg);
+            if(imageUploadQueue.size()>0){
+                String path = imageUploadQueue.remove(0);
+                targetFile = new File("", path);
+                uploadImage();
+            }else{
+                addPhotoComplete();
+            }
         }
 
         @Override
         public void onRequestFailure(SpiceException e) {
 //            Toast.makeText(AddPhotoDynamicActivity.this, "发送失败", 0).show();
-            AlertDialog dialog = LightAlertDialog.create(AddPhotoDynamicActivity.this);
-            dialog.setTitle("温馨提示");
-            dialog.setMessage("发送失败!");
-            dialog.setButton(BUTTON_POSITIVE, getString(android.R.string.ok),
-                    new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.show();
+            Toast toast = Toast.makeText(AddPhotoDynamicActivity.this, "发送失败", 0);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
         }
     };
+
+    private void addPhotoComplete(){
+        Log.i(TAG , "addPhotoComplete");
+        AddPhotoCompleteRequestListener requestListener = new AddPhotoCompleteRequestListener(this);
+        requestListener.setListener(new AddPhotoCompleteRequestListener.RequestListener() {
+            @Override
+            public void onRequestSuccess(Object o) {
+                Toast toast = Toast.makeText(AddPhotoDynamicActivity.this, "发送成功", 0);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                Intent intent = new Intent();
+                intent.setClass(AddPhotoDynamicActivity.this, DynamicPhotoListActivity.class);
+                intent.putExtra("album", selectAlbum);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onRequestFailure(SpiceException e) {
+                AlertDialog dialog = LightAlertDialog.create(AddPhotoDynamicActivity.this);
+                dialog.setTitle("温馨提示");
+                dialog.setMessage("发送失败!");
+                dialog.setButton(BUTTON_POSITIVE, getString(android.R.string.ok),
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }
+        });
+        AddPhotoCompleteRequest request =
+                new AddPhotoCompleteRequest(
+                        BaseTest.class, AddPhotoDynamicActivity.this,
+                        selectAlbum.getPaId()+"", selectAlbum.getAlbumName(),
+                        successMsgs);
+        spiceManager.execute(request, request.getcachekey(), 1,
+                requestListener.start());
+    }
+
+    private void setSendEnabled(boolean enable){
+        if(enable){
+            sendEnabled = true;
+            tv_send.setTextColor(getResources().getColor(android.R.color.white));
+        }else{
+            sendEnabled = false;
+            tv_send.setTextColor(getResources().getColor(R.color.sendbtn_enable_color));
+        }
+    }
 
     public void findView(){
         etContent = (EditText) findViewById(R.id.et_add_ablum_content);
@@ -344,6 +403,10 @@ public class AddPhotoDynamicActivity extends BaseActivity{
         btnAddPhoto = (ImageView) findViewById(R.id.btn_add_photo);
         photo = (ImageView) findViewById(R.id.iv_photo1);
         gvPhoto = (GridView) findViewById(R.id.gv_photo);
+        btn_back = findViewById(R.id.btn_back);
+        tv_send = (TextView) findViewById(R.id.tv_send);
+        tv_action_title = (TextView) findViewById(R.id.tv_action_title);
+        tv_action_title.setText(getString(R.string.adddynamic));
     }
 
 
