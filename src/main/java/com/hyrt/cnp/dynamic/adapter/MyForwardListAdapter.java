@@ -31,7 +31,7 @@ public class MyForwardListAdapter extends MySimpleAdapter{
         View view = super.getView(position, paramView, paramViewGroup);
         ImageView iv = (ImageView) view.findViewById(R.id.iv_forward_face);
         iv.setImageDrawable(null);
-        ImageLoader.getInstance().displayImage(mData.get(position).getUserphoto(), iv, AppContext.getInstance().mImageloaderoptions);
+        ImageLoader.getInstance().displayImage(mData.get(position).getUserphoto(), iv, AppContext.getInstance().mNoCacheOnDiscImageloadoptions);
         return view;
     }
 }

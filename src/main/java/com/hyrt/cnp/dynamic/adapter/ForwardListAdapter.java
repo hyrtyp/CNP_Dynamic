@@ -38,7 +38,7 @@ public class ForwardListAdapter extends MySimpleAdapter{
         View view =  super.getView(position, paramView, paramViewGroup);
         ImageView iv = (ImageView) view.findViewById(R.id.iv_forward_face);
         iv.setImageDrawable(null);
-        ImageLoader.getInstance().displayImage(datas.get(position).getUserphoto(), iv, AppContext.getInstance().mImageloaderoptions);
+        ImageLoader.getInstance().displayImage(datas.get(position).getUserphoto(), iv, AppContext.getInstance().mNoCacheOnDiscImageloadoptions);
 
         TextView textView =(TextView)view.findViewById(R.id.tv_forward_content);
         TextView tcontext=(TextView)view.findViewById(R.id.tv_forward_content2);

@@ -113,6 +113,9 @@ public class DynamicPhotoListActivity extends BaseActivity{
                 intent.setClass(DynamicPhotoListActivity.this, DynamicPhotoInfoActivity.class);
                 intent.putExtra("dynamicPhoto", model.getData().get(position));
                 intent.putExtra("album", mAlbum);
+                if(type == 1){
+                    intent.putExtra("etFocus", true);
+                }
                 startActivity(intent);
             }
         }

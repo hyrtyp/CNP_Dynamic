@@ -63,6 +63,7 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         super.onResume();
         if(etFocus){
             editcommit.requestFocus();
+            etFocus = false;
         }
     }
 
@@ -178,14 +179,11 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
             = new DynamicaddcommentRequestListener.requestListener() {
         @Override
         public void onRequestSuccess(Object data) {
-
             ShowSuccess();
         }
 
         @Override
-        public void onRequestFailure(SpiceException e) {
-
-        }
+        public void onRequestFailure(SpiceException e) {}
     };
 
 }

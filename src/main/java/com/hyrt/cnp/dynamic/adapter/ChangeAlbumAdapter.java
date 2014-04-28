@@ -15,6 +15,8 @@ import com.jingdong.common.frame.BaseActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import net.oschina.app.AppContext;
+
 import java.util.List;
 
 /**
@@ -24,17 +26,10 @@ public class ChangeAlbumAdapter extends BaseAdapter{
 
     List<Album> datas;
     private Context context;
-    private DisplayImageOptions mImageloaderoptions;
 
     public ChangeAlbumAdapter(List<Album> datas, Context context) {
         this.datas = datas;
         this.context = context;
-        mImageloaderoptions = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.cnp_spinner_inner)
-                .showImageOnFail(R.drawable.cnp_spinner_inner)
-                .showImageForEmptyUri(R.drawable.cnp_spinner_inner)
-                .cacheInMemory(true)
-                .build();
     }
 
     @Override
@@ -69,7 +64,7 @@ public class ChangeAlbumAdapter extends BaseAdapter{
             tv.setText("新建相册");
         }else{
             Album data = datas.get(i-1);
-            ImageLoader.getInstance().displayImage(data.getImagepath(), iv, mImageloaderoptions);
+            ImageLoader.getInstance().displayImage(data.getImagepath(), iv, AppContext.getInstance().mImageloaderoptions);
             tv.setText(data.getAlbumName());
         }
         return view;

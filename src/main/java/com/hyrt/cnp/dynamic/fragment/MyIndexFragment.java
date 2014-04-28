@@ -95,7 +95,7 @@ public class MyIndexFragment extends Fragment{
                     FaceUtils.FACE_BIG);
             ImageLoader.getInstance().displayImage(
                     facePath + "?time=" + activity.userDetail.getData().getLogo(),
-                    faceview, AppContext.getInstance().mImageloaderoptions);
+                    faceview, AppContext.getInstance().mNoCacheOnDiscImageloadoptions);
 //            activity.showDetailImage(facePath + "?time=" +activity.userDetail.getData().getLogo(), faceview, false);
 
             //加载头像地址

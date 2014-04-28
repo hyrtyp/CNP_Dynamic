@@ -19,6 +19,8 @@ public class DynamicaddcommentRequestListener extends BaseRequestListener{
     private requestListener mListener;
     private Context context;
 
+    private static final String TAG = "DynamicaddcommentRequestListener";
+
     /**
      * @param context
      */
@@ -47,7 +49,6 @@ public class DynamicaddcommentRequestListener extends BaseRequestListener{
         super.onRequestSuccess(data);
         android.util.Log.i("tag", "msg:-data:"+data);
         if(data!=null){
-
             Comment.Model3 result= (Comment.Model3)data;
             android.util.Log.i("tag", "code:"+result.getCode()+" msg:"+result.getMsg());
             if(result.getCode().equals("200")){
