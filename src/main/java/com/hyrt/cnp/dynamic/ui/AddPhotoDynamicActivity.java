@@ -1,34 +1,24 @@
 package com.hyrt.cnp.dynamic.ui;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.v7.internal.view.SupportMenuInflater;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hyrt.cnp.base.account.model.Album;
-import com.hyrt.cnp.base.account.model.Base;
 import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.ui.AlbumBrowserActivity;
-import com.hyrt.cnp.base.account.ui.LightAlertDialog;
+import com.hyrt.cnp.base.account.utils.AlertUtils;
 import com.hyrt.cnp.base.account.utils.FileUtils;
 import com.hyrt.cnp.base.account.utils.PhotoUpload;
 import com.hyrt.cnp.dynamic.R;
@@ -44,22 +34,9 @@ import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 /**
  * Created by Zoe on 2014-04-08.
@@ -73,7 +50,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 //    private MenuItem sendbtn;
     private ImageView photo;
     private GridView gvPhoto;
-    private AlertDialog uploaddialog;
+//    private AlertDialog uploaddialog;
     private View btn_back;
     private TextView tv_send;
     private TextView tv_action_title;
@@ -337,10 +314,9 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
         @Override
         public void onRequestFailure(SpiceException e) {
-//            Toast.makeText(AddPhotoDynamicActivity.this, "发送失败", 0).show();
-            Toast toast = Toast.makeText(AddPhotoDynamicActivity.this, "发送失败", 0);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            AlertUtils.getInstance().showCenterToast(
+                    AddPhotoDynamicActivity.this,
+                    getString(R.string.adddynamicphoto_fail));
         }
     };
 
@@ -350,9 +326,9 @@ public class AddPhotoDynamicActivity extends BaseActivity{
         requestListener.setListener(new AddPhotoCompleteRequestListener.RequestListener() {
             @Override
             public void onRequestSuccess(Object o) {
-                Toast toast = Toast.makeText(AddPhotoDynamicActivity.this, "发送成功", 0);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
+                AlertUtils.getInstance().showCenterToast(
+                        AddPhotoDynamicActivity.this,
+                        getString(R.string.adddynamicphoto_success));
                 Intent intent = new Intent();
                 intent.setClass(AddPhotoDynamicActivity.this, DynamicPhotoListActivity.class);
                 intent.putExtra("album", selectAlbum);
@@ -362,19 +338,9 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
             @Override
             public void onRequestFailure(SpiceException e) {
-                AlertDialog dialog = LightAlertDialog.create(AddPhotoDynamicActivity.this);
-                dialog.setTitle("温馨提示");
-                dialog.setMessage("发送失败!");
-                dialog.setButton(BUTTON_POSITIVE, getString(android.R.string.ok),
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
+                AlertUtils.getInstance().showCenterToast(
+                        AddPhotoDynamicActivity.this,
+                        getString(R.string.adddynamicphoto_fail));
             }
         });
         AddPhotoCompleteRequest request =
@@ -406,7 +372,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
         btn_back = findViewById(R.id.btn_back);
         tv_send = (TextView) findViewById(R.id.tv_send);
         tv_action_title = (TextView) findViewById(R.id.tv_action_title);
-        tv_action_title.setText(getString(R.string.adddynamic));
+        tv_action_title.setText(getString(R.string.adddynamicphoto));
     }
 
 
