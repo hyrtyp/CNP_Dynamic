@@ -48,7 +48,8 @@
         android:gravity="left"
         android:hint="添加照片描述..."
         android:padding="@dimen/view_margin_smallest"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:textCursorDrawable="@null"/>
 
     <RelativeLayout
         android:id="@+id/layout_change_ablum"

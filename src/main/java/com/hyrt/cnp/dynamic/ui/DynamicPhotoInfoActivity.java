@@ -100,7 +100,7 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         mAlbum = (Album) intent.getSerializableExtra("album");
         type = intent.getIntExtra("type", 0);
         photoname.setText(Html.fromHtml("照片名称：<font color='#6ecbd9'>"+photo.getIntroduce()+"</font>"));
-            titletext.setText("班级相册");
+            titletext.setText("动感相册");
             albumname.setText(Html.fromHtml("专辑名称：<font color='#6ecbd9'>"+mAlbum.getAlbumName()+"</font>"));
         showDetailImage(photo.getImagepics(),imgphoto,false);
     }
@@ -138,7 +138,7 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
     }
 
     public void ShowSuccess(){
-        Toast toast = Toast.makeText(DynamicPhotoInfoActivity.this, "添加评论成功", 0);
+        Toast toast = Toast.makeText(DynamicPhotoInfoActivity.this, "添加评论成功", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
 //        Toast.makeText(DynamicPhotoInfoActivity.this,"添加评论成功",Toast.LENGTH_SHORT).show();

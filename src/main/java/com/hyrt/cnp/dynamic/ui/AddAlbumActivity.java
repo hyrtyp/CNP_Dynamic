@@ -7,7 +7,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.BaseTest;
@@ -29,7 +31,11 @@ public class AddAlbumActivity extends BaseActivity{
 
     private EditText etDescribe;
     private EditText etName;
-    private MenuItem sendbtn;
+//    private MenuItem sendbtn;
+    private boolean sendEnabled;
+    private View btn_back;
+    private TextView tv_send;
+    private TextView tv_action_title;
 
     private Album mAlbum;
 
@@ -39,19 +45,79 @@ public class AddAlbumActivity extends BaseActivity{
         setContentView(R.layout.activity_add_album);
         mAlbum = (Album) getIntent().getSerializableExtra("album");
         findView();
+        tv_action_title.setText(getString(R.string.album_list));
         if(mAlbum != null){
             etDescribe.setText(mAlbum.getSimpleAlbumDesc());
             etName.setText(mAlbum.getAlbumName());
-            if(sendbtn != null){
-                sendbtn.setEnabled(true);
-            }
+            setSendEnabled(true);
         }
         setListener();
+    }
+
+    @Override
+    protected void initTitleview() {
+        super.initTitleview();
+        actionBar.hide();
     }
 
     private void setListener() {
         etDescribe.addTextChangedListener(mEditTextChangeListener);
         etName.addTextChangedListener(mEditTextChangeListener);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        tv_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sendEnabled){
+                    if(mAlbum == null){
+                        MyAddAblumRequestListener requestListener = new MyAddAblumRequestListener(AddAlbumActivity.this);
+                        requestListener.setListener( new MyAddAblumRequestListener.RequestListener() {
+                            @Override
+                            public void onRequestSuccess(Object data) {
+                                setResult(ChangeAlbumActivity.RESULT_FOR_ADD_ALBUM);
+                                finish();
+                            }
+
+                            @Override
+                            public void onRequestFailure(SpiceException e) {}
+                        });
+                        MyAddAblumRequest request = new MyAddAblumRequest(
+                                Comment.Model3.class, AddAlbumActivity.this,
+                                etName.getText().toString(),
+                                etDescribe.getText().toString());
+                        spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                                requestListener.start());
+                    }else{
+                        MyAlbumRequestListener requestListener = new MyAlbumRequestListener(AddAlbumActivity.this);
+                        requestListener.setListener(new MyAlbumRequestListener.RequestListener() {
+                            @Override
+                            public void onRequestSuccess(Object data) {
+                                Intent mData = new Intent();
+                                mAlbum.setAlbumName(etName.getText().toString());
+                                mAlbum.setAlbumDesc(etDescribe.getText().toString());
+                                mData.putExtra("album", mAlbum);
+                                setResult(MyAblumsFragment.RESULT_FOR_ADD_ALBUM, mData);
+                                finish();
+                            }
+
+                            @Override
+                            public void onRequestFailure(SpiceException e) {}
+                        });
+                        MyAlbumRequest request = new MyAlbumRequest(
+                                BaseTest.class, AddAlbumActivity.this, mAlbum.getPaId()+"",
+                                etName.getText().toString(),
+                                etDescribe.getText().toString());
+                        spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                                requestListener.start());
+                    }
+                }
+            }
+        });
     }
 
     TextWatcher mEditTextChangeListener = new TextWatcher() {
@@ -61,9 +127,9 @@ public class AddAlbumActivity extends BaseActivity{
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             if(etDescribe.getText().length() > 0 && etName.getText().length() > 0){
-                sendbtn.setEnabled(true);
+                setSendEnabled(true);
             }else{
-                sendbtn.setEnabled(false);
+                setSendEnabled(false);
             }
         }
 
@@ -71,70 +137,22 @@ public class AddAlbumActivity extends BaseActivity{
         public void afterTextChanged(Editable editable) { }
     };
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        SupportMenuInflater mMenuInflater = new SupportMenuInflater(this);
-        mMenuInflater.inflate(R.menu.senddy, menu);
-        menu.findItem(R.id.senddy).
-                setCheckable(false).
-                setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        sendbtn = menu.findItem(R.id.senddy);
-        sendbtn.setTitle("确定");
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getTitle().equals("确定")){
-            if(mAlbum == null){
-                MyAddAblumRequestListener requestListener = new MyAddAblumRequestListener(this);
-                requestListener.setListener( new MyAddAblumRequestListener.RequestListener() {
-                    @Override
-                    public void onRequestSuccess(Object data) {
-                        setResult(ChangeAlbumActivity.RESULT_FOR_ADD_ALBUM);
-                        finish();
-                    }
-
-                    @Override
-                    public void onRequestFailure(SpiceException e) {}
-                });
-                MyAddAblumRequest request = new MyAddAblumRequest(
-                        Comment.Model3.class, this,
-                        etName.getText().toString(),
-                        etDescribe.getText().toString());
-                spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
-                        requestListener.start());
-            }else{
-                MyAlbumRequestListener requestListener = new MyAlbumRequestListener(this);
-                requestListener.setListener(new MyAlbumRequestListener.RequestListener() {
-                    @Override
-                    public void onRequestSuccess(Object data) {
-                        Intent mData = new Intent();
-                        mAlbum.setAlbumName(etName.getText().toString());
-                        mAlbum.setAlbumDesc(etDescribe.getText().toString());
-                        mData.putExtra("album", mAlbum);
-                        setResult(MyAblumsFragment.RESULT_FOR_ADD_ALBUM, mData);
-                        finish();
-                    }
-
-                    @Override
-                    public void onRequestFailure(SpiceException e) {}
-                });
-                MyAlbumRequest request = new MyAlbumRequest(
-                        BaseTest.class, this, mAlbum.getPaId()+"",
-                        etName.getText().toString(),
-                        etDescribe.getText().toString());
-                spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
-                        requestListener.start());
-            }
-
-            return true;
+    private void setSendEnabled(boolean enable){
+        if(enable){
+            sendEnabled = true;
+            tv_send.setTextColor(getResources().getColor(android.R.color.white));
+        }else{
+            sendEnabled = false;
+            tv_send.setTextColor(getResources().getColor(R.color.sendbtn_enable_color));
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void findView() {
         etName = (EditText) findViewById(R.id.et_album_name);
+        etName.requestFocus();
         etDescribe = (EditText) findViewById(R.id.et_album_describe);
+        btn_back = findViewById(R.id.btn_back);
+        tv_send = (TextView) findViewById(R.id.tv_send);
+        tv_action_title = (TextView) findViewById(R.id.tv_action_title);
     }
 }

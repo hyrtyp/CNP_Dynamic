@@ -45,7 +45,7 @@
                 android:singleLine="true"
                 android:ellipsize="end"/>
 
-            <TextView
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/view_margin_smallest"
@@ -59,12 +59,12 @@
                 android:minLines="3"
                 android:maxLines="5"
                 style="@style/medium_tv"
+                android:textCursorDrawable="@null"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
                 android:background="@drawable/shape_sendword_line"
                 android:padding="@dimen/view_margin_smallest"
                 android:gravity="top"
-                android:textColor="@color/cnp_text_color"
                 />
 
             <TextView
@@ -79,7 +79,7 @@
                 android:background="@color/classroomindex_teacher"
                 android:layout_gravity="right"/>
 
-            <TextView
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/view_margin_small"
