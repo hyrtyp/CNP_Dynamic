@@ -47,7 +47,10 @@ public class AddAlbumActivity extends BaseActivity{
         findView();
         tv_action_title.setText(getString(R.string.album_list));
         if(mAlbum != null){
-            etDescribe.setText(mAlbum.getSimpleAlbumDesc());
+            if(mAlbum.getSimpleAlbumDesc() != null && !mAlbum.getSimpleAlbumDesc().equals("null")){
+                etDescribe.setText(mAlbum.getSimpleAlbumDesc());
+            }
+
             etName.setText(mAlbum.getAlbumName());
             setSendEnabled(true);
         }
@@ -126,7 +129,7 @@ public class AddAlbumActivity extends BaseActivity{
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            if(etDescribe.getText().length() > 0 && etName.getText().length() > 0){
+            if(etName.getText().length() > 0){
                 setSendEnabled(true);
             }else{
                 setSendEnabled(false);
