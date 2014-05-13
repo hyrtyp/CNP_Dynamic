@@ -30,6 +30,7 @@ import com.hyrt.cnp.dynamic.requestListener.AddPhotoCompleteRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.AddPhotoRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.MyAlbumRequestListener;
 import com.jingdong.common.frame.BaseActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
@@ -108,9 +109,14 @@ public class AddPhotoDynamicActivity extends BaseActivity{
         public void onRequestSuccess(Object data) {
             datas.clear();
             datas.addAll(((Album.Model)data).getData());
-            if(datas.size() > 0 && tvAblumText.getText().length() <= 0){
-                tvAblumText.setText(datas.get(0).getAlbumName());
-                selectAlbum = datas.get(0);
+            if(datas.size() > 0){
+                if(tvAblumText.getText().length() <= 0 || tvAblumText.getText().equals("请选择相册")){
+                    tvAblumText.setText(datas.get(0).getAlbumName());
+                    selectAlbum = datas.get(0);
+                }
+            }else{
+                tvAblumText.setText("请选择相册");
+                selectAlbum = null;
             }
 
         }
@@ -151,7 +157,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if(etContent.getText().length() > 0 && checkeds.size() > 0){
+                if(etContent.getText().length() > 0 && checkeds.size() > 0 && selectAlbum != null){
                     setSendEnabled(true);
                 }else{
                     setSendEnabled(false);
@@ -188,7 +194,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 }else{
                     checkeds.remove(checkeds.get(position));
                     mAdapter.notifyDataSetChanged();
-                    if(etContent.getText().length() > 0 && checkeds.size() > 0){
+                    if(etContent.getText().length() > 0 && checkeds.size() > 0 && selectAlbum != null){
                         setSendEnabled(true);
                     }else{
                         setSendEnabled(false);
@@ -224,7 +230,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        if (etContent.getText().length() > 0 && checkeds.size() > 0) {
+        if (etContent.getText().length() > 0 && checkeds.size() > 0 && selectAlbum != null) {
             setSendEnabled(true);
         }else{
             setSendEnabled(false);
@@ -257,7 +263,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 textview.setVisibility(View.GONE);
                 btnAddPhoto.setVisibility(View.GONE);*/
 
-                if(etContent.getText().length() > 0){
+                if(etContent.getText().length() > 0 && selectAlbum != null){
                     setSendEnabled(true);
                 }
             }else if(resultCode == RESULT_FOR_PHONE_ALBUM){
@@ -265,7 +271,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                     checkeds.clear();
                     checkeds.addAll(data.getStringArrayListExtra("checkeds"));
                     mAdapter.notifyDataSetChanged();
-                    if(etContent.getText().length() > 0 && checkeds.size() > 0){
+                    if(etContent.getText().length() > 0 && checkeds.size() > 0 && selectAlbum != null){
                         setSendEnabled(true);
                     }else{
                         setSendEnabled(false);

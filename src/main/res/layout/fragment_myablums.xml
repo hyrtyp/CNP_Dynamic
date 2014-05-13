@@ -19,6 +19,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-        <include layout="@layout/layout_bouncelistview"></include>
+        <!--<include layout="@layout/layout_bouncelistview"></include>-->
+        <com.hyrt.cnp.base.view.XListView
+            android:id="@+id/cnp_listview_album"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="@dimen/view_margin_small"
+            android:layout_margin="@dimen/view_margin_small"
+            android:background="@drawable/cnp_bg"/>
     </LinearLayout>
 </RelativeLayout>

@@ -15,14 +15,26 @@ public class DynamicPhotoListRequest extends BaseRequest{
     private PhotoService schoolListService;
 
     private int paid;
+    private String more = "1";
 
     public DynamicPhotoListRequest(Class clazz, Context context,int paid) {
         super(clazz, context);
         this.paid=paid;
     }
+
+    public DynamicPhotoListRequest(Class clazz, Context context,int paid, String more) {
+        super(clazz, context);
+        this.paid=paid;
+        this.more = more;
+    }
+
     @Override
     public Base run() {
-        return schoolListService.getDynamicAlbumphotolistData(getRestTemplate(),paid);
+        if("1".equals(more)){
+            return schoolListService.getDynamicAlbumphotolistData(getRestTemplate(),paid);
+        }else{
+            return schoolListService.getDynamicAlbumphotolistData(getRestTemplate(),paid, more);
+        }
     }
 
 

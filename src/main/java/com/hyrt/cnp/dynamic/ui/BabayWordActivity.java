@@ -33,6 +33,8 @@ public class BabayWordActivity extends BaseActivity{
     final private String ONLOADMORE="onLoadMore";
     final private String HASDATA="hasdata";
     private String more="1";
+    private String moreType = "";
+
     private ArrayList<Dynamic> dynamics=new ArrayList<Dynamic>();
 
     @Override
@@ -42,7 +44,7 @@ public class BabayWordActivity extends BaseActivity{
         initView();
         initData();
         STATE=HASDATA;
-        loadData();
+        loadData(false);
     }
 
     private void initView(){
@@ -58,7 +60,7 @@ public class BabayWordActivity extends BaseActivity{
                     STATE=REFRESH;
                     more="1";
 //                    Toast.makeText(BabayIndexActivity.this,"正在刷新,请稍后!",Toast.LENGTH_SHORT).show();
-                    loadData();
+                    loadData(false);
                 }
                 listView.stopRefresh();
             }
@@ -68,7 +70,7 @@ public class BabayWordActivity extends BaseActivity{
                 if(STATE.equals(HASDATA)||STATE.equals(REFRESH)){
                     Toast.makeText(BabayWordActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
                 }else {
-                    loadData();
+                    loadData(true);
 //                    Toast.makeText(BabayIndexActivity.this,"onLoadMore",Toast.LENGTH_SHORT).show();
                 }
                 listView.stopLoadMore();
@@ -95,7 +97,7 @@ public class BabayWordActivity extends BaseActivity{
         }else if(model==null){
             Toast.makeText(BabayWordActivity.this, "已经全部加载", Toast.LENGTH_SHORT).show();
         }else{
-            more=model.getMore();
+            moreType = model.getMore();
             if(STATE.equals(REFRESH)){//如果正在刷新就清空
                 dynamics.clear();
             }
@@ -120,11 +122,22 @@ public class BabayWordActivity extends BaseActivity{
     }
 
 
-    private void loadData(){
+    private void loadData(boolean isMore){
         BabaywordRequestListener sendwordRequestListener = new BabaywordRequestListener(this);
-        BabaywordRequest schoolRecipeRequest=new BabaywordRequest(Dynamic.Model.class,this,classRoomBabay.getUser_id()+"",more);
-        spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
-                sendwordRequestListener.start());
+        BabaywordRequest schoolRecipeRequest = null;
+        if(isMore){
+            if(dynamics.size() > 0){
+                more = dynamics.get(dynamics.size()-1).getPosttime();
+                schoolRecipeRequest=new BabaywordRequest(Dynamic.Model.class,this,classRoomBabay.getUser_id()+"",more);
+            }
+        }else{
+            schoolRecipeRequest=new BabaywordRequest(Dynamic.Model.class,this,classRoomBabay.getUser_id()+"","1");
+        }
+        if(schoolRecipeRequest != null){
+            spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                    sendwordRequestListener.start());
+        }
+
     }
 
     @Override
@@ -133,7 +146,7 @@ public class BabayWordActivity extends BaseActivity{
         if(requestCode==0&&resultCode==1){
                 STATE=REFRESH;
                 more="1";
-                loadData();
+                loadData(false);
         }
     }
 }

@@ -85,7 +85,8 @@
             android:layout_marginBottom="@dimen/view_margin"
             android:layout_marginTop="@dimen/view_margin"
             android:layout_toLeftOf="@id/iv_add_ablum_next"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/darker_gray"
+            android:text="请选择相册"/>
     </RelativeLayout>
 
     <GridView

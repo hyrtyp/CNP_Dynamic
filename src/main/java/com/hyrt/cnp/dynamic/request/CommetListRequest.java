@@ -16,15 +16,28 @@ public class CommetListRequest extends BaseRequest{
     private CommentService schoolListService;
     private String infoid;
     private String siteid;
+    private String more = "1";
 
     public CommetListRequest(Class clazz, Context context, String infoid, String siteid) {
         super(clazz, context);
         this.infoid=infoid;
         this.siteid= siteid;
     }
+
+    public CommetListRequest(Class clazz, Context context, String infoid, String siteid, String more) {
+        super(clazz, context);
+        this.infoid=infoid;
+        this.siteid= siteid;
+        this.more = more;
+    }
+
     @Override
     public Base run() {
-        return schoolListService.getCommenthomeData(getRestTemplate(),infoid,siteid);
+        if("1".equals(more)){
+            return schoolListService.getCommenthomeData(getRestTemplate(),infoid,siteid);
+        }else{
+            return schoolListService.getCommenthomeData(getRestTemplate(),infoid,siteid, more);
+        }
     }
 
 
@@ -34,6 +47,6 @@ public class CommetListRequest extends BaseRequest{
     }
 
     public String getcachekey(){
-        return "commentList"+siteid+infoid;
+        return "commentList"+siteid+infoid+System.currentTimeMillis();
     }
 }

@@ -49,6 +49,10 @@ public class ChangeAlbumActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_list);
         findView();
+        if(mAdapter == null) {
+            mAdapter = new ChangeAlbumAdapter(datas, ChangeAlbumActivity.this);
+            listview.setAdapter(mAdapter);
+        }
         initImageLoader();
         STATE=HASDATA;
         loadData();
@@ -59,7 +63,7 @@ public class ChangeAlbumActivity extends BaseActivity{
         MyAlbumRequestListener requestListener = new MyAlbumRequestListener(this);
         requestListener.setListener(mAlbumRequestListener);
         MyAlbumRequest request = new MyAlbumRequest(Album.Model.class, this);
-        spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+        spiceManager.execute(request, request.getcachekey(), 1,
                 requestListener.start());
     }
 
@@ -69,6 +73,11 @@ public class ChangeAlbumActivity extends BaseActivity{
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent data = new Intent();
                 if(i == 0){
+                    ArrayList<String> albumNames = new ArrayList<String>();
+                    for(int j=0; j<datas.size(); j++){
+                        albumNames.add(datas.get(j).getAlbumName());
+                    }
+                    data.putStringArrayListExtra("albumNames", albumNames);
                     data.setClass(ChangeAlbumActivity.this, AddAlbumActivity.class);
                     startActivityForResult(data, RESULT_FOR_ADD_ALBUM);
                 }else{

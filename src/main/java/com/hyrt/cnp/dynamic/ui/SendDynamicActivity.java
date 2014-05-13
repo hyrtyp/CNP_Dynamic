@@ -41,8 +41,10 @@ import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.base.account.model.Photo;
 import com.hyrt.cnp.base.account.request.BaseClassroomaddcommentRequest;
 import com.hyrt.cnp.base.account.requestListener.BaseClassroomaddcommentRequestListener;
+import com.hyrt.cnp.base.account.utils.AlertUtils;
 import com.hyrt.cnp.base.account.utils.FileUtils;
 import com.hyrt.cnp.base.account.utils.PhotoUpload;
+import com.hyrt.cnp.base.account.utils.StringUtils;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.BrowGridAdapter;
 import com.hyrt.cnp.dynamic.fragment.AlldynamicFragment;
@@ -148,9 +150,9 @@ public class SendDynamicActivity extends BaseActivity{
                 }
 
                 if(mDynamic.gettContent().length()>0){
-                    tvForwardContent.setText(mDynamic.gettContent());
+                    tvForwardContent.setText(StringUtils.getSpannableString(mDynamic.gettContent(), this));
                 }else{
-                    tvForwardContent.setText(mDynamic.getContent());
+                    tvForwardContent.setText(StringUtils.getSpannableString(mDynamic.getContent(), this));
                 }
 
                 tvForwardContent.setVisibility(View.VISIBLE);
@@ -498,11 +500,11 @@ public class SendDynamicActivity extends BaseActivity{
         if(mDynamic == null){
             comment.set_id(mComment.get_id()+"");
             comment.setInfoid2(mComment.get_id());
-            if(mComment.getInfoTitle().equals("")){
-                comment.setInfoTitle("null");
-            }else{
-                comment.setInfoTitle(mComment.getInfoTitle());
-            }
+//            if(mComment.getInfoTitle().equals("")){
+//                comment.setInfoTitle("null");
+//            }else{
+//                comment.setInfoTitle(mComment.getInfoTitle());
+//            }
             comment.setInfoUserId(mComment.getInfoUserId()+"");
 
             comment.setInfoNurseryId(mComment.getNursery_id()+"");
@@ -512,14 +514,19 @@ public class SendDynamicActivity extends BaseActivity{
             comment.setRecontent(mComment.getRecontent());
             comment.setReuserId(mComment.getReuserId());
             comment.setReusername(mComment.getReusername());
+            if(mComment.getInfoTitle() != null && mComment.getInfoTitle().trim().length() > 0){
+                comment.setInfoTitle(mComment.getInfoTitle());
+            }/*else{
+                comment.setInfoTitle(mComment.getContent());
+            }*/
         }else{
             comment.set_id(mDynamic.get_id()+"");
             comment.setInfoid2(mDynamic.get_id());
-            if(mDynamic.getTitle().equals("")){
-                comment.setInfoTitle("null");
-            }else{
-                comment.setInfoTitle(mDynamic.getTitle());
-            }
+//            if(mDynamic.getTitle().equals("")){
+//                comment.setInfoTitle("null");
+//            }else{
+//                comment.setInfoTitle(mDynamic.getTitle());
+//            }
             comment.setInfoUserId(mDynamic.getUserId()+"");
             comment.setInfoNurseryId(mDynamic.getNueseryId()+"");
             comment.setInfoClassroomId(mDynamic.getClassRoomId()+"");
@@ -527,8 +534,20 @@ public class SendDynamicActivity extends BaseActivity{
             comment.setUrl("null");
             comment.setRecontent(mDynamic.getdContent());
             comment.setReuserId(mDynamic.getUserId()+"");
-            comment.setReusername(mDynamic.getTitle());
+            comment.setReusername(mDynamic.getUserName());
+
+            if(mDynamic.getdContent() != null
+                    && !mDynamic.getdContent().equals("")
+                    && !mDynamic.getdContent().equals("null")){
+                comment.setInfoTitle(mDynamic.getdContent());
+            }else if(mDynamic != null && mDynamic.getTitle() != null && mDynamic.getTitle().trim().length() > 0){
+                comment.setInfoTitle(mDynamic.getTitle());
+            }/*else{
+                comment.setInfoTitle(mDynamic.getContent());
+            }*/
         }
+
+
         comment.setSiteid("50");
         comment.setLstatus("Y");
         comment.setContent(etContent.getText().toString());
@@ -580,18 +599,20 @@ public class SendDynamicActivity extends BaseActivity{
             = new DynamicaddcommentRequestListener.requestListener() {
         @Override
         public void onRequestSuccess(Object data) {
-            Toast toast = Toast.makeText(SendDynamicActivity.this, "发送成功", 0);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            AlertUtils.getInstance().showCenterToast(SendDynamicActivity.this, "发送成功");
+//            Toast toast = Toast.makeText(SendDynamicActivity.this, "发送成功", 0);
+//            toast.setGravity(Gravity.CENTER, 0, 0);
+//            toast.show();
             setResult(AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC);
             finish();
         }
 
         @Override
         public void onRequestFailure(SpiceException e) {
-            Toast toast = Toast.makeText(SendDynamicActivity.this, "发送失败", 0);
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+//            Toast toast = Toast.makeText(SendDynamicActivity.this, "发送失败", 0);
+//            toast.setGravity(Gravity.CENTER, 0, 0);
+//            toast.show();
+            AlertUtils.getInstance().showCenterToast(SendDynamicActivity.this, "发送失败");
         }
     };
 
@@ -609,14 +630,16 @@ public class SendDynamicActivity extends BaseActivity{
     private DynamiccommentRequestListener.RequestListener mForwardRequestListener = new DynamiccommentRequestListener.RequestListener() {
         @Override
         public void onRequestSuccess(Object data) {
-            Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
+            AlertUtils.getInstance().showCenterToast(SendDynamicActivity.this, "发送成功");
+//            Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
             setResult(AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC);
             finish();
         }
 
         @Override
         public void onRequestFailure(SpiceException e) {
-            Toast.makeText(SendDynamicActivity.this, "发送失败", 0).show();
+            AlertUtils.getInstance().showCenterToast(SendDynamicActivity.this, "发送失败");
+//            Toast.makeText(SendDynamicActivity.this, "发送失败", 0).show();
         }
     };
 
@@ -646,14 +669,16 @@ public class SendDynamicActivity extends BaseActivity{
     private SendDynamicRequestListener.requestListener mSendDynamicRequestListener = new SendDynamicRequestListener.requestListener() {
         @Override
         public void onRequestSuccess(Object o) {
-            Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
+            AlertUtils.getInstance().showCenterToast(SendDynamicActivity.this, "发送成功");
+//            Toast.makeText(SendDynamicActivity.this, "发送成功", 0).show();
             setResult(AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC);
             finish();
         }
 
         @Override
         public void onRequestFailure(SpiceException e) {
-            Toast.makeText(SendDynamicActivity.this, "发送失败", 0).show();
+            AlertUtils.getInstance().showCenterToast(SendDynamicActivity.this, "发送失败");
+//            Toast.makeText(SendDynamicActivity.this, "发送失败", 0).show();
         }
     };
 

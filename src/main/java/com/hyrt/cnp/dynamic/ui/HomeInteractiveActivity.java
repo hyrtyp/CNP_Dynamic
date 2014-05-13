@@ -68,6 +68,8 @@ public class HomeInteractiveActivity extends BaseActivity {
 
     public UserDetail.UserDetailModel userDetail;
 
+    private int curFragmentIndex = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -233,18 +235,31 @@ public class HomeInteractiveActivity extends BaseActivity {
                 myAblumsFragment = new MyAblumsFragment();
                 pages.set(3, myAblumsFragment);
             }
-            myAblumsFragment.loadData();
+            myAblumsFragment.loadData(false);
         }
         if(resultCode == AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC){
-            if(alldaynamicfragment == null){
-                alldaynamicfragment = (AlldynamicFragment) pages.get(0);
+            android.util.Log.i("tag", "curFragmentIndex:"+curFragmentIndex);
+            if(curFragmentIndex == 0){
+                if(alldaynamicfragment == null){
+                    alldaynamicfragment = (AlldynamicFragment) pages.get(0);
+                }
+                if(alldaynamicfragment == null){
+                    alldaynamicfragment = new AlldynamicFragment();
+                    pages.set(0, alldaynamicfragment);
+                }
+                alldaynamicfragment.STATE = alldaynamicfragment.REFRESH;
+                alldaynamicfragment.loadData(false);
+            }else if(curFragmentIndex == 2){
+                if(myIndexFragment == null){
+                    myIndexFragment = (MyIndexFragment) pages.get(0);
+                }
+                if(myIndexFragment == null){
+                    myIndexFragment = new MyIndexFragment();
+                    pages.set(0, myIndexFragment);
+                }
+                myIndexFragment.STATE = myIndexFragment.REFRESH;
+                myIndexFragment.loadData(false);
             }
-            if(alldaynamicfragment == null){
-                alldaynamicfragment = new AlldynamicFragment();
-                pages.set(0, alldaynamicfragment);
-            }
-            alldaynamicfragment.STATE = alldaynamicfragment.REFRESH;
-            alldaynamicfragment.loadData();
         }
     }
 
@@ -300,6 +315,7 @@ public class HomeInteractiveActivity extends BaseActivity {
             return;
         }
         mymenu.clear();
+        curFragmentIndex = id;
         switch (id) {
             case 0:
                 if(actionBar != null){
@@ -412,4 +428,19 @@ public class HomeInteractiveActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(curFragmentIndex == 3){
+            if(myAblumsFragment == null){
+                myAblumsFragment = (MyAblumsFragment) pages.get(0);
+            }
+            if(myAblumsFragment == null){
+                myAblumsFragment = new MyAblumsFragment();
+                pages.set(0, myAblumsFragment);
+            }
+            myAblumsFragment.STATE = myAblumsFragment.REFRESH;
+            myAblumsFragment.loadData(false);
+        }
+    }
 }

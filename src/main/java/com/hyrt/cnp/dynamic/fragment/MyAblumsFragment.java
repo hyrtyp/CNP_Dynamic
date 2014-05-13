@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.view.BounceListView;
+import com.hyrt.cnp.base.view.XListView;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.MyAblumAdapter;
 import com.hyrt.cnp.dynamic.request.MyAlbumRequest;
@@ -25,6 +27,9 @@ import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by GYH on 14-3-13.
  */
@@ -32,25 +37,36 @@ public class MyAblumsFragment extends Fragment{
 
     private View rootView;
 
-    private BounceListView listview;
+    private XListView listview;
     private MyAblumAdapter listViewAdapter;
     private String Category;
-    private Album.Model model;
+//    private Album.Model model;
+    private List<Album> albums = new ArrayList<Album>();
     private HomeInteractiveActivity activity;
+
+    public String STATE;
+    final public String REFRESH = "refresh";
+    final private String ONLOADMORE = "onLoadMore";
+    final private String HASDATA = "hasdata";
+    private String more = "1";
+    private String moreType = "";
 
     public static final int RESULT_FOR_ADD_ALBUM = 103;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i("tag", "onCreateView");
+        STATE = HASDATA;
         rootView=inflater.inflate(R.layout.fragment_myablums,container,false);
         initView();
-        loadData();
+        loadData(false);
         return rootView;
     }
 
     private void initView(){
-        listview=(BounceListView)rootView.findViewById(R.id.cnp_listview_album);
+        listview=(XListView)rootView.findViewById(R.id.cnp_listview_album);
+        listview.setPullLoadEnable(true);
+        listview.setPullRefreshEnable(true);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -67,16 +83,53 @@ public class MyAblumsFragment extends Fragment{
             }
         });
 
+        listview.setXListViewListener(new XListView.IXListViewListener() {
+            @Override
+            public void onRefresh() {
+                if (STATE.equals(HASDATA) || STATE.equals(ONLOADMORE)) {
+
+                }else{
+                    STATE = REFRESH;
+                    more = "1";
+                    loadData(false);
+                }
+                listview.stopRefresh();
+            }
+
+            @Override
+            public void onLoadMore() {
+                if (STATE.equals(HASDATA) || STATE.equals(REFRESH)) {
+//                    Toast.makeText(BabayIndexActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
+                } else {
+                    loadData(true);
+//                    Toast.makeText(BabayIndexActivity.this,"onLoadMore",Toast.LENGTH_SHORT).show();
+                }
+                listview.stopLoadMore();
+            }
+        });
+
 
     }
 
-    public void loadData(){
-        Log.i("tag", "loadData");
+    public void loadData(boolean isMore){
+        Log.i("tag", "loadData isMore:"+isMore);
         activity = (HomeInteractiveActivity) getActivity();
         MyAlbumRequestListener sendwordRequestListener = new MyAlbumRequestListener(activity);
-        MyAlbumRequest schoolRecipeRequest=new MyAlbumRequest(Album.Model.class,activity);
-        activity.spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
-                sendwordRequestListener.start());
+        MyAlbumRequest schoolRecipeRequest = null;
+        if(isMore){
+            if(albums.size()>0){
+                more = albums.get(albums.size() - 1).getPaId()+"";
+                schoolRecipeRequest=new MyAlbumRequest(more, Album.Model.class,activity);
+            }
+        }else{
+            STATE = REFRESH;
+            schoolRecipeRequest=new MyAlbumRequest(Album.Model.class,activity);
+        }
+        if(schoolRecipeRequest != null){
+            activity.spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                    sendwordRequestListener.start());
+        }
+
     }
 
     /**
@@ -85,33 +138,49 @@ public class MyAblumsFragment extends Fragment{
 
     public void updateUI(Album.Model model){
         Log.i("tag", "updateUI");
-        if (model==null){
-            LinearLayout linearLayout =(LinearLayout)rootView.findViewById(R.id.layout_bottom);
+        if (model == null && albums.size() == 0) {
+            LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.layout_bottom);
             linearLayout.setVisibility(View.VISIBLE);
-            TextView bottom_num = (TextView)rootView.findViewById(R.id.bottom_num);
+            TextView bottom_num = (TextView) rootView.findViewById(R.id.bottom_num);
             bottom_num.setText("暂无信息");
+        } else if (model == null) {
+            Toast.makeText(activity, "已经全部加载", Toast.LENGTH_SHORT).show();
         }else{
-            this.model=model;
-            String[] resKeys=new String[]{"getAlbumName","getAlbumDesc","getPosttime2"};
-            int[] reses=new int[]{R.id.item_album_title,R.id.tv_photo_describe,R.id.tv_photo_time};
-            listViewAdapter = new MyAblumAdapter(activity,model.getData(),R.layout.dynamic_album_item,resKeys,reses);
-            listViewAdapter.setListener(mAblumAdapter);
-            if(listview != null){
-                listview.setAdapter(listViewAdapter);
+            moreType = model.getMore();
+            if (STATE == null || STATE.equals(REFRESH)) {//如果正在刷新就清空
+                albums.clear();
             }
-        }
+            this.albums.addAll(model.getData());
+            if(listViewAdapter == null){
+                String[] resKeys=new String[]{"getAlbumName","getAlbumDesc","getPosttime2"};
+                int[] reses=new int[]{R.id.item_album_title,R.id.tv_photo_describe,R.id.tv_photo_time};
+                listViewAdapter = new MyAblumAdapter(activity,albums,R.layout.dynamic_album_item,resKeys,reses);
+                listViewAdapter.setListener(mAblumAdapter);
+                if(listview != null){
+                    listview.setAdapter(listViewAdapter);
+                }
+            }else{
+                listViewAdapter.notifyDataSetChanged();
+            }
 
+        }
+        STATE = "";//清空状态
     }
 
     private MyAblumAdapter.OnItemClickListener mAblumAdapter
             = new MyAblumAdapter.OnItemClickListener() {
         @Override
         public void onClick(int type, int position) {
-            Album data = model.getData().get(position);
+            Album data = albums.get(position);
             if(type == 0){
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), AddAlbumActivity.class);
                 intent.putExtra("album", data);
+                ArrayList<String> albumNames = new ArrayList<String>();
+                for(int i=0; i<albums.size(); i++){
+                    albumNames.add(albums.get(i).getAlbumName());
+                }
+                intent.putStringArrayListExtra("albumNames", albumNames);
                 getActivity().startActivityForResult(intent, RESULT_FOR_ADD_ALBUM);
             }else if(type == 1){
                 MyAlbumRequestListener requestListener = new MyAlbumRequestListener(getActivity());
@@ -124,6 +193,11 @@ public class MyAblumsFragment extends Fragment{
             }else{
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), DynamicPhotoListActivity.class);
+                ArrayList<String> albumNames = new ArrayList<String>();
+                for(int i=0; i<albums.size(); i++){
+                    albumNames.add(albums.get(i).getAlbumName());
+                }
+                intent.putStringArrayListExtra("albumNames", albumNames);
                 intent.putExtra("album", data);
                 startActivityForResult(intent, RESULT_FOR_ADD_ALBUM);
             }
@@ -136,7 +210,7 @@ public class MyAblumsFragment extends Fragment{
         public void onRequestSuccess(Object data) {
             BaseTest bt = (BaseTest) data;
             android.util.Log.i("tag", "bt:"+bt.getCode()+":"+bt.getMsg());
-            loadData();
+            loadData(false);
         }
 
         @Override

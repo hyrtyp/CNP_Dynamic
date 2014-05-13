@@ -107,6 +107,7 @@ public class DynamicAdapter extends MySimpleAdapter {
 
         String facePath = mDynamic.getUserphoto();
         dynamic_Avatar.setImageDrawable(null);
+        ImageLoader.getInstance().cancelDisplayTask(dynamic_Avatar);
         ImageLoader.getInstance().displayImage(
                 facePath,
                 dynamic_Avatar,

@@ -46,8 +46,13 @@ public class BabayDynamicRequest extends BaseRequest {
 
     @Override
     public Base run() {
+        android.util.Log.i("tag", "run more :"+more+" type:"+type);
         if(type == 1){
-            return schoolListService.getBabayDynamicData(getRestTemplate(),uid, did);
+            if("1".equals(more)){
+                return schoolListService.getBabayDynamicData(getRestTemplate(),uid, did);
+            }else{
+                return schoolListService.getBabayDynamicData(getRestTemplate(),uid, did, more);
+            }
         }else{
             if(more.equals("1")){
                 return schoolListService.getBabayDynamicData(getRestTemplate(),uid, isAll);
@@ -65,6 +70,6 @@ public class BabayDynamicRequest extends BaseRequest {
     }
 
     public String getcachekey(){
-        return "Babydynamic"+uid+more;
+        return "Babydynamic"+uid+more+System.currentTimeMillis();
     }
 }

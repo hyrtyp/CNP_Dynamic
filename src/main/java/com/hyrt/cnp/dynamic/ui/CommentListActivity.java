@@ -111,16 +111,16 @@ public class CommentListActivity extends BaseActivity{
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC){
             if(isComment){
-                commentCount++;
-                tv_review_num.setText(commentCount+"评论");
+//                commentCount++;
+//                tv_review_num.setText(commentCount+"评论");
                 if(mCommentListFragment != null){
-                    mCommentListFragment.loadData();
+                    mCommentListFragment.loadData(false);
                 }
             }else{
-                forwardCount++;
-                tv_transmit_num.setText(forwardCount+"转发");
+//                forwardCount++;
+//                tv_transmit_num.setText(forwardCount+"转发");
                 if(mForwardListFragment != null){
-                    mForwardListFragment.loadData();
+                    mForwardListFragment.loadData(false);
                 }
             }
         }
@@ -181,7 +181,24 @@ public class CommentListActivity extends BaseActivity{
         });
     }
 
-   /* private void initData(){
+    public void onLoad(int dataSize, int type){
+        switch (type){
+            case 0:
+                tv_transmit_num.setText(dataSize+"转发");
+                break;
+            case 1:
+                tv_review_num.setText(dataSize+"评论");
+                break;
+        }
+    }
+
+    @Override
+    public void finish() {
+        setResult(105);
+        super.finish();
+    }
+
+    /* private void initData(){
         CommentListRequestListener sendwordRequestListener = new CommentListRequestListener(this);
         CommetListRequest schoolRecipeRequest=new CommetListRequest(
                 Comment.Model.class,this,dynamic.get_id(),"50");

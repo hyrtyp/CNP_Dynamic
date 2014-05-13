@@ -36,7 +36,7 @@ public class AboutFriendActivity extends BaseActivity{
     final private String REFRESH="refresh";
     final private String ONLOADMORE="onLoadMore";
     final private String HASDATA="hasdata";
-    private String more="1";
+//    private String more="1";
 
     private List<ClassRoomBabay> datas = new ArrayList<ClassRoomBabay>();
     private ListViewAdapter mAdapter;
@@ -83,7 +83,7 @@ public class AboutFriendActivity extends BaseActivity{
                 TextView bottom_num = (TextView)findViewById(R.id.bottom_num);
                 bottom_num.setText("暂无信息");
             }else{
-                more= data.getMore();
+//                more= data.getMore();
                 if(STATE.equals(REFRESH)){//如果正在刷新就清空
                     datas.clear();
                 }
@@ -131,7 +131,7 @@ public class AboutFriendActivity extends BaseActivity{
                     Toast.makeText(AboutFriendActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
                 } else {
                     STATE = REFRESH;
-                    more = "1";
+//                    more = "1";
                     loadData();
                 }
                 listview.stopRefresh();

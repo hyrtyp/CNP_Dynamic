@@ -42,6 +42,7 @@ public class BabayIndexActivity extends BaseActivity{
     final private String ONLOADMORE="onLoadMore";
     final private String HASDATA="hasdata";
     private String more="1";
+    private String moreType = "";
     private ImageView faceview;
     private ImageView imageviewback;
     private TextView nameview;
@@ -166,7 +167,7 @@ public class BabayIndexActivity extends BaseActivity{
         }else if(model==null){
             Toast.makeText(BabayIndexActivity.this,"已经全部加载",Toast.LENGTH_SHORT).show();
         }else{
-            more=model.getMore();
+            moreType = model.getMore();
             if(STATE.equals(REFRESH)){//如果正在刷新就清空
                 dynamics.clear();
             }
@@ -214,16 +215,20 @@ public class BabayIndexActivity extends BaseActivity{
     public void loadData(){
         BabayDynamicRequestListener sendwordRequestListener = new BabayDynamicRequestListener(this);
         BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(
-                Dynamic.Model.class,this,babyInfo.getUser_id()+"",more);
+                Dynamic.Model.class,this,babyInfo.getUser_id()+"","1");
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
                 sendwordRequestListener.start());
     }
     public void loadMoreData(){
         BabayDynamicRequestListener sendwordRequestListener = new BabayDynamicRequestListener(this);
-        BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(
-                Dynamic.Model.class,this,babyInfo.getUser_id()+"",more);
-        spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
-                sendwordRequestListener.start());
+        if(dynamics.size() > 0){
+            more = dynamics.get(dynamics.size()-1).getPosttime();
+            BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(
+                    Dynamic.Model.class,this,babyInfo.getUser_id()+"",more);
+            spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                    sendwordRequestListener.start());
+        }
+
     }
 
     public void showBabayInfo(){

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 /**
  * Created by GYH on 2014/4/5. change
+ * @我的
  */
 public class MyItListActivity extends BaseActivity{
 

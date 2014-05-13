@@ -13,13 +13,19 @@ import com.hyrt.cnp.base.account.service.AlbumService;
 public class MyAlbumRequest extends BaseRequest{
 
     private int type = 0;//0:获取专辑列表；1:删除专辑；2:修改专辑
-    private String paid, albumName, describes;
+    private String paid, albumName, describes, more="1";
 
     @Inject
     private AlbumService schoolListService;
     public MyAlbumRequest(Class clazz, Context context) {
         super(clazz, context);
         this.type = 0;
+    }
+
+    public MyAlbumRequest(String more, Class clazz, Context context) {
+        super(clazz, context);
+        this.type = 0;
+        this.more = more;
     }
 
     public MyAlbumRequest(Class clazz, Context context, String paid) {
@@ -43,9 +49,13 @@ public class MyAlbumRequest extends BaseRequest{
         }else if(type == 2){
             return schoolListService.alterAlbum(paid, albumName, describes);
         }else{
-            return schoolListService.getMyAlbumData(getRestTemplate());
+            android.util.Log.i("tag", "more:"+more);
+            if("1".equals(more)){
+                return schoolListService.getMyAlbumData(getRestTemplate());
+            }else{
+                return schoolListService.getMyAlbumData(getRestTemplate(), more);
+            }
         }
-
     }
 
 
@@ -55,6 +65,6 @@ public class MyAlbumRequest extends BaseRequest{
     }
 
     public String getcachekey(){
-        return "myalbum11233";
+        return "myalbum11233"+System.currentTimeMillis();
     }
 }

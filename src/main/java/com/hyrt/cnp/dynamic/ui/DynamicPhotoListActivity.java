@@ -23,6 +23,7 @@ import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.model.DynamicPhoto;
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.adapter.DynamicPhotoAdapter;
 import com.hyrt.cnp.dynamic.fragment.MyAblumsFragment;
 import com.hyrt.cnp.dynamic.request.DynamicPhotoListRequest;
 import com.hyrt.cnp.dynamic.request.MyAlbumRequest;
@@ -43,10 +44,11 @@ import uk.co.senab.photoview.PhotoView;
 public class DynamicPhotoListActivity extends BaseActivity{
 
     private GridView gridView;
-    private MySimpleAdapter classRoomAdapter;
+    private DynamicPhotoAdapter classRoomAdapter;
     private DynamicPhoto.Model model;
     private String  Category;
     private TextView bottom_num;
+    private ArrayList<String> albumNames;
 
 
     private DynamicPhoto selectPhoto;
@@ -65,6 +67,7 @@ public class DynamicPhotoListActivity extends BaseActivity{
         setContentView(R.layout.activity_classroomphotolist);
         Intent intent = getIntent();
         mAlbum = (Album)intent.getSerializableExtra("album");
+        albumNames = intent.getStringArrayListExtra("albumNames");
         if(mAlbum != null){
             titletext.setText(mAlbum.getAlbumName());
         }
@@ -84,9 +87,9 @@ public class DynamicPhotoListActivity extends BaseActivity{
             for(int i=0,j=model.getData().size(); i<j; i++){
                 imageUrls.add(model.getData().get(i).getImagepics());
             }
-            String[] resKeys=new String[]{"getImagethpath","getTitle"};
-            int[] reses=new int[]{R.id.gridview_image,R.id.gridview_name};
-            classRoomAdapter = new MySimpleAdapter(this,model.getData(),R.layout.layout_item_gridview_image1,resKeys,reses);
+            String[] resKeys=new String[]{"getTitle"};
+            int[] reses=new int[]{R.id.gridview_name};
+            classRoomAdapter = new DynamicPhotoAdapter(this,model.getData(),R.layout.layout_item_gridview_image1,resKeys,reses);
             gridView.setAdapter(classRoomAdapter);
             bottom_num.setText("共 "+model.getData().size()+" 张");
         }
@@ -216,6 +219,7 @@ public class DynamicPhotoListActivity extends BaseActivity{
                         if(view.getId() == R.id.tv_alter_album){
                             Intent intent = new Intent();
                             intent.setClass(DynamicPhotoListActivity.this, AddAlbumActivity.class);
+                            intent.putStringArrayListExtra("albumNames", albumNames);
                             intent.putExtra("album", mAlbum);
                             DynamicPhotoListActivity.this
                                     .startActivityForResult(intent, RESULT_FOR_ADD_ALBUM);

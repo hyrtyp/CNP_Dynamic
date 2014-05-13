@@ -1,5 +1,6 @@
 package com.hyrt.cnp.dynamic.fragment;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hyrt.cnp.base.account.CNPClient;
+import com.hyrt.cnp.base.account.model.BabyInfo;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.base.account.utils.FaceUtils;
 import com.hyrt.cnp.base.view.XListView;
@@ -18,7 +21,10 @@ import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.DynamicAdapter;
 import com.hyrt.cnp.dynamic.request.BabayDynamicRequest;
 import com.hyrt.cnp.dynamic.requestListener.MyIndexRequestListener;
+import com.hyrt.cnp.dynamic.ui.BabayIndexActivity;
 import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;
+import com.jingdong.common.frame.BaseActivity;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.octo.android.robospice.persistence.DurationInMillis;
 
@@ -39,8 +45,8 @@ public class MyIndexFragment extends Fragment{
     private XListView listView;
     private ImageView faceviewbg;
 
-    private String STATE;
-    final private String REFRESH="refresh";
+    public String STATE;
+    public String REFRESH="refresh";
     final private String ONLOADMORE="onLoadMore";
     final private String HASDATA="hasdata";
 
@@ -58,9 +64,9 @@ public class MyIndexFragment extends Fragment{
         dynamicAdapter = null;
         dynamics.clear();
         initView();
-        loadData();
+        loadData(false);
         if(dynamics.size()==0){
-            loadData();
+            loadData(false);
         }else{
             allDataUi();
         }
@@ -100,10 +106,16 @@ public class MyIndexFragment extends Fragment{
 
             //加载头像地址
             String faceBgPath = FaceUtils.getAvatar(activity.userDetail.getData().getUser_id(), FaceUtils.FACE_BG);
-//            ImageLoader.getInstance().displayImage(
-//                    faceBgPath,
-//                    faceviewbg, AppContext.getInstance().mImageloaderoptions);
-            activity.showDetailImage(faceBgPath, faceviewbg, true);
+            DisplayImageOptions mOptions = new DisplayImageOptions.Builder()
+                    .showImageOnLoading(R.drawable.hua2)
+                    .showImageOnFail(R.drawable.hua2)
+                    .showImageForEmptyUri(R.drawable.hua2)
+                    .cacheInMemory(true)
+                    .build();
+            ImageLoader.getInstance().displayImage(
+                    faceBgPath,
+                    faceviewbg, mOptions);
+//            activity.showDetailImage(faceBgPath, faceviewbg, true);
         }
 
 
@@ -119,7 +131,7 @@ public class MyIndexFragment extends Fragment{
                     STATE=REFRESH;
                     more="1";
 //                    Toast.makeText(BabayIndexActivity.this,"正在刷新,请稍后!",Toast.LENGTH_SHORT).show();
-                    loadData();
+                    loadData(false);
                 }
                 listView.stopRefresh();
             }
@@ -129,7 +141,7 @@ public class MyIndexFragment extends Fragment{
                 if(STATE.equals(HASDATA)||STATE.equals(REFRESH)){
                     Toast.makeText(getActivity(),"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
                 }else {
-                    loadData();
+                    loadData(true);
 //                    Toast.makeText(BabayIndexActivity.this,"onLoadMore",Toast.LENGTH_SHORT).show();
                 }
                 listView.stopLoadMore();
@@ -140,13 +152,25 @@ public class MyIndexFragment extends Fragment{
     /**
      * 加载数据
      * */
-    private void loadData(){
-
+    public void loadData(boolean isMore){
+        android.util.Log.i("tag", "loadData-");
         MyIndexRequestListener sendwordRequestListener = new MyIndexRequestListener(getActivity());
-        BabayDynamicRequest schoolRecipeRequest=new BabayDynamicRequest(
-                Dynamic.Model.class,getActivity(),"",more);
-        activity.spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
-                sendwordRequestListener.start());
+        BabayDynamicRequest schoolRecipeRequest = null;
+        if(isMore){
+            if(dynamics.size() > 0){
+                more = dynamics.get(dynamics.size()-1).getPosttime();
+                schoolRecipeRequest=new BabayDynamicRequest(
+                        Dynamic.Model.class,getActivity(),"",more);
+            }
+        }else{
+            STATE = REFRESH;
+            schoolRecipeRequest=new BabayDynamicRequest(
+                    Dynamic.Model.class,getActivity(),"","1");
+        }
+        if(schoolRecipeRequest != null){
+            activity.spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                    sendwordRequestListener.start());
+        }
     }
 
     /**
@@ -162,8 +186,20 @@ public class MyIndexFragment extends Fragment{
                 R.id.dynamic_image1, R.id.dynamic_image2,
                 R.id.dynamic_image3, R.id.dynamic_time2, R.id.dynamic_zf_num, R.id.dynamic_pl_num, R.id.dynamic_dcontext};
         dynamicAdapter = new DynamicAdapter(activity, dynamics, R.layout.layout_item_dynamic, resKeys, reses);
+        dynamicAdapter.setCallback(mDynamicAdapterCallback);
         listView.setAdapter(dynamicAdapter);
     }
+
+    private DynamicAdapter.DynamicAdapterCallback mDynamicAdapterCallback = new DynamicAdapter.DynamicAdapterCallback() {
+        @Override
+        public void onFaceClick(int position) {
+        }
+
+        @Override
+        public void onPhotoClick(int position, int PhotoPosition) {
+            ((BaseActivity)getActivity()).showPop2(rootView, dynamics.get(position).getbPicAry2(), PhotoPosition, getActivity());
+        }
+    };
 
     /**
      *
@@ -180,7 +216,6 @@ public class MyIndexFragment extends Fragment{
         }else if(model==null){
             Toast.makeText(getActivity(), "已经全部加载", Toast.LENGTH_SHORT).show();
         }else{
-            more=model.getMore();
             if(STATE != null && STATE.equals(REFRESH)){//如果正在刷新就清空
                 dynamics.clear();
             }
@@ -195,6 +230,7 @@ public class MyIndexFragment extends Fragment{
                         R.id.dynamic_image1,R.id.dynamic_image2,
                         R.id.dynamic_image3,R.id.dynamic_time2,R.id.dynamic_zf_num,R.id.dynamic_pl_num,R.id.dynamic_dcontext};
                 dynamicAdapter = new DynamicAdapter(activity,dynamics,R.layout.layout_item_dynamic,resKeys,reses);
+                dynamicAdapter.setCallback(mDynamicAdapterCallback);
                 if(listView != null){
                     listView.setAdapter(dynamicAdapter);
                 }

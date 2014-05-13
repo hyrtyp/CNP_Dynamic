@@ -2,6 +2,7 @@ package com.hyrt.cnp.dynamic.requestListener;
 
 import android.app.Activity;
 
+import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.base.account.requestListener.BaseRequestListener;
 import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;

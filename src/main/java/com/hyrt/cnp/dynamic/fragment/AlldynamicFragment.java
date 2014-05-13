@@ -35,6 +35,7 @@ public class AlldynamicFragment extends Fragment {
 
     private XListView xListView;
     private String more = "1";
+    private String moreType = "";
     private HomeInteractiveActivity activity;
 
     public String STATE;
@@ -71,7 +72,7 @@ public class AlldynamicFragment extends Fragment {
         initView(rootview);
         initData();
         if(dynamics.size()==0){
-            loadData();
+            loadData(false);
         }else{
             allDataUi();
         }
@@ -101,7 +102,7 @@ public class AlldynamicFragment extends Fragment {
                     STATE = REFRESH;
                     more = "1";
 //                    Toast.makeText(BabayIndexActivity.this,"正在刷新,请稍后!",Toast.LENGTH_SHORT).show();
-                    loadData();
+                    loadData(false);
                 }
                 xListView.stopRefresh();
             }
@@ -111,7 +112,7 @@ public class AlldynamicFragment extends Fragment {
                 if (STATE.equals(HASDATA) || STATE.equals(REFRESH)) {
 //                    Toast.makeText(BabayIndexActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
                 } else {
-                    loadData();
+                    loadData(true);
 //                    Toast.makeText(BabayIndexActivity.this,"onLoadMore",Toast.LENGTH_SHORT).show();
                 }
                 xListView.stopLoadMore();
@@ -119,13 +120,31 @@ public class AlldynamicFragment extends Fragment {
         });
     }
 
-    public void loadData() {
+    public void loadData(boolean isMore) {
         activity = (HomeInteractiveActivity) getActivity();
         MyDynamicRequestListener sendwordRequestListener = new MyDynamicRequestListener(activity);
-        BabayDynamicRequest schoolRecipeRequest = new BabayDynamicRequest(
-                Dynamic.Model.class, activity, "", more, true);
-        activity.spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), 1,
-                sendwordRequestListener.start());
+        BabayDynamicRequest schoolRecipeRequest = null;
+        if(isMore){
+            if(dynamics.size() > 0){
+                if(moreType.toLowerCase().equals("posttime")){
+                    more = dynamics.get(dynamics.size()-1).getPosttime();
+                }else{
+                    more = dynamics.get(dynamics.size()-1).get_id();
+                }
+                schoolRecipeRequest = new BabayDynamicRequest(
+                        Dynamic.Model.class, activity, "", more, true);
+            }
+
+
+        }else{
+            schoolRecipeRequest = new BabayDynamicRequest(
+                    Dynamic.Model.class, activity, "", "1", true);
+        }
+
+        if(schoolRecipeRequest != null){
+            activity.spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), 1,
+                    sendwordRequestListener.start());
+        }
     }
 
     public void upUiData(Dynamic.Model model) {
@@ -137,7 +156,7 @@ public class AlldynamicFragment extends Fragment {
         } else if (model == null) {
             Toast.makeText(activity, "已经全部加载", Toast.LENGTH_SHORT).show();
         } else {
-            more = model.getMore();
+            moreType = model.getMore();
             if (STATE == null || STATE.equals(REFRESH)) {//如果正在刷新就清空
                 dynamics.clear();
             }

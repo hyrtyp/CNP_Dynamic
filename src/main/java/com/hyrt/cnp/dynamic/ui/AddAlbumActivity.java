@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.BaseTest;
 import com.hyrt.cnp.base.account.model.Comment;
+import com.hyrt.cnp.base.account.utils.AlertUtils;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.fragment.MyAblumsFragment;
 import com.hyrt.cnp.dynamic.request.MyAddAblumRequest;
@@ -23,6 +24,9 @@ import com.hyrt.cnp.dynamic.requestListener.MyAlbumRequestListener;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Zoe on 2014-04-11.
@@ -37,6 +41,8 @@ public class AddAlbumActivity extends BaseActivity{
     private TextView tv_send;
     private TextView tv_action_title;
 
+    private ArrayList<String> albumNames;
+
     private Album mAlbum;
 
     @Override
@@ -44,6 +50,10 @@ public class AddAlbumActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_album);
         mAlbum = (Album) getIntent().getSerializableExtra("album");
+        albumNames = getIntent().getStringArrayListExtra("albumNames");
+        if(mAlbum != null && albumNames != null){
+            albumNames.remove(mAlbum.getAlbumName());
+        }
         findView();
         tv_action_title.setText(getString(R.string.album_list));
         if(mAlbum != null){
@@ -77,6 +87,10 @@ public class AddAlbumActivity extends BaseActivity{
             @Override
             public void onClick(View view) {
                 if(sendEnabled){
+                    if(albumNames != null && albumNames.contains(etName.getText().toString())){
+                        AlertUtils.getInstance().showCenterToast(AddAlbumActivity.this, "相册名重复");
+                        return;
+                    }
                     if(mAlbum == null){
                         MyAddAblumRequestListener requestListener = new MyAddAblumRequestListener(AddAlbumActivity.this);
                         requestListener.setListener( new MyAddAblumRequestListener.RequestListener() {
@@ -129,7 +143,7 @@ public class AddAlbumActivity extends BaseActivity{
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-            if(etName.getText().length() > 0){
+            if(etName.getText().length() > 0 && etDescribe.getText().length() > 0){
                 setSendEnabled(true);
             }else{
                 setSendEnabled(false);
