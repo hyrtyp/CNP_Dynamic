@@ -107,8 +107,8 @@ public class CommentListFragment extends Fragment{
             comments.addAll(model.getData());
             ((CommentListActivity)getActivity()).onLoad(comments.size(), 1);
             if(dynamicAdapter==null){
-                String[] resKeys=new String[]{"getphotoImage","getUsername","getCreatdate2"};
-                int[] reses=new int[]{R.id.comment_photo,R.id.comment_name,R.id.comment_time};
+                String[] resKeys=new String[]{"getUsername","getCreatdate2"};
+                int[] reses=new int[]{R.id.comment_name,R.id.comment_time};
                 dynamicAdapter = new CommentListAdapter(
                         (BaseActivity)getActivity(),
                         comments,

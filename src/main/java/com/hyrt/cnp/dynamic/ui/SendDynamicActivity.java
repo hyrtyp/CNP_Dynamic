@@ -133,6 +133,7 @@ public class SendDynamicActivity extends BaseActivity{
             btnAddAbout.setVisibility(View.GONE);
             mDynamic = (Dynamic) intent.getSerializableExtra("dynamic");
             actionBar.setTitle("转发动态");
+            setSendEnabled(true);
 
             if(mDynamic.getbPicAry().size()>0){
                 ImageLoader.getInstance().displayImage(mDynamic.getsPicAry0(), ivForwardPhoto, AppContext.getInstance().mImageloaderoptions);
@@ -380,7 +381,7 @@ public class SendDynamicActivity extends BaseActivity{
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if(charSequence.length()>0){
+                if(charSequence.length()>0 || type == TYPE_FORWARD){
                     setSendEnabled(true);
                 }else{
                     setSendEnabled(false);
@@ -440,7 +441,7 @@ public class SendDynamicActivity extends BaseActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        if (etContent.getText().length() > 0) {
+        if (etContent.getText().length() > 0 || type == TYPE_FORWARD) {
             setSendEnabled(true);
         }else{
             setSendEnabled(false);

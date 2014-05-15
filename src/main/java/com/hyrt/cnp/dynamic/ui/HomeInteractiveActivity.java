@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hyrt.cnp.base.account.model.Album;
+import com.hyrt.cnp.base.account.model.BaseStringArray;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.base.account.model.UserDetail;
 import com.hyrt.cnp.base.account.utils.StringUtils;
@@ -25,9 +27,13 @@ import com.hyrt.cnp.dynamic.fragment.AboutmeFragment;
 import com.hyrt.cnp.dynamic.fragment.AlldynamicFragment;
 import com.hyrt.cnp.dynamic.fragment.MyAblumsFragment;
 import com.hyrt.cnp.dynamic.fragment.MyIndexFragment;
+import com.hyrt.cnp.dynamic.request.BaseStringArrayRequest;
+import com.hyrt.cnp.dynamic.requestListener.BaseStringArrayRequestListener;
 import com.jingdong.common.frame.BaseActivity;
+import com.octo.android.robospice.persistence.DurationInMillis;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by GYH on 14-3-12.
@@ -69,6 +75,10 @@ public class HomeInteractiveActivity extends BaseActivity {
     public UserDetail.UserDetailModel userDetail;
 
     private int curFragmentIndex = 0;
+
+    public int aboutmeCount;
+    public int commentCount;
+    public int forwardCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,8 +257,8 @@ public class HomeInteractiveActivity extends BaseActivity {
                     alldaynamicfragment = new AlldynamicFragment();
                     pages.set(0, alldaynamicfragment);
                 }
-                alldaynamicfragment.STATE = alldaynamicfragment.REFRESH;
-                alldaynamicfragment.loadData(false);
+                alldaynamicfragment.STATE = alldaynamicfragment.ONLOADMORE;
+                alldaynamicfragment.loadData(true);
             }else if(curFragmentIndex == 2){
                 if(myIndexFragment == null){
                     myIndexFragment = (MyIndexFragment) pages.get(0);
@@ -257,8 +267,8 @@ public class HomeInteractiveActivity extends BaseActivity {
                     myIndexFragment = new MyIndexFragment();
                     pages.set(0, myIndexFragment);
                 }
-                myIndexFragment.STATE = myIndexFragment.REFRESH;
-                myIndexFragment.loadData(false);
+                myIndexFragment.STATE = myIndexFragment.ONLOADMORE;
+                myIndexFragment.loadData(true);
             }
         }
     }
@@ -442,5 +452,39 @@ public class HomeInteractiveActivity extends BaseActivity {
             myAblumsFragment.STATE = myAblumsFragment.REFRESH;
             myAblumsFragment.loadData(false);
         }
+
+        final BaseStringArrayRequestListener requestListener = new BaseStringArrayRequestListener(this);
+        requestListener.setListener(new BaseStringArrayRequestListener.OnRequestListener() {
+            @Override
+            public void onRequestSuccess(BaseStringArray bsa) {
+                List<String> data = bsa.getData();
+                if(data.size() == 3){
+                    aboutmeCount = Integer.parseInt(data.get(0));
+                    commentCount = Integer.parseInt(data.get(1));
+                    forwardCount = Integer.parseInt(data.get(2));
+                    int count = aboutmeCount + commentCount + forwardCount;
+                    if(count > 0){
+                        Log.i("tag", "tv_num_aboutme:"+tv_num_aboutme);
+                        tv_num_aboutme.setText(count+"");
+                        tv_num_aboutme.setVisibility(View.VISIBLE);
+                    }
+                }
+                if(aboutmeFragment == null){
+                    aboutmeFragment = (AboutmeFragment) pages.get(0);
+                }
+                if(aboutmeFragment == null){
+                    aboutmeFragment = new AboutmeFragment();
+                    pages.set(0, aboutmeFragment);
+                }
+                aboutmeFragment.initData();
+            }
+
+            @Override
+            public void onRequestFailure() {
+            }
+        });
+        BaseStringArrayRequest request = new BaseStringArrayRequest(this);
+        spiceManager.execute(request, request.getcachekey(), DurationInMillis.ONE_SECOND * 10,
+                requestListener);
     }
 }

@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyrt.cnp.base.account.model.ItInfo;
+import com.hyrt.cnp.base.account.utils.AlertUtils;
 import com.hyrt.cnp.base.view.XListView;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
@@ -98,7 +99,8 @@ public class MycommentListActivity extends BaseActivity{
             @Override
             public void onRefresh() {
                 if (STATE.equals(HASDATA) || STATE.equals(ONLOADMORE)) {
-                    Toast.makeText(MycommentListActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
+                    AlertUtils.getInstance().showCenterToast(MycommentListActivity.this, "正在加载,请稍后!");
+//                    Toast.makeText(MycommentListActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
                 } else {
                     STATE = REFRESH;
                     more = "1";
@@ -109,11 +111,12 @@ public class MycommentListActivity extends BaseActivity{
 
             @Override
             public void onLoadMore() {
-                if (STATE.equals(HASDATA) || STATE.equals(REFRESH)) {
-                    Toast.makeText(MycommentListActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
-                } else {
-                    loadData();
-                }
+//                if (STATE.equals(HASDATA) || STATE.equals(REFRESH)) {
+//                    Toast.makeText(MycommentListActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    loadData();
+//                }
+                AlertUtils.getInstance().showCenterToast(MycommentListActivity.this, "已经全部加载");
                 listView.stopLoadMore();
             }
         });

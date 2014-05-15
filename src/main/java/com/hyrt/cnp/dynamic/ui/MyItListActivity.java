@@ -7,6 +7,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hyrt.cnp.base.account.model.ItInfo;
+import com.hyrt.cnp.base.account.utils.AlertUtils;
 import com.hyrt.cnp.base.view.XListView;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.MyItInfoAdapter;
@@ -49,7 +50,8 @@ public class MyItListActivity extends BaseActivity{
             @Override
             public void onRefresh() {
                 if(STATE.equals(HASDATA)||STATE.equals(ONLOADMORE)){
-                    Toast.makeText(MyItListActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
+                    AlertUtils.getInstance().showCenterToast(MyItListActivity.this, "正在加载,请稍后!");
+//                    Toast.makeText(MyItListActivity.this, "正在加载,请稍后!", Toast.LENGTH_SHORT).show();
                 }else {
                     STATE=REFRESH;
                     more="1";
@@ -60,11 +62,13 @@ public class MyItListActivity extends BaseActivity{
 
             @Override
             public void onLoadMore() {
-                if(STATE.equals(HASDATA)||STATE.equals(REFRESH)){
-                    Toast.makeText(MyItListActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
-                }else {
-                    loadData();
-                }
+                AlertUtils.getInstance().showCenterToast(MyItListActivity.this, "已经全部加载");
+//                if(STATE.equals(HASDATA)||STATE.equals(REFRESH)){
+//                    AlertUtils.getInstance().showCenterToast(MyItListActivity.this, "正在加载,请稍后!");
+////                    Toast.makeText(MyItListActivity.this,"正在加载,请稍后!",Toast.LENGTH_SHORT).show();
+//                }else {
+//                    loadData();
+//                }
                 listView.stopLoadMore();
             }
         });
@@ -91,7 +95,7 @@ public class MyItListActivity extends BaseActivity{
             TextView bottom_num = (TextView)findViewById(R.id.bottom_num);
             bottom_num.setText("暂无信息");
         }else if(model==null){
-            Toast.makeText(MyItListActivity.this,"已经全部加载",Toast.LENGTH_SHORT).show();
+            AlertUtils.getInstance().showCenterToast(MyItListActivity.this, "已经全部加载");
         }else{
             more=model.getMore();
             if(STATE.equals(REFRESH)){//如果正在刷新就清空

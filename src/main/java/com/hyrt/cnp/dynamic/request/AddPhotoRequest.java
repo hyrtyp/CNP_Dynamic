@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.hyrt.cnp.base.account.model.Base;
+import com.hyrt.cnp.base.account.model.DynamicPhoto;
+import com.hyrt.cnp.base.account.model.Photo;
 import com.hyrt.cnp.base.account.request.BaseRequest;
 import com.hyrt.cnp.base.account.service.AddPhotoService;
 
@@ -20,6 +22,9 @@ public class AddPhotoRequest extends BaseRequest{
     private String photoname;
     private String introduce;
     private File photo_add;
+    private DynamicPhoto mPhoto;
+    private int type = 0;
+
 
     public AddPhotoRequest(Class clazz, Context context,
                            String paid, String photoname,
@@ -31,9 +36,19 @@ public class AddPhotoRequest extends BaseRequest{
         this.photo_add = photo_add;
     }
 
+    public AddPhotoRequest(Class clazz, Context context, DynamicPhoto photo){
+        super(clazz, context);
+        this.mPhoto = photo;
+        this.type = 1;
+    }
+
     @Override
     public Base run() {
-        return addPhotoService.addPhoto(paid, photoname, introduce, photo_add);
+        if(type == 1){
+            return addPhotoService.delDynamicPhoto(mPhoto);
+        }else{
+            return addPhotoService.addPhoto(paid, photoname, introduce, photo_add);
+        }
     }
 
     @Override

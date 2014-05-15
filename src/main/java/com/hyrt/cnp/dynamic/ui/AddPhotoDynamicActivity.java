@@ -157,7 +157,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-                if(etContent.getText().length() > 0 && checkeds.size() > 0 && selectAlbum != null){
+                if(checkeds.size() > 0 && selectAlbum != null){
                     setSendEnabled(true);
                 }else{
                     setSendEnabled(false);
@@ -177,7 +177,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 TextView textview = (TextView) findViewById(R.id.tv_add_photo_text);
                 textview.setVisibility(View.VISIBLE);
                 btnAddPhoto.setVisibility(View.VISIBLE);
-                if( checkeds.size() <= 0){
+                if(checkeds.size() <= 0){
                     setSendEnabled(false);
                 }
             }
@@ -194,7 +194,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 }else{
                     checkeds.remove(checkeds.get(position));
                     mAdapter.notifyDataSetChanged();
-                    if(etContent.getText().length() > 0 && checkeds.size() > 0 && selectAlbum != null){
+                    if(checkeds.size() > 0 && selectAlbum != null){
                         setSendEnabled(true);
                     }else{
                         setSendEnabled(false);
@@ -230,7 +230,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        if (etContent.getText().length() > 0 && checkeds.size() > 0 && selectAlbum != null) {
+        if (checkeds.size() > 0 && selectAlbum != null) {
             setSendEnabled(true);
         }else{
             setSendEnabled(false);
@@ -263,7 +263,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                 textview.setVisibility(View.GONE);
                 btnAddPhoto.setVisibility(View.GONE);*/
 
-                if(etContent.getText().length() > 0 && selectAlbum != null){
+                if(selectAlbum != null){
                     setSendEnabled(true);
                 }
             }else if(resultCode == RESULT_FOR_PHONE_ALBUM){
@@ -271,7 +271,7 @@ public class AddPhotoDynamicActivity extends BaseActivity{
                     checkeds.clear();
                     checkeds.addAll(data.getStringArrayListExtra("checkeds"));
                     mAdapter.notifyDataSetChanged();
-                    if(etContent.getText().length() > 0 && checkeds.size() > 0 && selectAlbum != null){
+                    if(checkeds.size() > 0 && selectAlbum != null){
                         setSendEnabled(true);
                     }else{
                         setSendEnabled(false);

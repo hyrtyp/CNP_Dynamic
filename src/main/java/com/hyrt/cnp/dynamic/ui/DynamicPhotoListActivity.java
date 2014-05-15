@@ -25,8 +25,10 @@ import com.hyrt.cnp.base.account.model.DynamicPhoto;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.DynamicPhotoAdapter;
 import com.hyrt.cnp.dynamic.fragment.MyAblumsFragment;
+import com.hyrt.cnp.dynamic.request.AddPhotoRequest;
 import com.hyrt.cnp.dynamic.request.DynamicPhotoListRequest;
 import com.hyrt.cnp.dynamic.request.MyAlbumRequest;
+import com.hyrt.cnp.dynamic.requestListener.AddPhotoRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.DynamicPhotoListRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.MyAlbumRequestListener;
 import com.jingdong.app.pad.adapter.MySimpleAdapter;
@@ -45,7 +47,8 @@ public class DynamicPhotoListActivity extends BaseActivity{
 
     private GridView gridView;
     private DynamicPhotoAdapter classRoomAdapter;
-    private DynamicPhoto.Model model;
+//    private DynamicPhoto.Model model;
+    private ArrayList<DynamicPhoto> photos = new ArrayList<DynamicPhoto>();
     private String  Category;
     private TextView bottom_num;
     private ArrayList<String> albumNames;
@@ -55,6 +58,7 @@ public class DynamicPhotoListActivity extends BaseActivity{
     private Dialog mPhotoSelctDialog;
 
     private ArrayList<String> imageUrls = new ArrayList<String>();
+    private ArrayList<String> commentNums = new ArrayList<String>();
     private boolean midified = false;
 
     private static final int RESULT_FOR_ADD_ALBUM = 103;
@@ -72,8 +76,9 @@ public class DynamicPhotoListActivity extends BaseActivity{
             titletext.setText(mAlbum.getAlbumName());
         }
         initView();
-        loadData();
+
     }
+
 
     /**
      * 更新ui界面
@@ -82,16 +87,24 @@ public class DynamicPhotoListActivity extends BaseActivity{
         if(model==null){
             bottom_num.setText("暂无信息");
         }else{
-            this.model=model;
+            this.photos.clear();
+            this.photos.addAll(model.getData());
             imageUrls.clear();
-            for(int i=0,j=model.getData().size(); i<j; i++){
-                imageUrls.add(model.getData().get(i).getImagepics());
+            commentNums.clear();
+            for(int i=0,j=photos.size(); i<j; i++){
+                imageUrls.add(photos.get(i).getImagepics());
+                commentNums.add(photos.get(i).getCommentNum()+"");
             }
             String[] resKeys=new String[]{"getTitle"};
             int[] reses=new int[]{R.id.gridview_name};
-            classRoomAdapter = new DynamicPhotoAdapter(this,model.getData(),R.layout.layout_item_gridview_image1,resKeys,reses);
-            gridView.setAdapter(classRoomAdapter);
-            bottom_num.setText("共 "+model.getData().size()+" 张");
+            if(classRoomAdapter == null){
+                classRoomAdapter = new DynamicPhotoAdapter(this,photos,R.layout.layout_item_gridview_image1,resKeys,reses);
+                gridView.setAdapter(classRoomAdapter);
+            }else{
+                classRoomAdapter.notifyDataSetChanged();
+            }
+
+            bottom_num.setText("共 "+photos.size()+" 张");
         }
     }
     private void initView(){
@@ -100,8 +113,8 @@ public class DynamicPhotoListActivity extends BaseActivity{
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selectPhoto = model.getData().get(i);
-                showPop3(gridView, imageUrls, i, DynamicPhotoListActivity.this, mShowPop3Listener);
+                selectPhoto = photos.get(i);
+                showPop3(gridView, imageUrls, commentNums, i, DynamicPhotoListActivity.this, mShowPop3Listener, true);
 //                showPop(gridView, selectPhoto.getImagepics());
             }
         });
@@ -114,12 +127,28 @@ public class DynamicPhotoListActivity extends BaseActivity{
                 Intent intent = new Intent();
                 Log.i("tag", "position:"+position);
                 intent.setClass(DynamicPhotoListActivity.this, DynamicPhotoInfoActivity.class);
-                intent.putExtra("dynamicPhoto", model.getData().get(position));
+                intent.putExtra("dynamicPhoto", photos.get(position));
                 intent.putExtra("album", mAlbum);
                 if(type == 1){
                     intent.putExtra("etFocus", true);
                 }
                 startActivity(intent);
+            }else if(type == 3){
+                AddPhotoRequestListener requestListener
+                        = new AddPhotoRequestListener(DynamicPhotoListActivity.this);
+                requestListener.setListener(new AddPhotoRequestListener.RequestListener() {
+                    @Override
+                    public void onRequestSuccess(Object o) {
+                        loadData();
+                    }
+
+                    @Override
+                    public void onRequestFailure(SpiceException e) {}
+                });
+                AddPhotoRequest request = new AddPhotoRequest(
+                        BaseTest.class, DynamicPhotoListActivity.this, photos.get(position));
+                spiceManager.execute(request, request.getcachekey(), 1,
+                        requestListener.startDel());
             }
         }
     };
@@ -187,6 +216,7 @@ public class DynamicPhotoListActivity extends BaseActivity{
         if(popWin != null){
             popWin.dismiss();
         }
+        loadData();
     }
 
     @Override
@@ -319,7 +349,7 @@ public class DynamicPhotoListActivity extends BaseActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        model=null;
+        photos=null;
         classRoomAdapter=null;
     }
 }

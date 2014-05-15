@@ -44,6 +44,6 @@ public class DynamicPhotoListRequest extends BaseRequest{
     }
 
     public String getcachekey(){
-        return "dynamicPhotoList"+paid;
+        return "dynamicPhotoList"+paid+System.currentTimeMillis();
     }
 }

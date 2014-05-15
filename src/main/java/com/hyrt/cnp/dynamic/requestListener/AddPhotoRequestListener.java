@@ -48,6 +48,11 @@ public class AddPhotoRequestListener extends BaseRequestListener{
         return this;
     }
 
+    public BaseRequestListener startDel() {
+        showIndeterminate("删除中...");
+        return this;
+    }
+
     public BaseRequestListener start(int cur, int total) {
         showIndeterminate("上传中..."+cur+"/"+total);
         return this;

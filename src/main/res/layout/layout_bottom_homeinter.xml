@@ -87,13 +87,15 @@
 
                 <TextView
                     android:id="@+id/layout_bottom_aboutme_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="2"
-                    android:paddingLeft="4dp"
-                    android:paddingRight="4dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:gravity="center"
+                    android:text="22"
+                    android:textColor="#fff"
+                    android:layout_marginTop="@dimen/view_margin_smallest"
                     android:background="@drawable/bat_bg"
                     android:layout_alignRight="@id/layout_bottom_aboutme"
+                    android:textSize="10sp"
                     android:visibility="gone"/>
                 </RelativeLayout>
             <RelativeLayout

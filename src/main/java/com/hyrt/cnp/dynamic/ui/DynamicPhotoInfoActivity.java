@@ -99,7 +99,12 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         etFocus = intent.getBooleanExtra("etFocus", false);
         mAlbum = (Album) intent.getSerializableExtra("album");
         type = intent.getIntExtra("type", 0);
-        photoname.setText(Html.fromHtml("照片名称：<font color='#6ecbd9'>"+photo.getIntroduce()+"</font>"));
+//        if(photo.getIntroduce() != null && photo.getIntroduce().length() > 0){
+            photoname.setText(Html.fromHtml("照片名称：<font color='#6ecbd9'>"+photo.getIntroduce()+"</font>"));
+//        }else{
+//            photoname.setText(Html.fromHtml("照片名称：<font color='#6ecbd9'>"+photo.getTitle()+"</font>"));
+//        }
+
             titletext.setText("动感相册");
             albumname.setText(Html.fromHtml("专辑名称：<font color='#6ecbd9'>"+mAlbum.getAlbumName()+"</font>"));
         showDetailImage(photo.getImagepics(),imgphoto,false);

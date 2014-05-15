@@ -29,6 +29,16 @@
             android:layout_weight="1"
             style="@style/medium_tv"
             android:layout_marginTop="0dp"/>
+        <TextView
+            android:id="@+id/text_new_num"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="#fff"
+            android:background="@drawable/bat_bg"
+            android:layout_marginRight="@dimen/view_margin"
+            android:visibility="gone"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

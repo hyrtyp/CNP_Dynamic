@@ -9,8 +9,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.adapter.AboutmeFragmentAdapter;
+import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;
 import com.hyrt.cnp.dynamic.ui.MyForwardListActivity;
 import com.hyrt.cnp.dynamic.ui.MyItListActivity;
 import com.hyrt.cnp.dynamic.ui.MycommentListActivity;
@@ -50,7 +53,7 @@ public class AboutmeFragment extends Fragment{
         listView=(ListView)view.findViewById(R.id.aboutme_listview);
     }
 
-    private void initData(){
+    public void initData(){
 
         List<Map<String, Object>> contents=new ArrayList<Map<String, Object>>();
 
@@ -60,10 +63,8 @@ public class AboutmeFragment extends Fragment{
             map.put("TITLE", strs[i]);
             contents.add(map);
         }
-        SimpleAdapter adapter = new SimpleAdapter(getActivity(),
-                contents, R.layout.layout_aboutme_item,
-                new String[] {"imageid","TITLE" }, new int[] {
-                R.id.item_image,R.id.item_text});
+
+        AboutmeFragmentAdapter adapter = new AboutmeFragmentAdapter(getActivity(), contents);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

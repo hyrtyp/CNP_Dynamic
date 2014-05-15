@@ -47,7 +47,7 @@ public class MyIndexFragment extends Fragment{
 
     public String STATE;
     public String REFRESH="refresh";
-    final private String ONLOADMORE="onLoadMore";
+    final public String ONLOADMORE="onLoadMore";
     final private String HASDATA="hasdata";
 
     private String more="1";
