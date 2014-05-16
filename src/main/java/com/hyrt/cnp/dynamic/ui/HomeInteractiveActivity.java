@@ -1,6 +1,7 @@
 package com.hyrt.cnp.dynamic.ui;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -51,6 +53,7 @@ public class HomeInteractiveActivity extends BaseActivity {
     public static ArrayList<Fragment> pages = new ArrayList<Fragment>();
     private HomeinterPageAdapter homeinterPageAdapter = null;
     public MyViewPager homeViewpager = null;
+    private ImageView item_image;
 
     private Menu mymenu;//菜单
 
@@ -111,6 +114,7 @@ public class HomeInteractiveActivity extends BaseActivity {
         layoutParentAboutme = (RelativeLayout) findViewById(R.id.layout_parent_aboutme);
         layoutParentMyindex = (RelativeLayout) findViewById(R.id.layout_parent_myindex);
         layoutParentAblums = (RelativeLayout) findViewById(R.id.layout_parent_ablums);
+        item_image = (ImageView) findViewById(R.id.item_image);
 
         ly_ablums.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +151,13 @@ public class HomeInteractiveActivity extends BaseActivity {
 //                initDataFragment(1);
 
 
+            }
+        });
+
+        item_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
 
@@ -257,8 +268,8 @@ public class HomeInteractiveActivity extends BaseActivity {
                     alldaynamicfragment = new AlldynamicFragment();
                     pages.set(0, alldaynamicfragment);
                 }
-                alldaynamicfragment.STATE = alldaynamicfragment.ONLOADMORE;
-                alldaynamicfragment.loadData(true);
+                alldaynamicfragment.STATE = alldaynamicfragment.REFRESH;
+                alldaynamicfragment.loadData(false);
             }else if(curFragmentIndex == 2){
                 if(myIndexFragment == null){
                     myIndexFragment = (MyIndexFragment) pages.get(0);
@@ -267,8 +278,8 @@ public class HomeInteractiveActivity extends BaseActivity {
                     myIndexFragment = new MyIndexFragment();
                     pages.set(0, myIndexFragment);
                 }
-                myIndexFragment.STATE = myIndexFragment.ONLOADMORE;
-                myIndexFragment.loadData(true);
+                myIndexFragment.STATE = myIndexFragment.REFRESH;
+                myIndexFragment.loadData(false);
             }
         }
     }

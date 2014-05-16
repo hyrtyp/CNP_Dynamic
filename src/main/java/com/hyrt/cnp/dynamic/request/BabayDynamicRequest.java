@@ -46,7 +46,6 @@ public class BabayDynamicRequest extends BaseRequest {
 
     @Override
     public Base run() {
-        android.util.Log.i("tag", "run more :"+more+" type:"+type);
         if(type == 1){
             if("1".equals(more)){
                 return schoolListService.getBabayDynamicData(getRestTemplate(),uid, did);

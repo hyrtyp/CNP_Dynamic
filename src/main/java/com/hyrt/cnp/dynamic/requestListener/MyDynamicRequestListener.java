@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.base.account.requestListener.BaseRequestListener;
+import com.hyrt.cnp.base.account.utils.LogHelper;
 import com.hyrt.cnp.dynamic.ui.HomeInteractiveActivity;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 
@@ -13,6 +14,8 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 public class MyDynamicRequestListener extends BaseRequestListener {
 
     private RequestListener mListener;
+
+    private static final String TAG = "MyDynamicRequestListener";
 
     /**
      * @param context

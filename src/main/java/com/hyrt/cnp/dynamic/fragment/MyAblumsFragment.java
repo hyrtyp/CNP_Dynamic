@@ -123,7 +123,7 @@ public class MyAblumsFragment extends Fragment{
             }
         }else{
             STATE = REFRESH;
-            schoolRecipeRequest=new MyAlbumRequest(Album.Model.class,activity);
+            schoolRecipeRequest=new MyAlbumRequest("1", Album.Model.class,activity);
         }
         if(schoolRecipeRequest != null){
             activity.spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,
@@ -138,7 +138,7 @@ public class MyAblumsFragment extends Fragment{
 
     public void updateUI(Album.Model model){
         Log.i("tag", "updateUI");
-        if (model == null && albums.size() == 0) {
+        if (model == null && this.albums.size() == 0) {
             LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.layout_bottom);
             linearLayout.setVisibility(View.VISIBLE);
             TextView bottom_num = (TextView) rootView.findViewById(R.id.bottom_num);
@@ -148,20 +148,20 @@ public class MyAblumsFragment extends Fragment{
         }else{
             moreType = model.getMore();
             if (STATE == null || STATE.equals(REFRESH)) {//如果正在刷新就清空
-                albums.clear();
+                this.albums.clear();
             }
             this.albums.addAll(model.getData());
-            if(listViewAdapter == null){
+//            if(listViewAdapter == null){
                 String[] resKeys=new String[]{"getAlbumName","getAlbumDesc","getPosttime2"};
                 int[] reses=new int[]{R.id.item_album_title,R.id.tv_photo_describe,R.id.tv_photo_time};
-                listViewAdapter = new MyAblumAdapter(activity,albums,R.layout.dynamic_album_item,resKeys,reses);
+                listViewAdapter = new MyAblumAdapter(activity,this.albums,R.layout.dynamic_album_item,resKeys,reses);
                 listViewAdapter.setListener(mAblumAdapter);
                 if(listview != null){
                     listview.setAdapter(listViewAdapter);
                 }
-            }else{
-                listViewAdapter.notifyDataSetChanged();
-            }
+//            }else{
+//                listViewAdapter.notifyDataSetChanged();
+//            }
 
         }
         STATE = "";//清空状态

@@ -20,6 +20,7 @@ import com.hyrt.cnp.base.account.model.ItInfo;
 import com.hyrt.cnp.base.account.model.Photo;
 import com.hyrt.cnp.base.view.Mylistview;
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.adapter.DynamicPhotoInfoAdapter;
 import com.hyrt.cnp.dynamic.adapter.ListViewAdapter;
 import com.hyrt.cnp.dynamic.request.CommetListRequest;
 import com.hyrt.cnp.dynamic.request.DynamicaddcommentRequest;
@@ -31,6 +32,8 @@ import com.jingdong.app.pad.adapter.MySimpleAdapter;
 import com.jingdong.common.frame.BaseActivity;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+
+import java.util.ArrayList;
 
 /**
  * Created by Zoe on 2014-04-12.
@@ -45,7 +48,8 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
     private Mylistview listView;
     private DynamicPhoto photo;
     private Album mAlbum;
-    private MySimpleAdapter classRoomAdapter;
+    private DynamicPhotoInfoAdapter classRoomAdapter;
+    private ArrayList<Comment> comments = new ArrayList<Comment>();//评论列表
     private int type;
     private boolean etFocus = false;
 
@@ -136,10 +140,17 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         if(model == null){
             return;
         }
-        String[] resKeys=new String[]{"getphotoImage","getUsername","getCreatdate2","getContent"};
-        int[] reses=new int[]{R.id.comment_photo,R.id.text_name,R.id.text_time,R.id.text_con};
-        classRoomAdapter = new MySimpleAdapter(this,model.getData(),R.layout.layout_item_comment,resKeys,reses);
-        listView.setAdapter(classRoomAdapter);
+        comments.clear();
+        comments.addAll(model.getData());
+        if(classRoomAdapter == null){
+//            String[] resKeys=new String[]{"getphotoImage","getUsername","getCreatdate2","getContent"};
+//            int[] reses=new int[]{R.id.comment_photo,R.id.text_name,R.id.text_time,R.id.text_con};
+            classRoomAdapter = new DynamicPhotoInfoAdapter(this,comments);
+            listView.setAdapter(classRoomAdapter);
+        }else{
+            classRoomAdapter.notifyDataSetChanged();
+        }
+
     }
 
     public void ShowSuccess(){

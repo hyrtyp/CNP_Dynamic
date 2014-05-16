@@ -499,6 +499,7 @@ public class SendDynamicActivity extends BaseActivity{
     public void addComment(){
         Comment comment=new Comment();
         if(mDynamic == null){
+            android.util.Log.i("tag", "mComment:"+mComment);
             comment.set_id(mComment.get_id()+"");
             comment.setInfoid2(mComment.get_id());
 //            if(mComment.getInfoTitle().equals("")){
