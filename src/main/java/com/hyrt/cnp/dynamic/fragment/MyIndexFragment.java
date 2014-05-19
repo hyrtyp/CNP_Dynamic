@@ -153,7 +153,6 @@ public class MyIndexFragment extends Fragment{
      * 加载数据
      * */
     public void loadData(boolean isMore){
-        android.util.Log.i("tag", "loadData-");
         MyIndexRequestListener sendwordRequestListener = new MyIndexRequestListener(getActivity());
         BabayDynamicRequest schoolRecipeRequest = null;
         if(isMore){

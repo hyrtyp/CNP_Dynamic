@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.hyrt.cnp.base.account.CNPClient;
 import com.hyrt.cnp.base.account.model.BabyInfo;
 import com.hyrt.cnp.base.account.model.Dynamic;
+import com.hyrt.cnp.base.account.utils.LogHelper;
 import com.hyrt.cnp.dynamic.R;
 import com.hyrt.cnp.dynamic.adapter.DynamicAdapter;
 import com.hyrt.cnp.dynamic.request.BabayDynamicRequest;
@@ -137,8 +138,17 @@ public class AlldynamicFragment extends Fragment {
 
 
         }else{
-            schoolRecipeRequest = new BabayDynamicRequest(
-                    Dynamic.Model.class, activity, "", "1", true);
+            STATE = REFRESH;
+            if(dynamics.size() > 1){
+                String startPosttime = dynamics.get(0).getPosttime();
+                String endPosttime = dynamics.get(dynamics.size()-1).getPosttime();
+                schoolRecipeRequest = new BabayDynamicRequest(
+                        Dynamic.Model.class, activity, "", "1",
+                        startPosttime, endPosttime, true);
+            }else{
+                schoolRecipeRequest = new BabayDynamicRequest(
+                        Dynamic.Model.class, activity, "", "1", true);
+            }
         }
 
         if(schoolRecipeRequest != null){
