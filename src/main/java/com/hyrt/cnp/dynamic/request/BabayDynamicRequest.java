@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import com.hyrt.cnp.base.account.model.Base;
 import com.hyrt.cnp.base.account.request.BaseRequest;
 import com.hyrt.cnp.base.account.service.DynamicService;
+import com.hyrt.cnp.base.account.utils.LogHelper;
 
 /**
  * Created by GYH on 14-1-23.
@@ -77,7 +78,6 @@ public class BabayDynamicRequest extends BaseRequest {
                 }
 
             }else{
-
                 return schoolListService.getBabayDynamicMoreData(getRestTemplate(), uid, more, isAll);
             }
         }

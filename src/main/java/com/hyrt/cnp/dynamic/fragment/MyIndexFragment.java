@@ -163,8 +163,16 @@ public class MyIndexFragment extends Fragment{
             }
         }else{
             STATE = REFRESH;
-            schoolRecipeRequest=new BabayDynamicRequest(
-                    Dynamic.Model.class,getActivity(),"","1");
+            if(dynamics.size() > 1){
+                String startPosttime = dynamics.get(0).getPosttime();
+                String endPosttime = dynamics.get(dynamics.size()-1).getPosttime();
+                schoolRecipeRequest = new BabayDynamicRequest(
+                        Dynamic.Model.class, getActivity(), "", "1",
+                        startPosttime, endPosttime, false);
+            }else{
+                schoolRecipeRequest=new BabayDynamicRequest(
+                        Dynamic.Model.class,getActivity(),"","1");
+            }
         }
         if(schoolRecipeRequest != null){
             activity.spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), DurationInMillis.ONE_SECOND * 10,

@@ -22,6 +22,7 @@ import com.hyrt.cnp.base.account.model.Album;
 import com.hyrt.cnp.base.account.model.BaseStringArray;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.base.account.model.UserDetail;
+import com.hyrt.cnp.base.account.utils.LogHelper;
 import com.hyrt.cnp.base.account.utils.StringUtils;
 import com.hyrt.cnp.base.view.MyViewPager;
 import com.hyrt.cnp.dynamic.R;
@@ -82,6 +83,8 @@ public class HomeInteractiveActivity extends BaseActivity {
     public int aboutmeCount;
     public int commentCount;
     public int forwardCount;
+
+    private static final String TAG = "HomeInteractiveActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,7 +250,7 @@ public class HomeInteractiveActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        android.util.Log.i("tag", "onActivityResult-resultCode:"+resultCode);
+        LogHelper.i(TAG, "onActivityResult-resultCode:"+resultCode);
         if(resultCode == MyAblumsFragment.RESULT_FOR_ADD_ALBUM){
             if (myAblumsFragment == null) {
                 myAblumsFragment = (MyAblumsFragment) pages.get(3);
@@ -259,7 +262,7 @@ public class HomeInteractiveActivity extends BaseActivity {
             myAblumsFragment.loadData(false);
         }
         if(resultCode == AlldynamicFragment.RESULT_FOR_SEND_DYNAMIC){
-            android.util.Log.i("tag", "curFragmentIndex:"+curFragmentIndex);
+            LogHelper.i(TAG, "curFragmentIndex:" + curFragmentIndex);
             if(curFragmentIndex == 0){
                 if(alldaynamicfragment == null){
                     alldaynamicfragment = (AlldynamicFragment) pages.get(0);
@@ -475,7 +478,7 @@ public class HomeInteractiveActivity extends BaseActivity {
                     forwardCount = Integer.parseInt(data.get(2));
                     int count = aboutmeCount + commentCount + forwardCount;
                     if(count > 0){
-                        Log.i("tag", "tv_num_aboutme:"+tv_num_aboutme);
+                        Log.i(TAG, "tv_num_aboutme:"+tv_num_aboutme);
                         tv_num_aboutme.setText(count+"");
                         tv_num_aboutme.setVisibility(View.VISIBLE);
                     }
