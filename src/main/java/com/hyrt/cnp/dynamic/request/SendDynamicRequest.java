@@ -43,6 +43,6 @@ public class SendDynamicRequest extends BaseRequest{
     }
 
     public String createCacheKey() {
-        return "sendDynamic";
+        return "sendDynamic"+System.currentTimeMillis();
     }
 }

@@ -43,6 +43,6 @@ public class DynamicCommentRequest extends BaseRequest{
     }
 
     public String getcachekey(){
-        return "dynamicComment"+dynamic.get_id();
+        return "dynamicComment"+dynamic.get_id()+System.currentTimeMillis();
     }
 }

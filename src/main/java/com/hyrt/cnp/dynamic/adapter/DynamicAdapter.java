@@ -13,10 +13,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hyrt.cnp.base.account.model.BabyInfo;
 import com.hyrt.cnp.base.account.model.Dynamic;
 import com.hyrt.cnp.base.account.utils.Log;
 import com.hyrt.cnp.base.account.utils.StringUtils;
 import com.hyrt.cnp.dynamic.R;
+import com.hyrt.cnp.dynamic.ui.BabayIndexActivity;
 import com.hyrt.cnp.dynamic.ui.CommentListActivity;
 import com.hyrt.cnp.dynamic.ui.DynamicCommentActivity;
 import com.hyrt.cnp.dynamic.ui.SendDynamicActivity;
@@ -51,7 +53,34 @@ public class DynamicAdapter extends MySimpleAdapter {
         ImageView dynamic_Avatar = (ImageView) view.findViewById(R.id.dynamic_Avatar);
         TextView tcontext=(TextView)view.findViewById(R.id.dynamic_dcontext);
         GridView gv_photos = (GridView) view.findViewById(R.id.gv_photos);
+        TextView tv_dynamic_about = (TextView) view.findViewById(R.id.tv_dynamic_about);
         final Dynamic mDynamic = list.get(position);
+        if(mDynamic.getIsTran() == 2){
+            tv_dynamic_about.setText("@"+mDynamic.gettUserName()+":");
+            tv_dynamic_about.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    /*if(AppContext.getInstance().uuid == mDynamic.gettUserId()){
+                        activity.showTitle(2);
+                        activity.homeViewpager.setCurrentItem(2);
+                    }else{
+                        BabyInfo mBabayInfo = new BabyInfo();
+                        mBabayInfo.setUser_id(mDynamic.gettUserId());
+                        Intent intent = new Intent();
+                        intent.setClass(activity, BabayIndexActivity.class);
+                        intent.putExtra("vo",mBabayInfo);
+                        activity.startActivity(intent);
+                    }*/
+                    if (mCallback != null) {
+                        mCallback.onAboutClick(position);
+                    }
+
+                }
+            });
+
+        }else{
+            tv_dynamic_about.setText("");
+        }
         LinearLayout.LayoutParams gvPhotoParams = (LinearLayout.LayoutParams) gv_photos.getLayoutParams();
         gvPhotoParams.width =
                 (activity.getResources().getDimensionPixelOffset(R.dimen.imageview_small)
@@ -138,10 +167,11 @@ public class DynamicAdapter extends MySimpleAdapter {
             textView.setVisibility(View.VISIBLE);
         }
 
+        LinearLayout layout_forward_content = (LinearLayout) view.findViewById(R.id.layout_forward_content);
         if(list.get(position).gettContent()==null || list.get(position).gettContent().length()<=0){
-            tcontext.setVisibility(View.GONE);
+            layout_forward_content.setVisibility(View.GONE);
         }else{
-            tcontext.setVisibility(View.VISIBLE);
+            layout_forward_content.setVisibility(View.VISIBLE);
         }
 
         LinearLayout dynamic_zf=(LinearLayout)view.findViewById(R.id.dynamic_zf);
@@ -186,5 +216,7 @@ public class DynamicAdapter extends MySimpleAdapter {
          * @param PhotoPosition 图片下标
          */
         public void onPhotoClick(int position, int PhotoPosition);
+
+        public void onAboutClick(int position);
     }
 }

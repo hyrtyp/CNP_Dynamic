@@ -79,14 +79,34 @@
         android:layout_marginTop="0dp"
         android:padding="0dp" />
 
-    <TextView
-        android:id="@+id/dynamic_dcontext"
+    <LinearLayout
+        android:id="@+id/layout_forward_content"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        style="@style/medium_tv"
         android:padding="@dimen/view_margin_smallest"
         android:layout_marginTop="@dimen/view_margin_small"
-        android:background="@drawable/shape_line" />
+        android:layout_marginLeft="@dimen/view_margin"
+        android:layout_marginRight="@dimen/view_margin"
+        android:background="@drawable/shape_line"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_dynamic_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/medium_tv"
+            android:padding="0dp"
+            android:layout_marginTop="0dp"
+            android:textColor="@color/actionbar_bg"
+            android:layout_marginRight="0dp"/>
+    <TextView
+        android:id="@+id/dynamic_dcontext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/medium_tv"
+        android:padding="0dp"
+        android:layout_marginTop="0dp"
+         android:layout_marginLeft="0dp"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 与我相关
  * Created by GYH on 14-3-12.
  */
 public class AboutmeFragment extends Fragment{

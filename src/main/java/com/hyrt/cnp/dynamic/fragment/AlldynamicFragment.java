@@ -30,6 +30,7 @@ import net.oschina.app.AppContext;
 import java.util.ArrayList;
 
 /**
+ * 全部动态
  * Created by GYH on 14-3-12.
  */
 public class AlldynamicFragment extends Fragment {
@@ -214,6 +215,25 @@ public class AlldynamicFragment extends Fragment {
         @Override
         public void onPhotoClick(int position, int PhotoPosition) {
             ((BaseActivity)getActivity()).showPop2(rootview, dynamics.get(position).getbPicAry2(), PhotoPosition, getActivity());
+        }
+
+        @Override
+        public void onAboutClick(int position) {
+            int userId = dynamics.get(position).gettUserId();
+            if(AppContext.getInstance().uuid != -1){
+                if(AppContext.getInstance().uuid == userId){
+                    activity.showTitle(2);
+                    activity.homeViewpager.setCurrentItem(2);
+                }else{
+                    BabyInfo mBabyInfo = new BabyInfo();
+                    mBabyInfo.setUser_id(userId);
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), BabayIndexActivity.class);
+                    intent.putExtra("needLoad", true);
+                    intent.putExtra("vo",mBabyInfo);
+                    startActivity(intent);
+                }
+            }
         }
     };
 

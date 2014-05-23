@@ -1,6 +1,7 @@
 package com.hyrt.cnp.dynamic.ui;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,7 +23,11 @@ import com.hyrt.cnp.dynamic.requestListener.BabayDynamicRequestListener;
 import com.hyrt.cnp.dynamic.requestListener.BabayInfoRequestListener;
 import com.hyrt.cnp.base.view.XListView;
 import com.jingdong.common.frame.BaseActivity;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.octo.android.robospice.persistence.DurationInMillis;
+
+import net.oschina.app.AppContext;
 
 import java.util.ArrayList;
 
@@ -44,6 +49,7 @@ public class BabayIndexActivity extends BaseActivity{
     private String more="1";
     private String moreType = "";
     private ImageView faceview;
+    private ImageView imageViewBanner;
     private ImageView imageviewback;
     private TextView nameview;
     private TextView introview;
@@ -74,6 +80,7 @@ public class BabayIndexActivity extends BaseActivity{
     }
 
     private void initView(){
+        imageViewBanner = (ImageView) findViewById(R.id.imageView);
         imageviewback=(ImageView)findViewById(R.id.imageviewback);
         faceview=(ImageView)findViewById(R.id.face_iv);
         nameview =(TextView)findViewById(R.id.name_tv);
@@ -199,7 +206,20 @@ public class BabayIndexActivity extends BaseActivity{
     }
 
     public void UpdataBabayinfo(BabyInfo babyInfo){
-        showDetailImage(FaceUtils.getAvatar(babyInfo.getUser_id(),FaceUtils.FACE_BIG),faceview,false);
+        if(babyInfo == null){
+            return;
+        }
+        DisplayImageOptions mOptions = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.hua2)
+                .showImageOnFail(R.drawable.hua2)
+                .showImageForEmptyUri(R.drawable.hua2)
+                .cacheInMemory(true)
+                .build();
+        String faceBgPath = FaceUtils.getAvatar(babyInfo.getUser_id(), FaceUtils.FACE_BG);
+        String facePath = FaceUtils.getAvatar(babyInfo.getUser_id(), FaceUtils.FACE_BIG);
+        ImageLoader.getInstance().displayImage(faceBgPath, imageViewBanner, mOptions);
+        ImageLoader.getInstance().displayImage(facePath, faceview, AppContext.getInstance().mNoCacheOnDiscImageloadoptions);
+//        showDetailImage(FaceUtils.getAvatar(babyInfo.getUser_id(), FaceUtils.FACE_BIG), faceview, false);
         nameview.setText(babyInfo.getRenname().toString());
         if(babyInfo.getIntro().equals("")){
             introview.setText("暂无签名");

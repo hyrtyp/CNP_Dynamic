@@ -1,7 +1,9 @@
 package com.hyrt.cnp.dynamic.ui;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
@@ -359,10 +361,18 @@ public class HomeInteractiveActivity extends BaseActivity {
                 if(actionBar != null){
                     actionBar.show();
                 }
-                layoutParentAblums.setBackground(null);
-                layoutParentAlldynamic.setBackground(null);
+                if(Build.VERSION.SDK_INT < 16){
+                    layoutParentAblums.setBackgroundDrawable(null);
+                    layoutParentAlldynamic.setBackgroundDrawable(null);
+                    layoutParentMyindex.setBackgroundDrawable(null);
+                }else{
+                    layoutParentAblums.setBackground(null);
+                    layoutParentAlldynamic.setBackground(null);
+                    layoutParentMyindex.setBackground(null);
+                }
+
                 layoutParentAboutme.setBackgroundResource(R.drawable.bg_homeinter_item);
-                layoutParentMyindex.setBackground(null);
+
                 mymenu.add("abc")
                         .setIcon(R.drawable.actionbar_right)
                         .setShowAsAction(
@@ -481,6 +491,8 @@ public class HomeInteractiveActivity extends BaseActivity {
                         Log.i(TAG, "tv_num_aboutme:"+tv_num_aboutme);
                         tv_num_aboutme.setText(count+"");
                         tv_num_aboutme.setVisibility(View.VISIBLE);
+                    }else{
+                        tv_num_aboutme.setVisibility(View.GONE);
                     }
                 }
                 if(aboutmeFragment == null){

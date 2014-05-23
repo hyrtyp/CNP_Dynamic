@@ -37,6 +37,6 @@ public class DynamicaddcommentRequest extends BaseRequest{
     }
 
     public String getcachekey(){
-        return "classroomphotoaddcomment"+comment.getInfoID();
+        return "classroomphotoaddcomment"+comment.getInfoID()+System.currentTimeMillis();
     }
 }

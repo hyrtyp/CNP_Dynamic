@@ -200,11 +200,47 @@ public class MyIndexFragment extends Fragment{
     private DynamicAdapter.DynamicAdapterCallback mDynamicAdapterCallback = new DynamicAdapter.DynamicAdapterCallback() {
         @Override
         public void onFaceClick(int position) {
+            int userId = dynamics.get(position).getUserId();
+            CNPClient cnpClient = new CNPClient();
+            cnpClient.configureRequest();
+            if(AppContext.getInstance().uuid != -1){
+                if(AppContext.getInstance().uuid == userId){
+//                    activity.showTitle(2);
+//                    activity.homeViewpager.setCurrentItem(2);
+                }else{
+                    BabyInfo mBabyInfo = new BabyInfo();
+                    mBabyInfo.setUser_id(userId);
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), BabayIndexActivity.class);
+                    intent.putExtra("needLoad", true);
+                    intent.putExtra("vo",mBabyInfo);
+                    startActivity(intent);
+                }
+            }
         }
 
         @Override
         public void onPhotoClick(int position, int PhotoPosition) {
             ((BaseActivity)getActivity()).showPop2(rootView, dynamics.get(position).getbPicAry2(), PhotoPosition, getActivity());
+        }
+
+        @Override
+        public void onAboutClick(int position) {
+            int userId = dynamics.get(position).gettUserId();
+            if(AppContext.getInstance().uuid != -1){
+                if(AppContext.getInstance().uuid == userId){
+//                    activity.showTitle(2);
+//                    activity.homeViewpager.setCurrentItem(2);
+                }else{
+                    BabyInfo mBabyInfo = new BabyInfo();
+                    mBabyInfo.setUser_id(userId);
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), BabayIndexActivity.class);
+                    intent.putExtra("needLoad", true);
+                    intent.putExtra("vo",mBabyInfo);
+                    startActivity(intent);
+                }
+            }
         }
     };
 

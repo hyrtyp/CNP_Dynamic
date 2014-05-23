@@ -118,7 +118,7 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         CommentListRequestListener sendwordRequestListener = new CommentListRequestListener(this);
         sendwordRequestListener.setListener(mCommentRequestListener);
         CommetListRequest schoolRecipeRequest=
-                new CommetListRequest(Comment.Model.class,this,photo.getPhotoID()+"","51");
+                new CommetListRequest(Comment.Model.class,this,photo.getPhotoID()+"","52");
         spiceManager.execute(schoolRecipeRequest, schoolRecipeRequest.getcachekey(), 1000,
                 sendwordRequestListener.start());
     }
@@ -174,7 +174,7 @@ public class DynamicPhotoInfoActivity extends BaseActivity{
         comment.setInfoUserId(photo.getUserID()+"");
         comment.setInfoNurseryId(photo.getNurseryID()+"");
         comment.setInfoClassroomId(photo.getClassroomID()+"");
-        comment.setSiteid("51");
+        comment.setSiteid("52");
         comment.setUrl("null");
         comment.setLstatus("Y");
         comment.setContent(editcommit.getText().toString());

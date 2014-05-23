@@ -27,6 +27,7 @@
             style="@style/small_tv"
             android:layout_marginLeft="@dimen/view_margin"
             android:layout_marginTop="0dp"/>
+
         <TextView
             android:id="@+id/tv_forward_content2"
             android:layout_width="fill_parent"
